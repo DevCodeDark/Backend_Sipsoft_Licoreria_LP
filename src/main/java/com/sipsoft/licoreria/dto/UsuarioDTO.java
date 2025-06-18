@@ -2,16 +2,17 @@ package com.sipsoft.licoreria.dto;
 
 public class UsuarioDTO {
     private Integer idUsuario;
+    private Integer idRol;
+    private Integer idEmpresa;
+    private Integer idSucursal;
+    private String usuario;  // Campo Usuario de la tabla
     private String nombreUsuario;
     private String apellidoUsuario;
     private String telefonoUsuario;
     private String dniUsuario;
     private String emailUsuario;
-    private String contrasenaUsuario;
-    private Integer idRol;
-    private Integer idEmpresa;
-
-    // Getters y Setters
+    private String contrasenalUsuario;  // Nota: contrasenAL no contrasenaUsuario
+    private Integer estadoUsuario;    // Getters y Setters
 
     public Integer getIdUsuario() {
         return idUsuario;
@@ -19,6 +20,36 @@ public class UsuarioDTO {
 
     public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
+    }
+
+    public Integer getIdRol() {
+        return idRol;
+    }
+
+    public void setIdRol(Integer idRol) {
+        this.idRol = idRol;
+    }
+
+    public Integer getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(Integer idEmpresa) {
+        this.idEmpresa = idEmpresa;
+    }
+
+    public Integer getIdSucursal() {
+        return idSucursal;
+    }
+
+    public void setIdSucursal(Integer idSucursal) {
+        this.idSucursal = idSucursal;
+    }    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     public String getNombreUsuario() {
@@ -61,27 +92,19 @@ public class UsuarioDTO {
         this.emailUsuario = emailUsuario;
     }
 
-    public String getContrasenaUsuario() {
-        return contrasenaUsuario;
+    public String getContrasenalUsuario() {
+        return contrasenalUsuario;
     }
 
-    public void setContrasenaUsuario(String contrasenaUsuario) {
-        this.contrasenaUsuario = contrasenaUsuario;
+    public void setContrasenalUsuario(String contrasenalUsuario) {
+        this.contrasenalUsuario = contrasenalUsuario;
     }
 
-    public Integer getIdRol() {
-        return idRol;
+    public Integer getEstadoUsuario() {
+        return estadoUsuario;
     }
 
-    public void setIdRol(Integer idRol) {
-        this.idRol = idRol;
-    }
-
-    public Integer getIdEmpresa() {
-        return idEmpresa;
-    }
-
-    public void setIdEmpresa(Integer idEmpresa) {
-        this.idEmpresa = idEmpresa;
+    public void setEstadoUsuario(Integer estadoUsuario) {
+        this.estadoUsuario = estadoUsuario;
     }
 }

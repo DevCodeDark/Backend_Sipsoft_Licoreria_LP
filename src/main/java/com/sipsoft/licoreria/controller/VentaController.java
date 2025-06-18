@@ -15,47 +15,30 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sipsoft.licoreria.entity.Venta;
 import com.sipsoft.licoreria.dto.VentaDTO;
-import com.sipsoft.licoreria.entity.Cliente;
-import com.sipsoft.licoreria.entity.Caja;
-import com.sipsoft.licoreria.entity.Usuario;
-import com.sipsoft.licoreria.repository.ClienteRepository;
-import com.sipsoft.licoreria.repository.CajaRepository;
-import com.sipsoft.licoreria.repository.UsuarioRepository;
 import com.sipsoft.licoreria.services.IVentaService;
 
 @RestController
 @RequestMapping("/sipsoft")
 public class VentaController {
     @Autowired
-    private IVentaService serviceVenta;    @Autowired
-    private ClienteRepository repoCliente;
-    @Autowired
-    private CajaRepository repoCaja;
-    @Autowired
-    private UsuarioRepository repoUsuario;
-
-
+    private IVentaService serviceVenta;
     @GetMapping("/ventas")
     public List<Venta> buscarTodos() {
-        return serviceVenta.bucarTodos();
+        return serviceVenta.buscarTodos();
     }    @PostMapping("/ventas")
     public Venta guardar(@RequestBody VentaDTO dto) {
         Venta venta = new Venta();
+        venta.setIdCliente(dto.getIdCliente());
+        venta.setIdCaja(dto.getIdCaja());
+        venta.setIgv(dto.getIgv());
         venta.setFechaVenta(dto.getFechaVenta());
         venta.setMontoTotalVenta(dto.getMontoTotalVenta());
         venta.setFechaAnulacion(dto.getFechaAnulacion());
         venta.setDireccion(dto.getDireccion());
         venta.setReferencia(dto.getReferencia());
         venta.setEstadoVenta(dto.getEstadoVenta());
-        venta.setIgv(dto.getIgv());
+        venta.setIdUsuario(dto.getIdUsuario());
         venta.setTipoDocumento(dto.getTipoDocumento());
-
-        Cliente cliente = repoCliente.findById(dto.getIdCliente()).orElse(null);
-        venta.setIdCliente(cliente);
-        Caja caja = repoCaja.findById(dto.getIdCaja()).orElse(null);
-        venta.setIdCaja(caja);
-        Usuario usuario = repoUsuario.findById(dto.getIdUsuario()).orElse(null);
-        venta.setIdUsuario(usuario);
 
         serviceVenta.guardar(venta);
 
@@ -65,21 +48,17 @@ public class VentaController {
     public Venta modificar(@RequestBody VentaDTO dto) {
         Venta venta = new Venta();
         venta.setIdVenta(dto.getIdVenta());
+        venta.setIdCliente(dto.getIdCliente());
+        venta.setIdCaja(dto.getIdCaja());
+        venta.setIgv(dto.getIgv());
         venta.setFechaVenta(dto.getFechaVenta());
         venta.setMontoTotalVenta(dto.getMontoTotalVenta());
         venta.setFechaAnulacion(dto.getFechaAnulacion());
         venta.setDireccion(dto.getDireccion());
         venta.setReferencia(dto.getReferencia());
         venta.setEstadoVenta(dto.getEstadoVenta());
-        venta.setIgv(dto.getIgv());
+        venta.setIdUsuario(dto.getIdUsuario());
         venta.setTipoDocumento(dto.getTipoDocumento());
-
-        Cliente cliente = repoCliente.findById(dto.getIdCliente()).orElse(null);
-        venta.setIdCliente(cliente);
-        Caja caja = repoCaja.findById(dto.getIdCaja()).orElse(null);
-        venta.setIdCaja(caja);
-        Usuario usuario = repoUsuario.findById(dto.getIdUsuario()).orElse(null);
-        venta.setIdUsuario(usuario);
 
         serviceVenta.modificar(venta);
 

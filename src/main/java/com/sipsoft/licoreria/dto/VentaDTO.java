@@ -1,16 +1,17 @@
 package com.sipsoft.licoreria.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class VentaDTO {
     private Integer idVenta;
     private LocalDateTime fechaVenta;
-    private Float montoTotalVenta;
+    private BigDecimal montoTotalVenta;
     private LocalDateTime fechaAnulacion;
     private String direccion;
     private String referencia;
-    private Integer estadoVenta = 1;
-    private Float igv;
+    private Integer estadoVenta;
+    private BigDecimal igv;
     private String tipoDocumento;
     private Integer idCliente;
     private Integer idCaja;
@@ -26,11 +27,11 @@ public class VentaDTO {
     }
     public void setFechaVenta(LocalDateTime fechaVenta) {
         this.fechaVenta = fechaVenta;
-    }
-    public Float getMontoTotalVenta() {
+    }    public BigDecimal getMontoTotalVenta() {
         return montoTotalVenta;
     }
-    public void setMontoTotalVenta(Float montoTotalVenta) {
+    
+    public void setMontoTotalVenta(BigDecimal montoTotalVenta) {
         this.montoTotalVenta = montoTotalVenta;
     }
     public LocalDateTime getFechaAnulacion() {
@@ -61,11 +62,11 @@ public class VentaDTO {
     }
     public void setTipoDocumento(String tipoDocumento) {
         this.tipoDocumento = tipoDocumento;
-    }
-    public Float getIgv() {
+    }    public BigDecimal getIgv() {
         return igv;
     }
-    public void setIgv(Float igv) {
+    
+    public void setIgv(BigDecimal igv) {
         this.igv = igv;
     }
     public Integer getIdCliente() {

@@ -44,7 +44,7 @@ public class UsuarioController {
     private BCryptPasswordEncoder passwordEncoder;    @GetMapping("/usuarios")
     @Operation(summary = "Obtener todos los usuarios", security = @SecurityRequirement(name = "bearerAuth"))
     public List<Usuario> buscarTodos() {
-        return serviceUsuario.bucarTodos();
+        return serviceUsuario.buscarTodos();
     }
       /**
      * Endpoint para crear un nuevo usuario.
@@ -63,17 +63,11 @@ public class UsuarioController {
         usuario.setDniUsuario(usuarioDto.getDniUsuario());
         usuario.setEmailUsuario(usuarioDto.getEmailUsuario());
         usuario.setIdRol(usuarioDto.getIdRol());
-        usuario.setIdEmpresa(usuarioDto.getIdEmpresa());
-
-        // Cifrar la contraseña
-        if (usuarioDto.getContrasenaUsuario() != null && !usuarioDto.getContrasenaUsuario().isEmpty()) {
-            usuario.setContrasenaUsuario(passwordEncoder.encode(usuarioDto.getContrasenaUsuario()));
+        usuario.setIdEmpresa(usuarioDto.getIdEmpresa());        // Cifrar la contraseña
+        if (usuarioDto.getContrasenalUsuario() != null && !usuarioDto.getContrasenalUsuario().isEmpty()) {
+            usuario.setContrasenalUsuario(passwordEncoder.encode(usuarioDto.getContrasenalUsuario()));
         }
 
-        // Generar credenciales (clienteId, llaveSecreta, accessToken)
-        String claveOriginal = usuarioDto.getEmailUsuario() + usuarioDto.getNombreUsuario() + usuarioDto.getApellidoUsuario();
-        usuario.generarCredenciales(claveOriginal);
-        
         // Establecer estado por defecto
         usuario.setEstadoUsuario(1);
 
@@ -104,11 +98,9 @@ public class UsuarioController {
         usuarioExistente.setDniUsuario(usuarioDto.getDniUsuario());
         usuarioExistente.setEmailUsuario(usuarioDto.getEmailUsuario());
         usuarioExistente.setIdRol(usuarioDto.getIdRol());
-        usuarioExistente.setIdEmpresa(usuarioDto.getIdEmpresa());
-
-        // Actualizar contraseña solo si se proporciona una nueva
-        if (usuarioDto.getContrasenaUsuario() != null && !usuarioDto.getContrasenaUsuario().isEmpty()) {
-            usuarioExistente.setContrasenaUsuario(passwordEncoder.encode(usuarioDto.getContrasenaUsuario()));
+        usuarioExistente.setIdEmpresa(usuarioDto.getIdEmpresa());        // Actualizar contraseña solo si se proporciona una nueva
+        if (usuarioDto.getContrasenalUsuario() != null && !usuarioDto.getContrasenalUsuario().isEmpty()) {
+            usuarioExistente.setContrasenalUsuario(passwordEncoder.encode(usuarioDto.getContrasenalUsuario()));
         }
         
         Usuario usuarioModificado = serviceUsuario.modificar(usuarioExistente);
