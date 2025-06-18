@@ -34,8 +34,8 @@ public class Usuario {
     private String telefonoUsuario;
     private String dniUsuario;
     private String emailUsuario;
-    private String contrasenalUsuario;  // Nota: contrasenAL no contrasenaUsuario
-    private Integer estadoUsuario = 1;       
+    private String contrasenaUsuario;  // Corregido: contrasena sin "l"
+    private Integer estadoUsuario = 1;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idRol", insertable = false, updatable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -136,14 +136,12 @@ public class Usuario {
 
     public void setEmailUsuario(String emailUsuario) {
         this.emailUsuario = emailUsuario;
+    }    public String getContrasenaUsuario() {
+        return contrasenaUsuario;
     }
 
-    public String getContrasenalUsuario() {
-        return contrasenalUsuario;
-    }
-
-    public void setContrasenalUsuario(String contrasenalUsuario) {
-        this.contrasenalUsuario = contrasenalUsuario;
+    public void setContrasenaUsuario(String contrasenaUsuario) {
+        this.contrasenaUsuario = contrasenaUsuario;
     }
 
     public Integer getEstadoUsuario() {
@@ -179,11 +177,10 @@ public class Usuario {
     }
 
     @Override
-    public String toString() {
-        return "Usuario [idUsuario=" + idUsuario + ", idRol=" + idRol + ", idEmpresa=" + idEmpresa 
+    public String toString() {        return "Usuario [idUsuario=" + idUsuario + ", idRol=" + idRol + ", idEmpresa=" + idEmpresa 
                 + ", idSucursal=" + idSucursal + ", usuario=" + usuario + ", nombreUsuario=" + nombreUsuario 
                 + ", apellidoUsuario=" + apellidoUsuario + ", telefonoUsuario=" + telefonoUsuario 
-                + ", dniUsuario=" + dniUsuario + ", emailUsuario=" + emailUsuario + ", contrasenalUsuario=" 
-                + contrasenalUsuario + ", estadoUsuario=" + estadoUsuario + "]";
+                + ", dniUsuario=" + dniUsuario + ", emailUsuario=" + emailUsuario + ", contrasenaUsuario=" 
+                + contrasenaUsuario + ", estadoUsuario=" + estadoUsuario + "]";
     }
 }

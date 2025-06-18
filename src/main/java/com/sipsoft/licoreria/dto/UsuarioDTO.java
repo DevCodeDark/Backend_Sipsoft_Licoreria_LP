@@ -11,8 +11,8 @@ public class UsuarioDTO {
     private String telefonoUsuario;
     private String dniUsuario;
     private String emailUsuario;
-    private String contrasenalUsuario;  // Nota: contrasenAL no contrasenaUsuario
-    private Integer estadoUsuario;    // Getters y Setters
+    private String contrasenaUsuario;  // Corregido: contrasena sin "l"
+    private Integer estadoUsuario;// Getters y Setters
 
     public Integer getIdUsuario() {
         return idUsuario;
@@ -90,14 +90,12 @@ public class UsuarioDTO {
 
     public void setEmailUsuario(String emailUsuario) {
         this.emailUsuario = emailUsuario;
+    }    public String getContrasenaUsuario() {
+        return contrasenaUsuario;
     }
 
-    public String getContrasenalUsuario() {
-        return contrasenalUsuario;
-    }
-
-    public void setContrasenalUsuario(String contrasenalUsuario) {
-        this.contrasenalUsuario = contrasenalUsuario;
+    public void setContrasenaUsuario(String contrasenaUsuario) {
+        this.contrasenaUsuario = contrasenaUsuario;
     }
 
     public Integer getEstadoUsuario() {
