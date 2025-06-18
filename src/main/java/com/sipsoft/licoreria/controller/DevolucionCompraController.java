@@ -22,7 +22,7 @@ public class DevolucionCompraController {
     public List<DevolucionCompraDTO> buscarTodos() {
         return serviceDevolucionCompra.bucarTodos().stream()
                 .map(this::convertToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @GetMapping("/devolucion-compra/{idDevolucionCompra}")
@@ -42,7 +42,9 @@ public class DevolucionCompraController {
 
         // Valores automáticos
         devolucion.setFechaDevolucionCompra(LocalDateTime.now());
-        devolucion.setEstadoDevolucionCompra(1); // 1 = REGISTRADO
+        
+        // Convertir el estado de Integer a String
+        devolucion.setEstadoDevolucionCompra("REGISTRADO");
 
         DevolucionCompra savedDevolucion = serviceDevolucionCompra.guardar(devolucion);
         return convertToDto(savedDevolucion);
@@ -61,7 +63,23 @@ public class DevolucionCompraController {
 
                     // Opcional: Actualizar el estado si es necesario desde el DTO
                     if (dto.getEstadoDevolucionCompra() != null) {
-                        devolucionExistente.setEstadoDevolucionCompra(dto.getEstadoDevolucionCompra());
+                        // Convertir de Integer a String
+                        switch (dto.getEstadoDevolucionCompra()) {
+                            case 1:
+                                devolucionExistente.setEstadoDevolucionCompra("REGISTRADO");
+                                break;
+                            case 2:
+                                devolucionExistente.setEstadoDevolucionCompra("PROCESADO");
+                                break;
+                            case 3:
+                                devolucionExistente.setEstadoDevolucionCompra("COMPLETADO");
+                                break;
+                            case 4:
+                                devolucionExistente.setEstadoDevolucionCompra("RECHAZADO");
+                                break;
+                            default:
+                                devolucionExistente.setEstadoDevolucionCompra("DESCONOCIDO");
+                        }
                     }
 
                     DevolucionCompra updatedDevolucion = serviceDevolucionCompra.modificar(devolucionExistente);
@@ -85,7 +103,27 @@ public class DevolucionCompraController {
         dto.setFechaDevolucionCompra(entity.getFechaDevolucionCompra());
         dto.setMotivoDevolucionCompra(entity.getMotivoDevolucionCompra());
         dto.setImagenDevolucion(entity.getImagenDevolucion());
-        dto.setEstadoDevolucionCompra(entity.getEstadoDevolucionCompra());
+        
+        // Convertir el estado de String a Integer
+        if (entity.getEstadoDevolucionCompra() != null) {
+            switch (entity.getEstadoDevolucionCompra()) {
+                case "REGISTRADO":
+                    dto.setEstadoDevolucionCompra(1);
+                    break;
+                case "PROCESADO":
+                    dto.setEstadoDevolucionCompra(2);
+                    break;
+                case "COMPLETADO":
+                    dto.setEstadoDevolucionCompra(3);
+                    break;
+                case "RECHAZADO":
+                    dto.setEstadoDevolucionCompra(4);
+                    break;
+                default:
+                    dto.setEstadoDevolucionCompra(0); // Estado desconocido
+            }
+        }
+        
         dto.setIdDetalleCompra(entity.getIdDetalleCompra());
         return dto;
     }
