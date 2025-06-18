@@ -25,7 +25,7 @@ public class Sucursal {
     private String ubicacionSucursal;
     private Integer estadoSucursal = 1;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idEmpresa")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Empresa idEmpresa;
