@@ -1,10 +1,10 @@
 package com.sipsoft.licoreria.services.jpa;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.sipsoft.licoreria.entity.ProveedorCategoria;
-import com.sipsoft.licoreria.entity.ProveedorCategoriaId;
 import com.sipsoft.licoreria.repository.ProveedorCategoriaRepository;
 import com.sipsoft.licoreria.services.IProveedorCategoriaService;
 
@@ -25,7 +25,12 @@ public class ProveedorCategoriaService implements IProveedorCategoriaService {
     }
     
     @Override
-    public void deleteById(ProveedorCategoriaId id) {
+    public Optional<ProveedorCategoria> findById(Integer id) {
+        return repoProveedorCategoria.findById(id);
+    }
+    
+    @Override
+    public void deleteById(Integer id) {
         repoProveedorCategoria.deleteById(id);
     }
 }

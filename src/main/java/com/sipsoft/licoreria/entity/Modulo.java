@@ -3,7 +3,7 @@ package com.sipsoft.licoreria.entity;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import com.fasterxml.jackson.annotation.JsonIgnore; // Importar JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
@@ -23,18 +23,18 @@ public class Modulo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idModulo;
+    
+    private Integer idSegmento;
     private String urlModulo;
     private String nombreModulo;
     private Integer estadoModulo = 1;
-    private Integer idEmpresa;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idEmpresa", insertable = false, updatable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Empresa empresa;
-
-    public Modulo() {
+    @JoinColumn(name = "idSegmento", insertable = false, updatable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "modulos"})
+    private SegmentoModulo segmentoModulo;    public Modulo() {
+        // Constructor vacío requerido por JPA
     }
 
     public Integer getIdModulo() {
@@ -43,6 +43,14 @@ public class Modulo {
 
     public void setIdModulo(Integer idModulo) {
         this.idModulo = idModulo;
+    }
+
+    public Integer getIdSegmento() {
+        return idSegmento;
+    }
+
+    public void setIdSegmento(Integer idSegmento) {
+        this.idSegmento = idSegmento;
     }
 
     public String getUrlModulo() {
@@ -69,25 +77,17 @@ public class Modulo {
         this.estadoModulo = estadoModulo;
     }
 
-    public Empresa getEmpresa() {
-        return empresa;
+    public SegmentoModulo getSegmentoModulo() {
+        return segmentoModulo;
     }
 
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
-
-    public Integer getIdEmpresa() {
-        return idEmpresa;
-    }
-
-    public void setIdEmpresa(Integer idEmpresa) {
-        this.idEmpresa = idEmpresa;
+    public void setSegmentoModulo(SegmentoModulo segmentoModulo) {
+        this.segmentoModulo = segmentoModulo;
     }
 
     @Override
     public String toString() {
-        return "Modulo [idModulo=" + idModulo + ", urlModulo=" + urlModulo + ", nombreModulo=" + nombreModulo
-                + ", estadoModulo=" + estadoModulo + ", empresa=" + empresa + "]";
+        return "Modulo [idModulo=" + idModulo + ", idSegmento=" + idSegmento + ", urlModulo=" + urlModulo 
+                + ", nombreModulo=" + nombreModulo + ", estadoModulo=" + estadoModulo + "]";
     }
 }

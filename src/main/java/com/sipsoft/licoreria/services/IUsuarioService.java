@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.sipsoft.licoreria.entity.Usuario;
 
 public interface IUsuarioService {
-    List<Usuario> bucarTodos();
+    List<Usuario> buscarTodos();
     Usuario guardar(Usuario usuario); // Cambiado de void a Usuario
     Usuario modificar(Usuario usuario); // Cambiado de void a Usuario
     Optional<Usuario> buscarId(Integer idUsuario);

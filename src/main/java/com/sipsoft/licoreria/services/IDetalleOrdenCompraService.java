@@ -5,7 +5,7 @@ import java.util.Optional;
 import com.sipsoft.licoreria.entity.DetalleOrdenCompra;
 
 public interface IDetalleOrdenCompraService {
-    List<DetalleOrdenCompra> bucarTodos();
+    List<DetalleOrdenCompra> buscarTodos();
     DetalleOrdenCompra guardar(DetalleOrdenCompra detalleOrdenCompra);
     DetalleOrdenCompra modificar(DetalleOrdenCompra detalleOrdenCompra);
     Optional<DetalleOrdenCompra> buscarId(Integer idDetalleOrden);

@@ -13,7 +13,7 @@ public class TrasladoService implements ITrasladoService {
     @Autowired
     private TrasladoRepository repoTraslado;
     
-    public List<Traslado> bucarTodos() {
+    public List<Traslado> buscarTodos() {
         return repoTraslado.findAll();
     }
     

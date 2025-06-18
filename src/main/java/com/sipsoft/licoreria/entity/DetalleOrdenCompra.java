@@ -20,16 +20,15 @@ import org.hibernate.annotations.Where;
 @Table(name = "detalle_orden_compra")
 @SQLDelete(sql = "UPDATE detalle_orden_compra SET activo = 0 WHERE idDetalleOrden = ?")
 @Where(clause = "activo = 1")
-public class DetalleOrdenCompra {
-    @Id
+public class DetalleOrdenCompra {    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idDetalleOrden;
     private Boolean activo = true;
     private Integer cantidadSolicitada;
     @Column(name = "observacionesDet")
     private String observacionesDetalle;
-
     private Float precioUnitario;
+    private Integer estadoDetalleOrdenCompra = 1;
     private Integer idOrden;
     private Integer idProducto;
 
@@ -75,18 +74,24 @@ public class DetalleOrdenCompra {
 
     public String getObservacionesDetalle() {
         return observacionesDetalle;
-    }
-
-    public void setObservacionesDetalle(String observacionesDetalle) {
+    }    public void setObservacionesDetalle(String observacionesDetalle) {
         this.observacionesDetalle = observacionesDetalle;
     }
-
+    
     public Float getPrecioUnitario() {
         return precioUnitario;
     }
 
     public void setPrecioUnitario(Float precioUnitario) {
         this.precioUnitario = precioUnitario;
+    }
+
+    public Integer getEstadoDetalleOrdenCompra() {
+        return estadoDetalleOrdenCompra;
+    }
+
+    public void setEstadoDetalleOrdenCompra(Integer estadoDetalleOrdenCompra) {
+        this.estadoDetalleOrdenCompra = estadoDetalleOrdenCompra;
     }
 
     public Integer getIdOrden() {

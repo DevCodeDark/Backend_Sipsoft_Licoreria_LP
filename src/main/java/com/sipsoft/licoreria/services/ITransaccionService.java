@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.sipsoft.licoreria.entity.Transaccion;
 
 public interface ITransaccionService {
-    List<Transaccion> bucarTodos();
+    List<Transaccion> buscarTodos();
     Transaccion guardar(Transaccion transaccion);
     Transaccion modificar(Transaccion transaccion);
     Optional<Transaccion> buscarId(Integer idTransaccion);

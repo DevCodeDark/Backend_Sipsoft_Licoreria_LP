@@ -1,5 +1,6 @@
 package com.sipsoft.licoreria.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.SQLDelete;
@@ -7,6 +8,7 @@ import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -20,37 +22,36 @@ import jakarta.persistence.Table;
 @Table(name = "venta")
 @SQLDelete(sql = "UPDATE venta SET estadoVenta = 0 WHERE idVenta = ?")
 @Where(clause = "estadoVenta = 1")
-public class Venta {
-    @Id
+public class Venta {    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idVenta;
+    private Integer idCliente;
+    private Integer idCaja;
+    private BigDecimal igv;
     private LocalDateTime fechaVenta;
-    private Float montoTotalVenta;
+    private BigDecimal montoTotalVenta;
     private LocalDateTime fechaAnulacion;
     private String direccion;
     private String referencia;
     private Integer estadoVenta = 1;
-    private String tipoDocumento;
+    private Integer idUsuario;
+    
+    @Column(name = "tipo_documento")
+    private String tipoDocumento;    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idCliente", insertable = false, updatable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Cliente cliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idCliente")
+    @JoinColumn(name = "idCaja", insertable = false, updatable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Cliente idCliente;
+    private Caja caja;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idCaja")
+    @JoinColumn(name = "idUsuario", insertable = false, updatable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Caja idCaja;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idTransaccion")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Transaccion idTransaccion;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idUsuario")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Usuario idUsuario;
+    private Usuario usuario;
     
     public Venta() {
     }
@@ -65,17 +66,37 @@ public class Venta {
 
     public LocalDateTime getFechaVenta() {
         return fechaVenta;
-    }
-
-    public void setFechaVenta(LocalDateTime fechaVenta) {
+    }    public void setFechaVenta(LocalDateTime fechaVenta) {
         this.fechaVenta = fechaVenta;
     }
 
-    public Float getMontoTotalVenta() {
+    public Integer getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(Integer idCliente) {
+        this.idCliente = idCliente;
+    }
+
+    public Integer getIdCaja() {
+        return idCaja;
+    }
+
+    public void setIdCaja(Integer idCaja) {
+        this.idCaja = idCaja;
+    }
+
+    public Integer getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Integer idUsuario) {
+        this.idUsuario = idUsuario;
+    }public BigDecimal getMontoTotalVenta() {
         return montoTotalVenta;
     }
 
-    public void setMontoTotalVenta(Float montoTotalVenta) {
+    public void setMontoTotalVenta(BigDecimal montoTotalVenta) {
         this.montoTotalVenta = montoTotalVenta;
     }
 
@@ -109,53 +130,44 @@ public class Venta {
 
     public void setEstadoVenta(Integer estadoVenta) {
         this.estadoVenta = estadoVenta;
-    }
-
-    public String getTipoDocumento() {
+    }    public String getTipoDocumento() {
         return tipoDocumento;
     }
 
     public void setTipoDocumento(String tipoDocumento) {
         this.tipoDocumento = tipoDocumento;
+    }    public BigDecimal getIgv() {
+        return igv;
     }
 
-    public Cliente getIdCliente() {
-        return idCliente;
+    public void setIgv(BigDecimal igv) {
+        this.igv = igv;
+    }    public Cliente getCliente() {
+        return cliente;
     }
 
-    public void setIdCliente(Cliente idCliente) {
-        this.idCliente = idCliente;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
-    public Caja getIdCaja() {
-        return idCaja;
+    public Caja getCaja() {
+        return caja;
     }
 
-    public void setIdCaja(Caja idCaja) {
-        this.idCaja = idCaja;
+    public void setCaja(Caja caja) {
+        this.caja = caja;
     }
 
-    public Transaccion getIdTransaccion() {
-        return idTransaccion;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setIdTransaccion(Transaccion idTransaccion) {
-        this.idTransaccion = idTransaccion;
-    }
-
-    public Usuario getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(Usuario idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    @Override
-    public String toString() {
-        return "Venta [idVenta=" + idVenta + ", fechaVenta=" + fechaVenta + ", montoTotalVenta=" + montoTotalVenta
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }@Override
+    public String toString() {        return "Venta [idVenta=" + idVenta + ", idCliente=" + idCliente + ", idCaja=" + idCaja 
+                + ", igv=" + igv + ", fechaVenta=" + fechaVenta + ", montoTotalVenta=" + montoTotalVenta
                 + ", fechaAnulacion=" + fechaAnulacion + ", direccion=" + direccion + ", referencia=" + referencia
-                + ", estadoVenta=" + estadoVenta + ", tipoDocumento=" + tipoDocumento + ", idCliente=" + idCliente
-                + ", idCaja=" + idCaja + ", idTransaccion=" + idTransaccion + ", idUsuario=" + idUsuario + "]";
+                + ", estadoVenta=" + estadoVenta + ", idUsuario=" + idUsuario + ", tipoDocumento=" + tipoDocumento + "]";
     }
 }

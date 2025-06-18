@@ -1,16 +1,14 @@
 package com.sipsoft.licoreria.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.sipsoft.licoreria.dto.ProveedorCategoriaDTO;
-import com.sipsoft.licoreria.entity.Categoria;
-import com.sipsoft.licoreria.entity.Proveedor;
 import com.sipsoft.licoreria.entity.ProveedorCategoria;
-import com.sipsoft.licoreria.entity.ProveedorCategoriaId;
 import com.sipsoft.licoreria.services.IProveedorCategoriaService;
 
 @RestController
@@ -22,7 +20,7 @@ public class ProveedorCategoriaController {
 
     /**
      * Obtiene todas las relaciones proveedor-categoría.
-     * @return Una lista de DTOs, cada uno con idProveedor y idCategoria.
+     * @return Una lista de DTOs con los datos de las relaciones.
      */
     @GetMapping("/proveedor-categoria")
     public List<ProveedorCategoriaDTO> buscarTodos() {
@@ -44,39 +42,66 @@ public class ProveedorCategoriaController {
     }
 
     /**
-     * Elimina una relación existente.
-     * Para "actualizar", simplemente elimina la relación incorrecta y crea una nueva con POST.
+     * Actualiza una relación existente.
      */
-    @DeleteMapping("/proveedor-categoria/proveedor/{idProveedor}/categoria/{idCategoria}")
-    public ResponseEntity<Void> eliminar(
-            @PathVariable Integer idProveedor,
-            @PathVariable Integer idCategoria) {
-        serviceProveedorCategoria.deleteById(new ProveedorCategoriaId(idProveedor, idCategoria));
-        return ResponseEntity.noContent().build();
+    @PutMapping("/proveedor-categoria")
+    public ResponseEntity<?> modificar(@RequestBody ProveedorCategoriaDTO dto) {
+        if (dto.getIdProveedorCategoria() == null) {
+            return ResponseEntity.badRequest().body("El idProveedorCategoria es requerido para modificar.");
+        }
+        
+        Optional<ProveedorCategoria> pcOpt = serviceProveedorCategoria.findById(dto.getIdProveedorCategoria());
+        if (pcOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("No se encontró la relación con ID: " + dto.getIdProveedorCategoria());
+        }
+
+        ProveedorCategoria pcExistente = pcOpt.get();
+        pcExistente.setIdProveedor(dto.getIdProveedor());
+        pcExistente.setIdCategoria(dto.getIdCategoria());
+        
+        ProveedorCategoria pcModificado = serviceProveedorCategoria.save(pcExistente);
+        return ResponseEntity.ok(convertToDto(pcModificado));
+    }
+
+    /**
+     * Busca una relación por ID.
+     */
+    @GetMapping("/proveedor-categoria/{id}")
+    public ResponseEntity<ProveedorCategoriaDTO> buscarPorId(@PathVariable Integer id) {
+        Optional<ProveedorCategoria> pcOpt = serviceProveedorCategoria.findById(id);
+        if (pcOpt.isPresent()) {
+            return ResponseEntity.ok(convertToDto(pcOpt.get()));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    /**
+     * Elimina una relación por ID.
+     */
+    @DeleteMapping("/proveedor-categoria/{id}")
+    public ResponseEntity<String> eliminar(@PathVariable Integer id) {
+        if (serviceProveedorCategoria.findById(id).isPresent()) {
+            serviceProveedorCategoria.deleteById(id);
+            return ResponseEntity.ok("Relación proveedor-categoría eliminada");
+        }
+        return ResponseEntity.notFound().build();
     }
     
     // --- Métodos de ayuda para convertir entre Entidad y DTO ---
 
     private ProveedorCategoriaDTO convertToDto(ProveedorCategoria pc) {
         ProveedorCategoriaDTO dto = new ProveedorCategoriaDTO();
-        if (pc.getId() != null) {
-            dto.setIdProveedor(pc.getId().getIdProveedor());
-            dto.setIdCategoria(pc.getId().getIdCategoria());
-        }
+        dto.setIdProveedorCategoria(pc.getIdProveedorCategoria());
+        dto.setIdProveedor(pc.getIdProveedor());
+        dto.setIdCategoria(pc.getIdCategoria());
         return dto;
     }
 
     private ProveedorCategoria convertToEntity(ProveedorCategoriaDTO dto) {
         ProveedorCategoria pc = new ProveedorCategoria();
-        pc.setId(new ProveedorCategoriaId(dto.getIdProveedor(), dto.getIdCategoria()));
-        
-        // Asociamos las entidades (JPA las usará para la relación)
-        pc.setProveedor(new Proveedor(dto.getIdProveedor()));
-        
-        Categoria categoria = new Categoria();
-        categoria.setIdCategoria(dto.getIdCategoria());
-        pc.setCategoria(categoria);
-        
+        pc.setIdProveedorCategoria(dto.getIdProveedorCategoria());
+        pc.setIdProveedor(dto.getIdProveedor());
+        pc.setIdCategoria(dto.getIdCategoria());
         return pc;
     }
 }

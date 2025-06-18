@@ -27,17 +27,15 @@ public class TipoNotificacionesController {
 
     @GetMapping("/tipos-notificaciones")
     public List<TipoNotificaciones> buscarTodos() {
-        return serviceTipoNotificaciones.bucarTodos();
-    }
-    @PostMapping("/tipos-notificaciones")
+        return serviceTipoNotificaciones.buscarTodos();
+    }    @PostMapping("/tipos-notificaciones")
     public ResponseEntity <?> guardar(@RequestBody TipoNotificacionesDTO dto) {
         TipoNotificaciones tiponoti = new TipoNotificaciones();
         tiponoti.setDescripcionNotificacion(dto.getDescripcionNotificacion());
+        tiponoti.setEstadoTipoNotificacion(dto.getEstadoTipoNotificacion() != null ? dto.getEstadoTipoNotificacion() : 1);
 
         return ResponseEntity.ok(serviceTipoNotificaciones.guardar(tiponoti));
-    }
-
-    @PutMapping("/tipos-notificaciones")
+    }    @PutMapping("/tipos-notificaciones")
     public ResponseEntity <?> modificar(@RequestBody TipoNotificacionesDTO dto) {
         if (dto.getIdTipoNotificacion() == null) {
             return ResponseEntity.badRequest().body("ID no existe");            
@@ -45,6 +43,7 @@ public class TipoNotificacionesController {
         TipoNotificaciones tiponoti = new TipoNotificaciones();
         tiponoti.setIdTipoNotificacion(dto.getIdTipoNotificacion());
         tiponoti.setDescripcionNotificacion(dto.getDescripcionNotificacion());
+        tiponoti.setEstadoTipoNotificacion(dto.getEstadoTipoNotificacion() != null ? dto.getEstadoTipoNotificacion() : 1);
 
         return ResponseEntity.ok(serviceTipoNotificaciones.modificar(tiponoti));
     }

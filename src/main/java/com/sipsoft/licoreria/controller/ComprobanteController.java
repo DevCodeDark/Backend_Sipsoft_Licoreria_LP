@@ -56,8 +56,7 @@ public class ComprobanteController {
                     Comprobante updatedComprobante = serviceComprobante.modificar(comprobanteExistente);
                     return ResponseEntity.ok(convertToDto(updatedComprobante));
                 })
-                .orElse(ResponseEntity.notFound().build());
-    }
+                .orElse(ResponseEntity.notFound().build());    }
 
     @DeleteMapping("/comprobantes/{idComprobante}")
     public String eliminar(@PathVariable Integer idComprobante){
@@ -66,7 +65,7 @@ public class ComprobanteController {
     }
 
     // --- Métodos de Ayuda ---
-
+    
     private ComprobanteDTO convertToDto(Comprobante entity) {
         ComprobanteDTO dto = new ComprobanteDTO();
         dto.setIdComprobante(entity.getIdComprobante());
@@ -80,7 +79,6 @@ public class ComprobanteController {
         dto.setIdVenta(entity.getIdVenta());
         dto.setIdSerie(entity.getIdSerie());
         dto.setIdCaja(entity.getIdCaja());
-        dto.setIdCompra(entity.getIdCompra());
         dto.setIdTipoComprobante(entity.getIdTipoComprobante());
         return dto;
     }
@@ -94,7 +92,6 @@ public class ComprobanteController {
         entity.setIdVenta(dto.getIdVenta());
         entity.setIdSerie(dto.getIdSerie());
         entity.setIdCaja(dto.getIdCaja());
-        entity.setIdCompra(dto.getIdCompra());
         entity.setIdTipoComprobante(dto.getIdTipoComprobante());
     }
 }

@@ -15,7 +15,7 @@ public class TipoComprobanteService implements ITipoComprobanteService {
     @Autowired
     private TipoComprobanteRepository repoTipoComprobante;
     
-    public List<TipoComprobante> bucarTodos() {
+    public List<TipoComprobante> buscarTodos() {
         return repoTipoComprobante.findAll();
     }
     

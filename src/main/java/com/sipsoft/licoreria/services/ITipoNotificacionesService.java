@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.sipsoft.licoreria.entity.TipoNotificaciones;
 
 public interface ITipoNotificacionesService {
-    List<TipoNotificaciones> bucarTodos();
+    List<TipoNotificaciones> buscarTodos();
     TipoNotificaciones guardar(TipoNotificaciones tipoNotificaciones);
     TipoNotificaciones modificar(TipoNotificaciones tipoNotificaciones);
     Optional<TipoNotificaciones> buscarId(Integer idTipoNotificacion);

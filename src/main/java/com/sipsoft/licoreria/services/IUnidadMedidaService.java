@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.sipsoft.licoreria.entity.UnidadMedida;
 
 public interface IUnidadMedidaService {
-    List<UnidadMedida> bucarTodos();
+    List<UnidadMedida> buscarTodos();
     UnidadMedida guardar(UnidadMedida unidadMedida);
     UnidadMedida modificar(UnidadMedida unidadMedida);
     Optional<UnidadMedida> buscarId(Integer idUnidadMedida);

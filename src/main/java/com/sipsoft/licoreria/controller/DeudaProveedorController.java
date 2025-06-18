@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sipsoft.licoreria.dto.DeudaProveedorDTO;
-import com.sipsoft.licoreria.entity.Compra;
 import com.sipsoft.licoreria.entity.DeudaProveedor;
-import com.sipsoft.licoreria.repository.CompraRepository;
 import com.sipsoft.licoreria.services.IDeudaProveedorService;
 
 @RestController
@@ -26,30 +24,23 @@ public class DeudaProveedorController {
     @Autowired
     private IDeudaProveedorService serviceDeudaProveedor;
 
-    @Autowired
-    private CompraRepository repoCompra;
-
     @GetMapping("/deuda-proveedor")
     public List<DeudaProveedor> buscarTodos() {
         return serviceDeudaProveedor.bucarTodos();
     }
+
     @PostMapping("/deuda-proveedor")
     public ResponseEntity <?> guardar(@RequestBody DeudaProveedorDTO dto) {
-       DeudaProveedor deudaProveedor = new DeudaProveedor();
-       deudaProveedor.setFechaDeuda(dto.getFechaDeuda());
-       deudaProveedor.setMontoDeuda(dto.getMontoDeuda());
-       deudaProveedor.setMontoPagado(dto.getMontoPagado());
-       deudaProveedor.setFechaLimiteDeuda(dto.getFechaLimiteDeuda());
-
-
-
-        Compra compra = repoCompra.findById(dto.getIdCompra()).orElse(null);
-
-        deudaProveedor.setIdCompra(compra); 
+        DeudaProveedor deudaProveedor = new DeudaProveedor();
+        deudaProveedor.setIdCompra(dto.getIdCompra());
+        deudaProveedor.setFechaInicioDeuda(dto.getFechaInicioDeuda());
+        deudaProveedor.setMontoDeuda(dto.getMontoDeuda());
+        deudaProveedor.setMontoPagado(dto.getMontoPagado());
+        deudaProveedor.setFechaLimiteDeuda(dto.getFechaLimiteDeuda());
+        deudaProveedor.setEstadoDeuda(dto.getEstadoDeuda() != null ? dto.getEstadoDeuda() : 1);
 
         return ResponseEntity.ok(serviceDeudaProveedor.guardar(deudaProveedor));
     }
-
 
     @PutMapping("/deuda-proveedor")
     public ResponseEntity <?> modificar(@RequestBody DeudaProveedorDTO dto) {
@@ -58,13 +49,12 @@ public class DeudaProveedorController {
         }
         DeudaProveedor deudaProveedor = new DeudaProveedor();
         deudaProveedor.setIdDeuda(dto.getIdDeuda());
-        deudaProveedor.setFechaDeuda(dto.getFechaDeuda());
+        deudaProveedor.setIdCompra(dto.getIdCompra());
+        deudaProveedor.setFechaInicioDeuda(dto.getFechaInicioDeuda());
         deudaProveedor.setMontoDeuda(dto.getMontoDeuda());
         deudaProveedor.setMontoPagado(dto.getMontoPagado());
         deudaProveedor.setFechaLimiteDeuda(dto.getFechaLimiteDeuda());
-
-        Compra compra = repoCompra.findById(dto.getIdCompra()).orElse(null);
-        deudaProveedor.setIdCompra(compra);
+        deudaProveedor.setEstadoDeuda(dto.getEstadoDeuda() != null ? dto.getEstadoDeuda() : 1);
 
         return ResponseEntity.ok(serviceDeudaProveedor.modificar(deudaProveedor));
     }

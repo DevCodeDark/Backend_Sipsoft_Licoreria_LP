@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class ComprobanteDTO {
     private Integer idComprobante;
     private String correlativoComprobante;
-    private Integer estadoComprobante;
+    private Integer estadoComprobante = 1;
     private String direccionEmpresa;
     private LocalDate fechaEmision;
     private String nombreComprobante;
@@ -14,7 +14,6 @@ public class ComprobanteDTO {
     private Integer idVenta;
     private Integer idSerie;
     private Integer idCaja;
-    private Integer idCompra;
     private Integer idTipoComprobante;
 
     // Getters y Setters
@@ -83,12 +82,6 @@ public class ComprobanteDTO {
     }
     public void setIdCaja(Integer idCaja) {
         this.idCaja = idCaja;
-    }
-    public Integer getIdCompra() {
-        return idCompra;
-    }
-    public void setIdCompra(Integer idCompra) {
-        this.idCompra = idCompra;
     }
     public Integer getIdTipoComprobante() {
         return idTipoComprobante;

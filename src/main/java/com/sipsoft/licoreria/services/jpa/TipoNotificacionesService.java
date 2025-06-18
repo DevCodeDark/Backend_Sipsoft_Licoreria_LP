@@ -15,7 +15,7 @@ public class TipoNotificacionesService implements ITipoNotificacionesService {
     @Autowired
     private TipoNotificacionesRepository repoTipoNotificaciones;
     
-    public List<TipoNotificaciones> bucarTodos() {
+    public List<TipoNotificaciones> buscarTodos() {
         return repoTipoNotificaciones.findAll();
     }
     

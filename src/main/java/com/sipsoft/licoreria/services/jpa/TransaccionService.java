@@ -15,7 +15,7 @@ public class TransaccionService implements ITransaccionService {
     @Autowired
     private TransaccionRepository repoTransaccion;
     
-    public List<Transaccion> bucarTodos() {
+    public List<Transaccion> buscarTodos() {
         return repoTransaccion.findAll();
     }
     

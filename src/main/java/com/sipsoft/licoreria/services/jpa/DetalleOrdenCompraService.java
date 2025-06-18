@@ -12,8 +12,7 @@ import com.sipsoft.licoreria.services.IDetalleOrdenCompraService;
 public class DetalleOrdenCompraService implements IDetalleOrdenCompraService {
     @Autowired
     private DetalleOrdenCompraRepository repoDetalleOrdenCompra;
-    
-    public List<DetalleOrdenCompra> bucarTodos() {
+      public List<DetalleOrdenCompra> buscarTodos() {
         return repoDetalleOrdenCompra.findAll();
     }
     

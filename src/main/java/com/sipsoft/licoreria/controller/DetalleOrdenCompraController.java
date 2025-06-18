@@ -13,11 +13,9 @@ import com.sipsoft.licoreria.services.IDetalleOrdenCompraService;
 @RequestMapping("/sipsoft")
 public class DetalleOrdenCompraController {
     @Autowired
-    private IDetalleOrdenCompraService serviceDetalleOrdenCompra;
-
-    @GetMapping("/detalle-orden-compra")
+    private IDetalleOrdenCompraService serviceDetalleOrdenCompra;    @GetMapping("/detalle-orden-compra")
     public List<DetalleOrdenCompraDTO> buscarTodos() {
-        return serviceDetalleOrdenCompra.bucarTodos().stream()
+        return serviceDetalleOrdenCompra.buscarTodos().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
@@ -58,9 +56,7 @@ public class DetalleOrdenCompraController {
     public String eliminar(@PathVariable Integer idDetalleOrden){
         serviceDetalleOrdenCompra.eliminar(idDetalleOrden);
         return "Detalle de Orden de Compra eliminado";
-    }
-
-    // --- Métodos de Ayuda ---
+    }    // --- Métodos de Ayuda ---
 
     private DetalleOrdenCompraDTO convertToDto(DetalleOrdenCompra entity) {
         DetalleOrdenCompraDTO dto = new DetalleOrdenCompraDTO();
@@ -69,6 +65,7 @@ public class DetalleOrdenCompraController {
         dto.setCantidadSolicitada(entity.getCantidadSolicitada());
         dto.setObservacionesDetalle(entity.getObservacionesDetalle());
         dto.setPrecioUnitario(entity.getPrecioUnitario());
+        dto.setEstadoDetalleOrdenCompra(entity.getEstadoDetalleOrdenCompra());
         dto.setIdOrden(entity.getIdOrden());
         dto.setIdProducto(entity.getIdProducto());
         return dto;
@@ -78,6 +75,7 @@ public class DetalleOrdenCompraController {
         entity.setCantidadSolicitada(dto.getCantidadSolicitada());
         entity.setObservacionesDetalle(dto.getObservacionesDetalle());
         entity.setPrecioUnitario(dto.getPrecioUnitario());
+        entity.setEstadoDetalleOrdenCompra(dto.getEstadoDetalleOrdenCompra());
         entity.setIdOrden(dto.getIdOrden());
         entity.setIdProducto(dto.getIdProducto());
     }

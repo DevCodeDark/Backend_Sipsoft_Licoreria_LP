@@ -14,8 +14,7 @@ import com.sipsoft.licoreria.services.IUsuarioService;
 public class UsuarioService implements IUsuarioService {
     @Autowired
     private UsuarioRepository repoUsuario;
-    
-    public List<Usuario> bucarTodos() {
+      public List<Usuario> buscarTodos() {
         return repoUsuario.findAll();
     }
     

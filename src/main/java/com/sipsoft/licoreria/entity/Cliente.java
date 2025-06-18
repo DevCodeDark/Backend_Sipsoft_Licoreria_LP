@@ -1,11 +1,11 @@
 package com.sipsoft.licoreria.entity;
 
-
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -23,23 +23,21 @@ public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idCliente;
+    
+    @Column(name = "idEmpresa")
+    private Integer idEmpresa;
+    
     private String numDocumento;
-    private String razonSocial;
     private String nombreCliente;
     private String apellidoCliente;
     private String telefonoCliente;
-    private Integer frecuenciaCompra;
-    private Float montoTotalComprado;
     private Integer estadoCliente = 1;
-    private String nombreRazonSocial;
     private String tipoCliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idEmpresa")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Empresa idEmpresa;
-
-    public Cliente() {
+    @JoinColumn(name = "idEmpresa", insertable = false, updatable = false)
+    @JsonIgnore
+    private Empresa empresa;    public Cliente() {
     }
 
     public Cliente(Integer id) {
@@ -54,20 +52,20 @@ public class Cliente {
         this.idCliente = idCliente;
     }
 
+    public Integer getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(Integer idEmpresa) {
+        this.idEmpresa = idEmpresa;
+    }
+
     public String getNumDocumento() {
         return numDocumento;
     }
 
     public void setNumDocumento(String numDocumento) {
         this.numDocumento = numDocumento;
-    }
-
-    public String getRazonSocial() {
-        return razonSocial;
-    }
-
-    public void setRazonSocial(String razonSocial) {
-        this.razonSocial = razonSocial;
     }
 
     public String getNombreCliente() {
@@ -94,36 +92,12 @@ public class Cliente {
         this.telefonoCliente = telefonoCliente;
     }
 
-    public Integer getFrecuenciaCompra() {
-        return frecuenciaCompra;
-    }
-
-    public void setFrecuenciaCompra(Integer frecuenciaCompra) {
-        this.frecuenciaCompra = frecuenciaCompra;
-    }
-
-    public Float getMontoTotalComprado() {
-        return montoTotalComprado;
-    }
-
-    public void setMontoTotalComprado(Float montoTotalComprado) {
-        this.montoTotalComprado = montoTotalComprado;
-    }
-
     public Integer getEstadoCliente() {
         return estadoCliente;
     }
 
     public void setEstadoCliente(Integer estadoCliente) {
         this.estadoCliente = estadoCliente;
-    }
-
-    public String getNombreRazonSocial() {
-        return nombreRazonSocial;
-    }
-
-    public void setNombreRazonSocial(String nombreRazonSocial) {
-        this.nombreRazonSocial = nombreRazonSocial;
     }
 
     public String getTipoCliente() {
@@ -134,21 +108,18 @@ public class Cliente {
         this.tipoCliente = tipoCliente;
     }
 
-    
-    public Empresa getIdEmpresa() {
-        return idEmpresa;
+    public Empresa getEmpresa() {
+        return empresa;
     }
 
-    public void setIdEmpresa(Empresa idEmpresa) {
-        this.idEmpresa = idEmpresa;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     @Override
     public String toString() {
-        return "Cliente [idCliente=" + idCliente + ", numDocumento=" + numDocumento + ", razonSocial=" + razonSocial
+        return "Cliente [idCliente=" + idCliente + ", idEmpresa=" + idEmpresa + ", numDocumento=" + numDocumento 
                 + ", nombreCliente=" + nombreCliente + ", apellidoCliente=" + apellidoCliente + ", telefonoCliente="
-                + telefonoCliente + ", frecuenciaCompra=" + frecuenciaCompra + ", montoTotalComprado="
-                + montoTotalComprado + ", estadoCliente=" + estadoCliente + ", nombreRazonSocial=" + nombreRazonSocial
-                + ", tipoCliente=" + tipoCliente + ", idEmpresa=" + idEmpresa + "]";
+                + telefonoCliente + ", estadoCliente=" + estadoCliente + ", tipoCliente=" + tipoCliente + "]";
     }
 }

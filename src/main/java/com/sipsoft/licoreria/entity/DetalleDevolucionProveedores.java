@@ -15,14 +15,14 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "detalle_devolucion_proveedores")
-@SQLDelete(sql = "UPDATE detalle_devolucion_proveedores SET estadoDetalleDevolucion = 0 WHERE idDetalleDevolucion = ?")
-@Where(clause = "estadoDetalleDevolucion = 1")
+@SQLDelete(sql = "UPDATE detalle_devolucion_proveedores SET estadoDetalleDevolucionProveedor = 0 WHERE idDetalleDevolucion = ?")
+@Where(clause = "estadoDetalleDevolucionProveedor = 1")
 public class DetalleDevolucionProveedores {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idDetalleDevolucion;
     private Integer cantidadDevolucion;
-    private Integer estadoDetalleDevolucion = 1;
+    private Integer estadoDetalleDevolucionProveedor = 1;
     private Integer idDevolucionCompra;
     private Integer idProducto;
 
@@ -56,14 +56,12 @@ public class DetalleDevolucionProveedores {
 
     public void setCantidadDevolucion(Integer cantidadDevolucion) {
         this.cantidadDevolucion = cantidadDevolucion;
+    }    public Integer getEstadoDetalleDevolucionProveedor() {
+        return estadoDetalleDevolucionProveedor;
     }
 
-    public Integer getEstadoDetalleDevolucion() {
-        return estadoDetalleDevolucion;
-    }
-
-    public void setEstadoDetalleDevolucion(Integer estadoDetalleDevolucion) {
-        this.estadoDetalleDevolucion = estadoDetalleDevolucion;
+    public void setEstadoDetalleDevolucionProveedor(Integer estadoDetalleDevolucionProveedor) {
+        this.estadoDetalleDevolucionProveedor = estadoDetalleDevolucionProveedor;
     }
 
     public Integer getIdDevolucionCompra() {
@@ -96,12 +94,10 @@ public class DetalleDevolucionProveedores {
 
     public void setProducto(Producto producto) {
         this.producto = producto;
-    }
-
-    @Override
+    }    @Override
     public String toString() {
         return "DetalleDevolucionProveedores [idDetalleDevolucion=" + idDetalleDevolucion + ", cantidadDevolucion="
-                + cantidadDevolucion + ", estadoDetalleDevolucion=" + estadoDetalleDevolucion + ", idDevolucionCompra="
+                + cantidadDevolucion + ", estadoDetalleDevolucionProveedor=" + estadoDetalleDevolucionProveedor + ", idDevolucionCompra="
                 + idDevolucionCompra + ", idProducto=" + idProducto + "]";
     }
 }

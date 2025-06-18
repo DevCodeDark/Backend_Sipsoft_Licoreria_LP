@@ -30,21 +30,18 @@ public class TipoPagoController {
 
     @GetMapping("/tipos-pago")
     public List<TipoPago> buscarTodos() {
-        return serviceTipoPago.bucarTodos();
-    }
-    @PostMapping("/tipos-pago")
+        return serviceTipoPago.buscarTodos();
+    }    @PostMapping("/tipos-pago")
     public ResponseEntity<?> guardar(@RequestBody TipoPagoDTO dto) {
         TipoPago tipoPago = new TipoPago();
         tipoPago.setDescripcionPago(dto.getDescripcionPago());
+        tipoPago.setEstadoTipoPago(dto.getEstadoTipoPago() != null ? dto.getEstadoTipoPago() : 1);
 
         Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
-
         tipoPago.setIdEmpresa(empresa);
 
         return ResponseEntity.ok(serviceTipoPago.guardar(tipoPago));
-    }
-
-    @PutMapping("/tipos-pago")
+    }    @PutMapping("/tipos-pago")
     public ResponseEntity<?> modificar(@RequestBody TipoPagoDTO dto) {
         if (dto.getIdTipoPago() == null) {
             return ResponseEntity.badRequest().body("ID no existe");
@@ -52,6 +49,7 @@ public class TipoPagoController {
         TipoPago tipoPago = new TipoPago();
         tipoPago.setIdTipoPago(dto.getIdTipoPago());
         tipoPago.setDescripcionPago(dto.getDescripcionPago());
+        tipoPago.setEstadoTipoPago(dto.getEstadoTipoPago() != null ? dto.getEstadoTipoPago() : 1);
 
         Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
         tipoPago.setIdEmpresa(empresa);

@@ -1,5 +1,6 @@
 package com.sipsoft.licoreria.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.SQLDelete;
@@ -25,7 +26,7 @@ public class Transaccion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idTransaccion;
     private String motivoTransaccion;
-    private Float montoTransaccion;
+    private BigDecimal montoTransaccion;
     private String tipo;
     private Integer estado = 1;
     private LocalDateTime fechaTransaccion;
@@ -66,13 +67,11 @@ public class Transaccion {
 
     public void setMotivoTransaccion(String motivoTransaccion) {
         this.motivoTransaccion = motivoTransaccion;
-    }
-
-    public Float getMontoTransaccion() {
+    }    public BigDecimal getMontoTransaccion() {
         return montoTransaccion;
     }
 
-    public void setMontoTransaccion(Float montoTransaccion) {
+    public void setMontoTransaccion(BigDecimal montoTransaccion) {
         this.montoTransaccion = montoTransaccion;
     }
 

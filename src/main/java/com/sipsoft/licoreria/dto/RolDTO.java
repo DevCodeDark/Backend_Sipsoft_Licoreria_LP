@@ -2,11 +2,10 @@ package com.sipsoft.licoreria.dto;
 
 public class RolDTO {
     private Integer idRol;
-    private String nombreRol;
     private String descripcionRol;
+    private Integer estadoRol;
     private Integer idEmpresa;
-
-    // Getters y Setters
+    private Integer idTipoRol;    // Getters y Setters
 
     public Integer getIdRol() {
         return idRol;
@@ -14,14 +13,6 @@ public class RolDTO {
 
     public void setIdRol(Integer idRol) {
         this.idRol = idRol;
-    }
-
-    public String getNombreRol() {
-        return nombreRol;
-    }
-
-    public void setNombreRol(String nombreRol) {
-        this.nombreRol = nombreRol;
     }
 
     public String getDescripcionRol() {
@@ -32,6 +23,14 @@ public class RolDTO {
         this.descripcionRol = descripcionRol;
     }
 
+    public Integer getEstadoRol() {
+        return estadoRol;
+    }
+
+    public void setEstadoRol(Integer estadoRol) {
+        this.estadoRol = estadoRol;
+    }
+
     public Integer getIdEmpresa() {
         return idEmpresa;
     }
@@ -40,9 +39,15 @@ public class RolDTO {
         this.idEmpresa = idEmpresa;
     }
 
-    @Override
+    public Integer getIdTipoRol() {
+        return idTipoRol;
+    }
+
+    public void setIdTipoRol(Integer idTipoRol) {
+        this.idTipoRol = idTipoRol;
+    }    @Override
     public String toString() {
-        return "RolDTO [idRol=" + idRol + ", nombreRol=" + nombreRol + ", descripcionRol=" + descripcionRol
-                + ", idEmpresa=" + idEmpresa + "]";
+        return "RolDTO [idRol=" + idRol + ", descripcionRol=" + descripcionRol + ", estadoRol=" + estadoRol
+                + ", idEmpresa=" + idEmpresa + ", idTipoRol=" + idTipoRol + "]";
     }
 }

@@ -31,22 +31,18 @@ public class SucursalController {
 
     @GetMapping("/sucursales")
     public List<Sucursal> buscarTodos() {
-        return serviceSucursal.bucarTodos();
-    }
-
-    @PostMapping("/sucursales")
+        return serviceSucursal.buscarTodos();
+    }    @PostMapping("/sucursales")
     public ResponseEntity<?> guardar(@RequestBody SucursalDTO dto) {
         Sucursal sucursal = new Sucursal();
         sucursal.setUbicacionSucursal(dto.getUbicacionSucursal());
+        sucursal.setEstadoSucursal(dto.getEstadoSucursal() != null ? dto.getEstadoSucursal() : 1);
 
         Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
-
         sucursal.setIdEmpresa(empresa);
 
         return ResponseEntity.ok(serviceSucursal.guardar(sucursal));
-    }
-
-    @PutMapping("/sucursales")
+    }    @PutMapping("/sucursales")
     public ResponseEntity<?> modificar(@RequestBody SucursalDTO dto) {
         if (dto.getIdSucursal() == null) {
             return ResponseEntity.badRequest().body("ID no existe");            
@@ -54,6 +50,7 @@ public class SucursalController {
         Sucursal sucursal = new Sucursal();
         sucursal.setIdSucursal(dto.getIdSucursal());
         sucursal.setUbicacionSucursal(dto.getUbicacionSucursal());
+        sucursal.setEstadoSucursal(dto.getEstadoSucursal() != null ? dto.getEstadoSucursal() : 1);
 
         Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
         sucursal.setIdEmpresa(empresa);

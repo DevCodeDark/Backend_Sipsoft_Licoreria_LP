@@ -19,20 +19,26 @@ import jakarta.persistence.Table;
 @Table(name = "rol")
 @SQLDelete(sql = "UPDATE rol SET estadoRol = 0 WHERE idRol = ?")
 @Where(clause = "estadoRol = 1")
-public class Rol {
-    @Id
+public class Rol {    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idRol;
-    private String nombreRol;
     private String descripcionRol;
     private Integer estadoRol = 1;
-    private Integer idEmpresa;    @ManyToOne(fetch = FetchType.LAZY)
+    private Integer idEmpresa;
+    private Integer idTipoRol;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idEmpresa", insertable = false, updatable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JsonIgnore
     private Empresa empresa;
 
-    public Rol() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idTipoRol", insertable = false, updatable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "roles"})
+    @JsonIgnore
+    private TipoRol tipoRol;    public Rol() {
+        // Constructor vacío requerido por JPA
     }
 
     public Integer getIdRol() {
@@ -41,17 +47,7 @@ public class Rol {
 
     public void setIdRol(Integer idRol) {
         this.idRol = idRol;
-    }
-
-    public String getNombreRol() {
-        return nombreRol;
-    }
-
-    public void setNombreRol(String nombreRol) {
-        this.nombreRol = nombreRol;
-    }
-
-    public String getDescripcionRol() {
+    }    public String getDescripcionRol() {
         return descripcionRol;
     }
 
@@ -81,9 +77,23 @@ public class Rol {
         this.idEmpresa = idEmpresa;
     }
 
-    @Override
+    public Integer getIdTipoRol() {
+        return idTipoRol;
+    }
+
+    public void setIdTipoRol(Integer idTipoRol) {
+        this.idTipoRol = idTipoRol;
+    }
+
+    public TipoRol getTipoRol() {
+        return tipoRol;
+    }
+
+    public void setTipoRol(TipoRol tipoRol) {
+        this.tipoRol = tipoRol;
+    }    @Override
     public String toString() {
-        return "Rol [idRol=" + idRol + ", nombreRol=" + nombreRol + ", descripcionRol=" + descripcionRol
-                + ", estadoRol=" + estadoRol + ", idEmpresa=" + idEmpresa + "]";
+        return "Rol [idRol=" + idRol + ", descripcionRol=" + descripcionRol
+                + ", estadoRol=" + estadoRol + ", idEmpresa=" + idEmpresa + ", idTipoRol=" + idTipoRol + "]";
     }
 }

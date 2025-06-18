@@ -2,9 +2,10 @@ package com.sipsoft.licoreria.dto;
 
 public class ModuloDTO {
     private Integer idModulo;
+    private Integer idSegmento;
     private String urlModulo;
     private String nombreModulo;
-    private Integer idEmpresa;
+    private Integer estadoModulo;
 
     // Getters y Setters
     public Integer getIdModulo() {
@@ -13,6 +14,14 @@ public class ModuloDTO {
 
     public void setIdModulo(Integer idModulo) {
         this.idModulo = idModulo;
+    }
+
+    public Integer getIdSegmento() {
+        return idSegmento;
+    }
+
+    public void setIdSegmento(Integer idSegmento) {
+        this.idSegmento = idSegmento;
     }
 
     public String getUrlModulo() {
@@ -31,17 +40,17 @@ public class ModuloDTO {
         this.nombreModulo = nombreModulo;
     }
 
-    public Integer getIdEmpresa() {
-        return idEmpresa;
+    public Integer getEstadoModulo() {
+        return estadoModulo;
     }
 
-    public void setIdEmpresa(Integer idEmpresa) {
-        this.idEmpresa = idEmpresa;
+    public void setEstadoModulo(Integer estadoModulo) {
+        this.estadoModulo = estadoModulo;
     }
 
     @Override
     public String toString() {
-        return "ModuloDTO [idModulo=" + idModulo + ", urlModulo=" + urlModulo + ", nombreModulo=" + nombreModulo
-                + ", idEmpresa=" + idEmpresa + "]";
+        return "ModuloDTO [idModulo=" + idModulo + ", idSegmento=" + idSegmento + ", urlModulo=" + urlModulo 
+                + ", nombreModulo=" + nombreModulo + ", estadoModulo=" + estadoModulo + "]";
     }
 }

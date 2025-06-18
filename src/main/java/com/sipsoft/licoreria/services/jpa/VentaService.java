@@ -14,8 +14,7 @@ import com.sipsoft.licoreria.services.IVentaService;
 public class VentaService implements IVentaService {
     @Autowired
     private VentaRepository repoVenta;
-    
-    public List<Venta> bucarTodos() {
+      public List<Venta> buscarTodos() {
         return repoVenta.findAll();
     }
     

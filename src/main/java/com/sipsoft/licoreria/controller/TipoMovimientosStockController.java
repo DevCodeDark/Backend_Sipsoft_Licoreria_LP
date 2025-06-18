@@ -31,7 +31,7 @@ public class TipoMovimientosStockController {
 
     @GetMapping("/tipos-movimientos-stock")
     public List<TipoMovimientosStock> buscarTodos() {
-        return serviceTipoMovimientosStock.bucarTodos();
+        return serviceTipoMovimientosStock.buscarTodos();
     }
     @PostMapping("/tipos-movimientos-stock")
     public  ResponseEntity <?>  guardar(@RequestBody TipoMovimientosStockDTO dto) {

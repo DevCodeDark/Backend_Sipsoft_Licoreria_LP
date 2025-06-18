@@ -27,13 +27,11 @@ public class DetalleDevolucionProveedoresController {
         return serviceDetalleDevolucionProveedores.buscarId(idDetalleDevolucion)
                 .map(detalle -> ResponseEntity.ok(convertToDto(detalle)))
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping("/detalle-devolucion-proveedores")
+    }    @PostMapping("/detalle-devolucion-proveedores")
     public DetalleDevolucionProveedoresDTO guardar(@RequestBody DetalleDevolucionProveedoresDTO dto) {
         DetalleDevolucionProveedores detalle = new DetalleDevolucionProveedores();
         mapDtoToEntity(dto, detalle);
-        detalle.setEstadoDetalleDevolucion(1); // Estado activo por defecto
+        detalle.setEstadoDetalleDevolucionProveedor(1); // Estado activo por defecto
         
         DetalleDevolucionProveedores savedDetalle = serviceDetalleDevolucionProveedores.guardar(detalle);
         return convertToDto(savedDetalle);
@@ -52,21 +50,19 @@ public class DetalleDevolucionProveedoresController {
                     return ResponseEntity.ok(convertToDto(updatedDetalle));
                 })
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/detalle-devolucion-proveedores/{idDetalleDevolucion}")
+    }    @DeleteMapping("/detalle-devolucion-proveedores/{idDetalleDevolucion}")
     public String eliminar(@PathVariable Integer idDetalleDevolucion){
         serviceDetalleDevolucionProveedores.eliminar(idDetalleDevolucion);
         return "Detalle de Devolucion a Proveedor eliminado";
     }
 
     // --- Métodos de Ayuda ---
-
+    
     private DetalleDevolucionProveedoresDTO convertToDto(DetalleDevolucionProveedores entity) {
         DetalleDevolucionProveedoresDTO dto = new DetalleDevolucionProveedoresDTO();
         dto.setIdDetalleDevolucion(entity.getIdDetalleDevolucion());
         dto.setCantidadDevolucion(entity.getCantidadDevolucion());
-        dto.setEstadoDetalleDevolucion(entity.getEstadoDetalleDevolucion());
+        dto.setEstadoDetalleDevolucionProveedor(entity.getEstadoDetalleDevolucionProveedor());
         dto.setIdDevolucionCompra(entity.getIdDevolucionCompra());
         dto.setIdProducto(entity.getIdProducto());
         return dto;

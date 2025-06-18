@@ -15,7 +15,7 @@ public class UnidadMedidaService implements IUnidadMedidaService {
     @Autowired
     private UnidadMedidaRepository repoUnidadMedida;
     
-    public List<UnidadMedida> bucarTodos() {
+    public List<UnidadMedida> buscarTodos() {
         return repoUnidadMedida.findAll();
     }
     

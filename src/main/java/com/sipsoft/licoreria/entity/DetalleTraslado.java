@@ -13,11 +13,11 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "detalle_traslado")
-public class DetalleTraslado {
-    @Id
+public class DetalleTraslado {    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idDetalleTraslado;
     private Integer cantidadTraslado;
+    private Integer estadoDetalleTraslado = 1;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idTraslado")
@@ -31,18 +31,24 @@ public class DetalleTraslado {
 
     public Integer getIdDetalleTraslado() {
         return idDetalleTraslado;
-    }
-
-    public void setIdDetalleTraslado(Integer idDetalleTraslado) {
+    }    public void setIdDetalleTraslado(Integer idDetalleTraslado) {
         this.idDetalleTraslado = idDetalleTraslado;
     }
-
+    
     public Integer getCantidadTraslado() {
         return cantidadTraslado;
     }
 
     public void setCantidadTraslado(Integer cantidadTraslado) {
         this.cantidadTraslado = cantidadTraslado;
+    }
+
+    public Integer getEstadoDetalleTraslado() {
+        return estadoDetalleTraslado;
+    }
+
+    public void setEstadoDetalleTraslado(Integer estadoDetalleTraslado) {
+        this.estadoDetalleTraslado = estadoDetalleTraslado;
     }
 
     public Traslado getIdTraslado() {
@@ -55,16 +61,14 @@ public class DetalleTraslado {
 
     public Lote getIdLote() {
         return idLote;
-    }
-
-    public void setIdLote(Lote idLote) {
+    }    public void setIdLote(Lote idLote) {
         this.idLote = idLote;
     }
-
+    
     @Override
     public String toString() {
         return "DetalleTraslado [idDetalleTraslado=" + idDetalleTraslado + ", cantidadTraslado=" + cantidadTraslado
-                + ", idTraslado=" + idTraslado + ", idLote=" + idLote + "]";
+                + ", estadoDetalleTraslado=" + estadoDetalleTraslado + ", idTraslado=" + idTraslado + ", idLote=" + idLote + "]";
     }
 
     

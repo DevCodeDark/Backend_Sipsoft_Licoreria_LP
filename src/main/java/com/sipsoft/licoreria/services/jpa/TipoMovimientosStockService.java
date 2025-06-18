@@ -15,7 +15,7 @@ public class TipoMovimientosStockService implements ITipoMovimientosStockService
     @Autowired
     private TipoMovimientosStockRepository repoTipoMovimientosStock;
     
-    public List<TipoMovimientosStock> bucarTodos() {
+    public List<TipoMovimientosStock> buscarTodos() {
         return repoTipoMovimientosStock.findAll();
     }
     
