@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.sipsoft.licoreria.entity.TipoComprobante;
 
 public interface ITipoComprobanteService {
-    List<TipoComprobante> bucarTodos();
+    List<TipoComprobante> buscarTodos();
     void guardar(TipoComprobante tipoComprobante);
     void modificar(TipoComprobante tipoComprobante);
     Optional<TipoComprobante> buscarId(Integer idTipoComprobante);

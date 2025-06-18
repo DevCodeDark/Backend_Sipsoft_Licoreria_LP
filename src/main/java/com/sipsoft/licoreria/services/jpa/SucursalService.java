@@ -15,7 +15,7 @@ public class SucursalService implements ISucursalService {
     @Autowired
     private SucursalRepository repoSucursal;
     
-    public List<Sucursal> bucarTodos() {
+    public List<Sucursal> buscarTodos() {
         return repoSucursal.findAll();
     }
     

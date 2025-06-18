@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.sipsoft.licoreria.entity.TipoMovimientosStock;
 
 public interface ITipoMovimientosStockService {
-    List<TipoMovimientosStock> bucarTodos();
+    List<TipoMovimientosStock> buscarTodos();
     TipoMovimientosStock guardar(TipoMovimientosStock tipoMovimientosStock);
     TipoMovimientosStock modificar(TipoMovimientosStock tipoMovimientosStock);
     Optional<TipoMovimientosStock> buscarId(Integer idTipoMovimiento);

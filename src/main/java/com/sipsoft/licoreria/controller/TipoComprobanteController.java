@@ -24,7 +24,7 @@ public class TipoComprobanteController {
 
     @GetMapping("/tipos-comprobante")
     public List<TipoComprobante> buscarTodos() {
-        return serviceTipoComprobante.bucarTodos();
+        return serviceTipoComprobante.buscarTodos();
     }
     @PostMapping("/tipos-comprobante")
     public TipoComprobante guardar(@RequestBody TipoComprobante tipoComprobante) {

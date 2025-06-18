@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.sipsoft.licoreria.entity.Sucursal;
 
 public interface ISucursalService {
-    List<Sucursal> bucarTodos();
+    List<Sucursal> buscarTodos();
     Sucursal guardar(Sucursal sucursal);
     Sucursal modificar(Sucursal sucursal);
     Optional<Sucursal> buscarId(Integer idSucursal);
