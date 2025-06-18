@@ -14,22 +14,20 @@ public class RegistroCompletoResponseDTO {
     @Schema(description = "Apellido del cliente", example = "Pérez")
     private String apellido;
     
-    @Schema(description = "Token de acceso (vacío al registrarse)", example = "")
-    private String accessToken;
+    @Schema(description = "ID único del cliente (hash de 64 caracteres)", example = "85......")
+    private String clienteId;
     
-    @Schema(description = "ID único del cliente (hash de 64 caracteres)", example = "8538ecbf358d612d3ee7909a950683846994df99d797fe2fecd4186bfd0a5f05")
-    private String clienteId;    @Schema(description = "Llave secreta del cliente (hash bcrypt)", example = "$2a$10$2Do7BhuITAb6XDc3PbwLoecUkD8oZFbok3Zj0iix9R04Mu2CZ8I6i")
+    @Schema(description = "Llave secreta del cliente (solo se devuelve una vez al registrarse)", example = "$2........")
     private String llaveSecreta;
 
     // Constructores
     public RegistroCompletoResponseDTO() {}
 
     public RegistroCompletoResponseDTO(String email, String nombre, String apellido, 
-                                     String accessToken, String clienteId, String llaveSecreta) {
+                                     String clienteId, String llaveSecreta) {
         this.email = email;
         this.nombre = nombre;
         this.apellido = apellido;
-        this.accessToken = accessToken;
         this.clienteId = clienteId;
         this.llaveSecreta = llaveSecreta;
     }
@@ -57,14 +55,6 @@ public class RegistroCompletoResponseDTO {
 
     public void setApellido(String apellido) {
         this.apellido = apellido;
-    }
-
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
     }
 
     public String getClienteId() {

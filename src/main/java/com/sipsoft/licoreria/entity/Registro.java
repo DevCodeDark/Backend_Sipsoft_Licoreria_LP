@@ -1,5 +1,6 @@
 package com.sipsoft.licoreria.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -20,17 +21,14 @@ public class Registro {
     @Column(name = "apellido", nullable = false, length = 255)
     private String apellido;
     
+    @JsonIgnore
     @Column(name = "accessToken", nullable = true, length = 500)
     private String accessToken;
-    
-    @Column(name = "clienteId", nullable = false, length = 255, unique = true)
+      @Column(name = "clienteId", nullable = false, length = 255, unique = true)
     private String clienteId;
     
     @Column(name = "llaveSecreta", nullable = false, length = 255)
     private String llaveSecreta;
-
-    @Transient
-    private String llaveSecretaPlana;
     
     // Constructores
     public Registro() {}
@@ -89,21 +87,12 @@ public class Registro {
     public void setClienteId(String clienteId) {
         this.clienteId = clienteId;
     }
-    
-    public String getLlaveSecreta() {
+      public String getLlaveSecreta() {
         return llaveSecreta;
     }
     
     public void setLlaveSecreta(String llaveSecreta) {
         this.llaveSecreta = llaveSecreta;
-    }
-
-    public String getLlaveSecretaPlana() {
-        return llaveSecretaPlana;
-    }
-
-    public void setLlaveSecretaPlana(String llaveSecretaPlana) {
-        this.llaveSecretaPlana = llaveSecretaPlana;
     }
     
     @Override
@@ -113,7 +102,6 @@ public class Registro {
                 ", email='" + email + '\'' +
                 ", nombre='" + nombre + '\'' +
                 ", apellido='" + apellido + '\'' +
-                ", accessToken='" + accessToken + '\'' +
                 ", clienteId='" + clienteId + '\'' +
                 '}';
     }

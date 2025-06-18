@@ -68,9 +68,6 @@ public class RegistroService implements IRegistroService {
         String llaveSecretaPlana = registro.getEmail() + registro.getNombre() + registro.getApellido();
         String llaveSecretaHasheada = passwordEncoder.encode(llaveSecretaPlana);
         registro.setLlaveSecreta(llaveSecretaHasheada);
-        
-        // Para la respuesta, devolver la llave SIN hashear (email+nombre+apellido)
-        registro.setLlaveSecretaPlana(llaveSecretaPlana);
 
         return registroRepository.save(registro);
     }
@@ -101,9 +98,13 @@ public class RegistroService implements IRegistroService {
                    UUID.randomUUID().toString().replace("-", "").substring(0, 32);
         }
     }
-    
-    @Override
+      @Override
     public Registro actualizar(Registro registro) {
+        // Regenerar llave secreta basada en email+nombre+apellido y hashearla
+        String llaveSecretaPlana = registro.getEmail() + registro.getNombre() + registro.getApellido();
+        String llaveSecretaHasheada = passwordEncoder.encode(llaveSecretaPlana);
+        registro.setLlaveSecreta(llaveSecretaHasheada);
+        
         return registroRepository.save(registro);
     }
     

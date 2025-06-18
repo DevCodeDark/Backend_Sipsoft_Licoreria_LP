@@ -4,6 +4,7 @@ import com.sipsoft.licoreria.dto.AuthRequest;
 import com.sipsoft.licoreria.dto.TokenResponseDTO;
 import com.sipsoft.licoreria.dto.RegistroDTO;
 import com.sipsoft.licoreria.dto.RegistroCompletoResponseDTO;
+import com.sipsoft.licoreria.dto.RegistroResponseDTO;
 import com.sipsoft.licoreria.entity.Registro;
 import com.sipsoft.licoreria.services.IRegistroService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,7 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/sipsoft")
@@ -49,14 +52,12 @@ public class RegistroController {
         registro.setEmail(dto.getEmail());
         registro.setNombre(dto.getNombre());
         registro.setApellido(dto.getApellido());        Registro registroGuardado = registroService.guardar(registro);
-        
-        RegistroCompletoResponseDTO response = new RegistroCompletoResponseDTO(
+          RegistroCompletoResponseDTO response = new RegistroCompletoResponseDTO(
             registroGuardado.getEmail(),
             registroGuardado.getNombre(),
             registroGuardado.getApellido(),
-            "", // accessToken vacío al registrarse
             registroGuardado.getClienteId(), 
-            registroGuardado.getLlaveSecreta() // Devolver el hash en lugar del texto plano
+            registroGuardado.getLlaveSecreta() // Devolver la llave secreta solo al registrarse
         );
         
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -78,6 +79,126 @@ public class RegistroController {
         
         Map<String, String> error = new HashMap<>();
         error.put("error", "Credenciales inválidas");
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);    }
+      @GetMapping("/registros")
+    @Operation(summary = "Obtener todos los registros", 
+               description = "Devuelve una lista de todos los registros de clientes sin información sensible.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de registros obtenida exitosamente",
+                    content = @Content(schema = @Schema(implementation = RegistroResponseDTO.class))),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })    public ResponseEntity<List<RegistroResponseDTO>> obtenerTodos() {
+        List<Registro> registros = registroService.buscarTodos();
+        List<RegistroResponseDTO> response = registros.stream().map(registro -> 
+            new RegistroResponseDTO(
+                registro.getIdRegistro(),
+                registro.getEmail(),
+                registro.getNombre(),
+                registro.getApellido(),
+                registro.getClienteId(),
+                registro.getLlaveSecreta()
+            )
+        ).toList();
+          return ResponseEntity.ok(response);
+    }
+    
+    @GetMapping("/registros/{id}")
+    @Operation(summary = "Obtener registro por ID", 
+               description = "Devuelve un registro específico por su ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Registro encontrado exitosamente",
+                    content = @Content(schema = @Schema(implementation = RegistroResponseDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Registro no encontrado"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    public ResponseEntity<Object> obtenerPorId(@PathVariable Integer id) {
+        Optional<Registro> registroOpt = registroService.buscarPorId(id);
+        
+        if (registroOpt.isEmpty()) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Registro no encontrado con ID: " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
+        
+        Registro registro = registroOpt.get();
+        RegistroResponseDTO response = new RegistroResponseDTO(
+            registro.getIdRegistro(),
+            registro.getEmail(),
+            registro.getNombre(),
+            registro.getApellido(),
+            registro.getClienteId(),
+            registro.getLlaveSecreta()
+        );
+        
+        return ResponseEntity.ok(response);
+    }
+    
+    @PutMapping("/registros/{id}")
+    @Operation(summary = "Actualizar registro", 
+               description = "Actualiza los datos de un registro existente.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Registro actualizado exitosamente",
+                    content = @Content(schema = @Schema(implementation = RegistroResponseDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Registro no encontrado"),
+        @ApiResponse(responseCode = "409", description = "El email ya está registrado por otro usuario"),
+        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos")
+    })
+    public ResponseEntity<Object> actualizar(@PathVariable Integer id, @RequestBody RegistroDTO dto) {
+        Optional<Registro> registroOpt = registroService.buscarPorId(id);
+        
+        if (registroOpt.isEmpty()) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Registro no encontrado con ID: " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
+        
+        // Verificar si el email ya existe en otro registro
+        Optional<Registro> emailExistente = registroService.buscarPorEmail(dto.getEmail());
+        if (emailExistente.isPresent() && !emailExistente.get().getIdRegistro().equals(id)) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "El email ya está registrado por otro usuario");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        }
+          Registro registro = registroOpt.get();
+        registro.setEmail(dto.getEmail());
+        registro.setNombre(dto.getNombre());
+        registro.setApellido(dto.getApellido());
+        
+        Registro registroActualizado = registroService.actualizar(registro);
+        
+        RegistroResponseDTO response = new RegistroResponseDTO(
+            registroActualizado.getIdRegistro(),
+            registroActualizado.getEmail(),
+            registroActualizado.getNombre(),
+            registroActualizado.getApellido(),
+            registroActualizado.getClienteId(),
+            registroActualizado.getLlaveSecreta()
+        );
+        
+        return ResponseEntity.ok(response);
+    }
+    
+    @DeleteMapping("/registros/{id}")
+    @Operation(summary = "Eliminar registro", 
+               description = "Elimina un registro por su ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Registro eliminado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Registro no encontrado"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    public ResponseEntity<Object> eliminar(@PathVariable Integer id) {
+        Optional<Registro> registroOpt = registroService.buscarPorId(id);
+        
+        if (registroOpt.isEmpty()) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Registro no encontrado con ID: " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
+        
+        registroService.eliminar(id);
+        
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Registro eliminado exitosamente");
+        return ResponseEntity.ok(response);
     }
 }
