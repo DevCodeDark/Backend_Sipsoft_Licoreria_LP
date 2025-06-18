@@ -19,7 +19,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))            .authorizeHttpRequests(auth -> auth 
                 .requestMatchers("/sipsoft/token", "/sipsoft/empresas", "/sipsoft/roles", 
-                                "/sipsoft/registros", "/sipsoft/tipos-rol", "/sipsoft/sucursales").permitAll()
+                                "/sipsoft/registros/**", "/sipsoft/tipos-rol", "/sipsoft/sucursales").permitAll()
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                 .anyRequest().authenticated())
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
