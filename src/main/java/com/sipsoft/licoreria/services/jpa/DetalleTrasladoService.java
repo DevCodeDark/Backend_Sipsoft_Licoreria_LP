@@ -14,8 +14,7 @@ import com.sipsoft.licoreria.services.IDetalleTrasladoService;
 public class DetalleTrasladoService implements IDetalleTrasladoService {
     @Autowired
     private DetalleTrasladoRepository repoDetalleTraslado;
-    
-    public List<DetalleTraslado> bucarTodos() {
+      public List<DetalleTraslado> buscarTodos() {
         return repoDetalleTraslado.findAll();
     }
     

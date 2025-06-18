@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.sipsoft.licoreria.entity.DetalleTraslado;
 
 public interface IDetalleTrasladoService {
-    List<DetalleTraslado> bucarTodos();
+    List<DetalleTraslado> buscarTodos();
     DetalleTraslado guardar(DetalleTraslado detalleTraslado);
     DetalleTraslado modificar(DetalleTraslado detalleTraslado);
     Optional<DetalleTraslado> buscarId(Integer idDetalleTraslado);

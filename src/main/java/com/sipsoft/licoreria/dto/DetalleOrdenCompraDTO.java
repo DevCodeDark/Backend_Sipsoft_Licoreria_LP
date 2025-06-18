@@ -6,6 +6,7 @@ public class DetalleOrdenCompraDTO {
     private Integer cantidadSolicitada;
     private String observacionesDetalle;
     private Float precioUnitario;
+    private Integer estadoDetalleOrdenCompra;
     private Integer idOrden;
     private Integer idProducto;
 
@@ -45,11 +46,16 @@ public class DetalleOrdenCompraDTO {
     }
     public void setIdOrden(Integer idOrden) {
         this.idOrden = idOrden;
-    }
-    public Integer getIdProducto() {
+    }    public Integer getIdProducto() {
         return idProducto;
     }
     public void setIdProducto(Integer idProducto) {
         this.idProducto = idProducto;
+    }
+    public Integer getEstadoDetalleOrdenCompra() {
+        return estadoDetalleOrdenCompra;
+    }
+    public void setEstadoDetalleOrdenCompra(Integer estadoDetalleOrdenCompra) {
+        this.estadoDetalleOrdenCompra = estadoDetalleOrdenCompra;
     } 
 }
