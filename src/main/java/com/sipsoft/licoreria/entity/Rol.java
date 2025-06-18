@@ -19,11 +19,9 @@ import jakarta.persistence.Table;
 @Table(name = "rol")
 @SQLDelete(sql = "UPDATE rol SET estadoRol = 0 WHERE idRol = ?")
 @Where(clause = "estadoRol = 1")
-public class Rol {
-    @Id
+public class Rol {    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idRol;
-    private String nombreRol;
     private String descripcionRol;
     private Integer estadoRol = 1;
     private Integer idEmpresa;
@@ -49,17 +47,7 @@ public class Rol {
 
     public void setIdRol(Integer idRol) {
         this.idRol = idRol;
-    }
-
-    public String getNombreRol() {
-        return nombreRol;
-    }
-
-    public void setNombreRol(String nombreRol) {
-        this.nombreRol = nombreRol;
-    }
-
-    public String getDescripcionRol() {
+    }    public String getDescripcionRol() {
         return descripcionRol;
     }
 
@@ -103,11 +91,9 @@ public class Rol {
 
     public void setTipoRol(TipoRol tipoRol) {
         this.tipoRol = tipoRol;
-    }
-
-    @Override
+    }    @Override
     public String toString() {
-        return "Rol [idRol=" + idRol + ", nombreRol=" + nombreRol + ", descripcionRol=" + descripcionRol
-                + ", estadoRol=" + estadoRol + ", idEmpresa=" + idEmpresa + "]";
+        return "Rol [idRol=" + idRol + ", descripcionRol=" + descripcionRol
+                + ", estadoRol=" + estadoRol + ", idEmpresa=" + idEmpresa + ", idTipoRol=" + idTipoRol + "]";
     }
 }

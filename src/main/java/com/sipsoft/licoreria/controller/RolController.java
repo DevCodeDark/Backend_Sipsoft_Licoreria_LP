@@ -27,9 +27,7 @@ public class RolController {
     @GetMapping("/roles")
     public List<Rol> buscarTodos() {
         return serviceRol.bucarTodos();
-    }
-
-    /**
+    }    /**
      * Endpoint para crear un nuevo rol.
      * @param rolDto DTO con la información del rol a crear.
      * @return El rol creado y guardado.
@@ -37,21 +35,19 @@ public class RolController {
     @PostMapping("/roles")
     public Rol guardar(@RequestBody RolDTO rolDto) {
         Rol rol = new Rol();
-        rol.setNombreRol(rolDto.getNombreRol());
         rol.setDescripcionRol(rolDto.getDescripcionRol());
         rol.setIdEmpresa(rolDto.getIdEmpresa());
+        rol.setIdTipoRol(rolDto.getIdTipoRol());
         rol.setEstadoRol(1); // Se establece el estado activo por defecto
         
         return serviceRol.guardar(rol);
-    }
-
-    /**
+    }    /**
      * Endpoint para modificar un rol existente.
      * @param rolDto DTO con la información a actualizar.
      * @return El rol modificado o un mensaje de error si no se encuentra.
      */
     @PutMapping("/roles")
-    public ResponseEntity<?> modificar(@RequestBody RolDTO rolDto) {
+    public ResponseEntity<Object> modificar(@RequestBody RolDTO rolDto) {
         if (rolDto.getIdRol() == null) {
             return ResponseEntity.badRequest().body("El idRol es requerido para modificar.");
         }
@@ -62,9 +58,12 @@ public class RolController {
         }
 
         Rol rolExistente = rolOpt.get();
-        rolExistente.setNombreRol(rolDto.getNombreRol());
         rolExistente.setDescripcionRol(rolDto.getDescripcionRol());
         rolExistente.setIdEmpresa(rolDto.getIdEmpresa());
+        rolExistente.setIdTipoRol(rolDto.getIdTipoRol());
+        if (rolDto.getEstadoRol() != null) {
+            rolExistente.setEstadoRol(rolDto.getEstadoRol());
+        }
 
         Rol rolModificado = serviceRol.modificar(rolExistente);
         return ResponseEntity.ok(rolModificado);
