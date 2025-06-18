@@ -3,6 +3,7 @@ package com.sipsoft.licoreria.entity;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
@@ -31,21 +32,15 @@ public class Producto {
     private String imagenProducto;
     private Float precioVentaProducto;
     private Float gananciaPorcentaje;
-    private Integer estadoProducto = 1;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    private Integer estadoProducto = 1;    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idEmpresa", insertable = false, updatable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Empresa empresa;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Empresa empresa;    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idCategoria", insertable = false, updatable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Categoria categoria;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Categoria categoria;    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idUnidadMedida", insertable = false, updatable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
     private UnidadMedida unidadMedida;
 
     public Producto() {

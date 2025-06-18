@@ -16,10 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sipsoft.licoreria.entity.Lote;
 import com.sipsoft.licoreria.dto.LoteDTO;
-import com.sipsoft.licoreria.entity.Producto;
-import com.sipsoft.licoreria.entity.Almacen;
-import com.sipsoft.licoreria.repository.ProductoRepository;
-import com.sipsoft.licoreria.repository.AlmacenesRepository;
 import com.sipsoft.licoreria.services.ILoteService;
 
 @RestController
@@ -27,12 +23,6 @@ import com.sipsoft.licoreria.services.ILoteService;
 public class LoteController {
     @Autowired
     private ILoteService serviceLote;
-
-    @Autowired
-    private ProductoRepository repoProducto;
-
-    @Autowired
-    private AlmacenesRepository repoAlmacen;
 
     @GetMapping("/lotes")
     @Transactional(readOnly = true)
@@ -51,12 +41,8 @@ public class LoteController {
         lote.setStockActual(dto.getStockActual());
         lote.setFlagLote(dto.getFlagLote());
         lote.setEstadoLote(dto.getEstadoLote());
-
-        Producto producto = repoProducto.findById(dto.getIdProducto()).orElse(null);
-        lote.setIdProducto(producto);
-
-        Almacen almacen = repoAlmacen.findById(dto.getIdAlmacen()).orElse(null);
-        lote.setIdAlmacen(almacen);
+        lote.setIdProducto(dto.getIdProducto());
+        lote.setIdAlmacen(dto.getIdAlmacen());
 
         serviceLote.guardar(lote);
         return lote;
@@ -74,12 +60,8 @@ public class LoteController {
         lote.setStockActual(dto.getStockActual());
         lote.setFlagLote(dto.getFlagLote());
         lote.setEstadoLote(dto.getEstadoLote());
-
-        Producto producto = repoProducto.findById(dto.getIdProducto()).orElse(null);
-        lote.setIdProducto(producto);
-
-        Almacen almacen = repoAlmacen.findById(dto.getIdAlmacen()).orElse(null);
-        lote.setIdAlmacen(almacen);
+        lote.setIdProducto(dto.getIdProducto());
+        lote.setIdAlmacen(dto.getIdAlmacen());
 
         serviceLote.modificar(lote);
         return lote;
