@@ -26,13 +26,21 @@ public class Rol {
     private String nombreRol;
     private String descripcionRol;
     private Integer estadoRol = 1;
-    private Integer idEmpresa;    @ManyToOne(fetch = FetchType.LAZY)
+    private Integer idEmpresa;
+    private Integer idTipoRol;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idEmpresa", insertable = false, updatable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JsonIgnore
     private Empresa empresa;
 
-    public Rol() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idTipoRol", insertable = false, updatable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "roles"})
+    @JsonIgnore
+    private TipoRol tipoRol;    public Rol() {
+        // Constructor vacío requerido por JPA
     }
 
     public Integer getIdRol() {
@@ -79,6 +87,22 @@ public class Rol {
 
     public void setIdEmpresa(Integer idEmpresa) {
         this.idEmpresa = idEmpresa;
+    }
+
+    public Integer getIdTipoRol() {
+        return idTipoRol;
+    }
+
+    public void setIdTipoRol(Integer idTipoRol) {
+        this.idTipoRol = idTipoRol;
+    }
+
+    public TipoRol getTipoRol() {
+        return tipoRol;
+    }
+
+    public void setTipoRol(TipoRol tipoRol) {
+        this.tipoRol = tipoRol;
     }
 
     @Override

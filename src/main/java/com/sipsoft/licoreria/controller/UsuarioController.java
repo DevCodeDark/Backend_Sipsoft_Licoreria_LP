@@ -116,65 +116,14 @@ public class UsuarioController {
     }    @GetMapping("/usuarios/{idUsuario}")
     @Operation(summary = "Buscar usuario por ID", security = @SecurityRequirement(name = "bearerAuth"))
     public Optional<Usuario> buscarId(@PathVariable("idUsuario") Integer idUsuario) {
-        return serviceUsuario.buscarId(idUsuario);
-    }
+        return serviceUsuario.buscarId(idUsuario);    }
 
     @DeleteMapping("/usuarios/{idUsuario}")
     @Operation(summary = "Eliminar usuario por ID", security = @SecurityRequirement(name = "bearerAuth"))
     public String eliminar(@PathVariable Integer idUsuario){
         serviceUsuario.eliminar(idUsuario);
         return "Usuario eliminado";
-    }
-        // --- ANOTACIÓN ACTUALIZADA ---
-    @Operation(
-        summary = "Genera un Token de Autenticación (JWT)",
-        description = "Este endpoint autentica a un usuario y devuelve un token JWT para ser usado en las cabeceras de las demás peticiones. \n\n" +
-                      "**Para obtener un token, se deben seguir los siguientes pasos:**\n" +
-                      "1. **Crear una Empresa:** Realizar un `POST` a `/sipsoft/empresas`.\n" +
-                      "2. **Crear un Rol:** Realizar un `POST` a `/sipsoft/roles`, asociándolo al `idEmpresa` recién creado.\n" +
-                      "3. **Crear un Usuario:** Realizar un `POST` a `/sipsoft/usuarios`, asociándolo al `idRol` y `idEmpresa` correspondientes. El sistema generará automáticamente un `cliente_id` y una `llave_secreta`.\n" +
-                      "4. **Solicitar el Token:** Usar el `cliente_id` y la `llave_secreta` generados en el paso anterior para hacer `POST` a este endpoint y obtener el token.",
-        // Se añade la definición del Request Body
-        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Credenciales del usuario para la generación del token.",
-            required = true,
-            content = @Content(
-                mediaType = "application/json",
-                // Se define el esquema del JSON
-                schema = @Schema(
-                    type = "object",
-                    example = "{\"cliente_id\": \"string\", \"llave_secreta\": \"string\"}"
-                ),
-                // Se provee un ejemplo claro
-                examples = {
-                    @ExampleObject(
-                        name = "Ejemplo de Petición",
-                        summary = "Formato del cuerpo de la solicitud",
-                        value = "{\n  \"cliente_id\": \"5f4e3d2c1b0a...\",\n  \"llave_secreta\": \"...\"\n}"
-                    )
-                }
-            )
-        )
-    )
-    
-    @PostMapping("/token")
-    public ResponseEntity<?> obtenerToken(@RequestBody Map<String, String> credenciales) {
-        String clienteId = credenciales.get("cliente_id");
-        String llaveSecreta = credenciales.get("llave_secreta");
-        
-        Optional<Usuario> user = serviceUsuario.bucarTodos().stream()
-            .filter(u -> u.getClienteId().equals(clienteId))
-            .findFirst();
-            
-        if (user.isPresent() && passwordEncoder.matches(llaveSecreta, user.get().getLlaveSecreta())) {
-            String token = jwtUtil.generarToken(clienteId);
-
-            Usuario usuario = user.get();
-            usuario.setAccessToken(token);
-            serviceUsuario.guardar(usuario);
-
-            return ResponseEntity.ok(Collections.singletonMap("token", token));
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
-    }
+    }    
+    // NOTA: El endpoint POST /sipsoft/token se ha movido al RegistroController 
+    // para manejar la nueva lógica de autenticación con la tabla 'registros'
 }

@@ -27,6 +27,7 @@ public class Modulo {
     private String nombreModulo;
     private Integer estadoModulo = 1;
     private Integer idEmpresa;
+    private Integer idSegmento;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,7 +35,12 @@ public class Modulo {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Empresa empresa;
 
-    public Modulo() {
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idSegmento", insertable = false, updatable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "modulos"})
+    private SegmentoModulo segmentoModulo;    public Modulo() {
+        // Constructor vacío requerido por JPA
     }
 
     public Integer getIdModulo() {
@@ -83,6 +89,22 @@ public class Modulo {
 
     public void setIdEmpresa(Integer idEmpresa) {
         this.idEmpresa = idEmpresa;
+    }
+
+    public Integer getIdSegmento() {
+        return idSegmento;
+    }
+
+    public void setIdSegmento(Integer idSegmento) {
+        this.idSegmento = idSegmento;
+    }
+
+    public SegmentoModulo getSegmentoModulo() {
+        return segmentoModulo;
+    }
+
+    public void setSegmentoModulo(SegmentoModulo segmentoModulo) {
+        this.segmentoModulo = segmentoModulo;
     }
 
     @Override
