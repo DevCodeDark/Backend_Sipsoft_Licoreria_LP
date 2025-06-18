@@ -28,19 +28,16 @@ public class ModuloController {
     public List<Modulo> buscarTodos() {
         return serviceModulo.bucarTodos();
     }
-    
-    @PostMapping("/modulos")
+      @PostMapping("/modulos")
     public Modulo guardar(@RequestBody ModuloDTO moduloDto) {
         Modulo modulo = new Modulo();
+        modulo.setIdSegmento(moduloDto.getIdSegmento());
         modulo.setUrlModulo(moduloDto.getUrlModulo());
         modulo.setNombreModulo(moduloDto.getNombreModulo());
         modulo.setEstadoModulo(1);
-        modulo.setIdEmpresa(moduloDto.getIdEmpresa());
         
         return serviceModulo.guardar(modulo);
-    }
-
-    @PutMapping("/modulos")
+    }    @PutMapping("/modulos")
     public ResponseEntity<?> modificar(@RequestBody ModuloDTO moduloDto) {
         if (moduloDto.getIdModulo() == null) {
             return ResponseEntity.badRequest().body("El idModulo es requerido para modificar.");
@@ -52,9 +49,9 @@ public class ModuloController {
         }
 
         Modulo moduloExistente = moduloOpt.get();
+        moduloExistente.setIdSegmento(moduloDto.getIdSegmento());
         moduloExistente.setUrlModulo(moduloDto.getUrlModulo());
         moduloExistente.setNombreModulo(moduloDto.getNombreModulo());
-        moduloExistente.setIdEmpresa(moduloDto.getIdEmpresa());
         
         Modulo moduloModificado = serviceModulo.modificar(moduloExistente);
         return ResponseEntity.ok(moduloModificado);

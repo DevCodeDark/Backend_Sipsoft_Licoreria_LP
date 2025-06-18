@@ -3,7 +3,7 @@ package com.sipsoft.licoreria.dto;
 public class DetalleDevolucionProveedoresDTO {
     private Integer idDetalleDevolucion;
     private Integer cantidadDevolucion;
-    private Integer estadoDetalleDevolucion;
+    private Integer estadoDetalleDevolucionProveedor = 1;
     private Integer idDevolucionCompra;
     private Integer idProducto;
 
@@ -20,11 +20,11 @@ public class DetalleDevolucionProveedoresDTO {
     public void setCantidadDevolucion(Integer cantidadDevolucion) {
         this.cantidadDevolucion = cantidadDevolucion;
     }
-    public Integer getEstadoDetalleDevolucion() {
-        return estadoDetalleDevolucion;
+    public Integer getEstadoDetalleDevolucionProveedor() {
+        return estadoDetalleDevolucionProveedor;
     }
-    public void setEstadoDetalleDevolucion(Integer estadoDetalleDevolucion) {
-        this.estadoDetalleDevolucion = estadoDetalleDevolucion;
+    public void setEstadoDetalleDevolucionProveedor(Integer estadoDetalleDevolucionProveedor) {
+        this.estadoDetalleDevolucionProveedor = estadoDetalleDevolucionProveedor;
     }
     public Integer getIdDevolucionCompra() {
         return idDevolucionCompra;
