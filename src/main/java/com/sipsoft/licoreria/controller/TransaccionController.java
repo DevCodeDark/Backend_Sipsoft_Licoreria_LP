@@ -27,7 +27,6 @@ import com.sipsoft.licoreria.services.ITransaccionService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class TransaccionController {
     @Autowired
     private ITransaccionService serviceTransaccion;

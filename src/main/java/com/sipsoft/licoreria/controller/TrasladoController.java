@@ -13,7 +13,6 @@ import com.sipsoft.licoreria.services.ITrasladoService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class TrasladoController {
     @Autowired
     private ITrasladoService serviceTraslado;

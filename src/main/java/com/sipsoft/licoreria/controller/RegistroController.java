@@ -25,7 +25,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 @Tag(name = "Autenticación", description = "Registro de clientes y obtención de token de acceso")
 public class RegistroController {
     
@@ -34,10 +33,10 @@ public class RegistroController {
     public RegistroController(IRegistroService registroService) {
         this.registroService = registroService;
     }
-    
-    @PostMapping("/registros")
+      @PostMapping("/registros")
+    @Transactional
     @Operation(summary = "Registrar un nuevo cliente", 
-               description = "Crea un nuevo registro de cliente y devuelve el clienteId y la llaveSecreta generados.")    @ApiResponses(value = {
+               description = "Crea un nuevo registro de cliente y devuelve el clienteId y la llaveSecreta generados.")@ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Cliente registrado exitosamente",
                     content = @Content(schema = @Schema(implementation = RegistroCompletoResponseDTO.class))),
         @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
@@ -63,11 +62,10 @@ public class RegistroController {
         );
         
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    @PostMapping("/token")
+    }    @PostMapping("/token")
+    @Transactional(readOnly = true)
     @Operation(summary = "Obtener token de acceso", 
-               description = "Autentica al cliente con su clienteId y llaveSecreta para obtener un token de acceso (JWT).")    @ApiResponses(value = {
+               description = "Autentica al cliente con su clienteId y llaveSecreta para obtener un token de acceso (JWT).")@ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Token generado exitosamente",
                     content = @Content(schema = @Schema(implementation = TokenResponseDTO.class))),
         @ApiResponse(responseCode = "401", description = "Credenciales inválidas")
@@ -81,8 +79,8 @@ public class RegistroController {
         
         Map<String, String> error = new HashMap<>();
         error.put("error", "Credenciales inválidas");
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);    }
-      @GetMapping("/registros")
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);    }      @GetMapping("/registros")
+    @Transactional(readOnly = true)
     @Operation(summary = "Obtener todos los registros", 
                description = "Devuelve una lista de todos los registros de clientes sin información sensible.")
     @ApiResponses(value = {
@@ -103,8 +101,8 @@ public class RegistroController {
         ).toList();
           return ResponseEntity.ok(response);
     }
-    
-    @GetMapping("/registros/{id}")
+      @GetMapping("/registros/{id}")
+    @Transactional(readOnly = true)
     @Operation(summary = "Obtener registro por ID", 
                description = "Devuelve un registro específico por su ID.")
     @ApiResponses(value = {
@@ -134,8 +132,8 @@ public class RegistroController {
         
         return ResponseEntity.ok(response);
     }
-    
-    @PutMapping("/registros/{id}")
+      @PutMapping("/registros/{id}")
+    @Transactional
     @Operation(summary = "Actualizar registro", 
                description = "Actualiza los datos de un registro existente.")
     @ApiResponses(value = {
@@ -179,8 +177,8 @@ public class RegistroController {
         
         return ResponseEntity.ok(response);
     }
-    
-    @DeleteMapping("/registros/{id}")
+      @DeleteMapping("/registros/{id}")
+    @Transactional
     @Operation(summary = "Eliminar registro", 
                description = "Elimina un registro por su ID.")
     @ApiResponses(value = {
