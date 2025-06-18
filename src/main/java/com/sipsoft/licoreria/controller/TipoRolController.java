@@ -29,7 +29,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 @Tag(name = "TipoRol", description = "Gestión de tipos de rol")
 @SecurityRequirement(name = "bearerAuth")
 public class TipoRolController {
@@ -38,9 +37,8 @@ public class TipoRolController {
     
     public TipoRolController(ITipoRolService tipoRolService) {
         this.tipoRolService = tipoRolService;
-    }
-
-    @GetMapping("/tipos-rol")
+    }    @GetMapping("/tipos-rol")
+    @Transactional(readOnly = true)
     @Operation(summary = "Obtener todos los tipos de rol activos", description = "Retorna la lista de todos los tipos de rol activos")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente"),
@@ -49,9 +47,8 @@ public class TipoRolController {
     public ResponseEntity<List<TipoRol>> buscarTodos() {
         List<TipoRol> tiposRol = tipoRolService.buscarActivos();
         return ResponseEntity.ok(tiposRol);
-    }
-
-    @GetMapping("/tipos-rol/{id}")
+    }    @GetMapping("/tipos-rol/{id}")
+    @Transactional(readOnly = true)
     @Operation(summary = "Obtener tipo de rol por ID", description = "Retorna un tipo de rol específico por su ID")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Tipo de rol encontrado"),
@@ -64,9 +61,8 @@ public class TipoRolController {
         Optional<TipoRol> tipoRolOpt = tipoRolService.buscarPorIdActivo(id);
         return tipoRolOpt.map(ResponseEntity::ok)
                         .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping("/tipos-rol")
+    }    @PostMapping("/tipos-rol")
+    @Transactional
     @Operation(summary = "Crear un nuevo tipo de rol", description = "Crea un nuevo tipo de rol en el sistema")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Tipo de rol creado exitosamente"),
@@ -93,9 +89,8 @@ public class TipoRolController {
         
         TipoRol tipoRolGuardado = tipoRolService.guardar(tipoRol);
         return ResponseEntity.status(HttpStatus.CREATED).body(tipoRolGuardado);
-    }
-
-    @PutMapping("/tipos-rol")
+    }    @PutMapping("/tipos-rol")
+    @Transactional
     @Operation(summary = "Actualizar un tipo de rol", description = "Actualiza un tipo de rol existente")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Tipo de rol actualizado exitosamente"),
@@ -135,9 +130,8 @@ public class TipoRolController {
         
         TipoRol tipoRolActualizado = tipoRolService.actualizar(tipoRol);
         return ResponseEntity.ok(tipoRolActualizado);
-    }
-
-    @DeleteMapping("/tipos-rol/{id}")
+    }    @DeleteMapping("/tipos-rol/{id}")
+    @Transactional
     @Operation(summary = "Eliminar un tipo de rol", description = "Elimina lógicamente un tipo de rol (cambia estado a inactivo)")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Tipo de rol eliminado exitosamente"),
@@ -154,9 +148,8 @@ public class TipoRolController {
         
         tipoRolService.eliminarLogico(id);
         return ResponseEntity.ok().body("Tipo de rol eliminado exitosamente");
-    }
-
-    @GetMapping("/tipos-rol/buscar")
+    }    @GetMapping("/tipos-rol/buscar")
+    @Transactional(readOnly = true)
     @Operation(summary = "Buscar tipos de rol por nombre", description = "Busca tipos de rol que contengan el texto especificado en el nombre")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Búsqueda realizada exitosamente"),

@@ -21,16 +21,17 @@ import com.sipsoft.licoreria.services.ITipoNotificacionesService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class TipoNotificacionesController {
     @Autowired
     private ITipoNotificacionesService serviceTipoNotificaciones;
 
 
     @GetMapping("/tipos-notificaciones")
+    @Transactional(readOnly = true)
     public List<TipoNotificaciones> buscarTodos() {
         return serviceTipoNotificaciones.buscarTodos();
     }    @PostMapping("/tipos-notificaciones")
+    @Transactional
     public ResponseEntity <?> guardar(@RequestBody TipoNotificacionesDTO dto) {
         TipoNotificaciones tiponoti = new TipoNotificaciones();
         tiponoti.setDescripcionNotificacion(dto.getDescripcionNotificacion());
@@ -38,6 +39,7 @@ public class TipoNotificacionesController {
 
         return ResponseEntity.ok(serviceTipoNotificaciones.guardar(tiponoti));
     }    @PutMapping("/tipos-notificaciones")
+    @Transactional
     public ResponseEntity <?> modificar(@RequestBody TipoNotificacionesDTO dto) {
         if (dto.getIdTipoNotificacion() == null) {
             return ResponseEntity.badRequest().body("ID no existe");            
@@ -48,14 +50,12 @@ public class TipoNotificacionesController {
         tiponoti.setEstadoTipoNotificacion(dto.getEstadoTipoNotificacion() != null ? dto.getEstadoTipoNotificacion() : 1);
 
         return ResponseEntity.ok(serviceTipoNotificaciones.modificar(tiponoti));
-    }
-
-    @GetMapping("/tipos-notificaciones/{idTipoNotificacion}")
+    }    @GetMapping("/tipos-notificaciones/{idTipoNotificacion}")
+    @Transactional(readOnly = true)
     public Optional<TipoNotificaciones> buscarId(@PathVariable("idTipoNotificacion") Integer idTipoNotificacion) {
         return serviceTipoNotificaciones.buscarId(idTipoNotificacion);
-    }
-
-    @DeleteMapping("/tipos-notificaciones/{idTipoNotificacion}")
+    }    @DeleteMapping("/tipos-notificaciones/{idTipoNotificacion}")
+    @Transactional
     public String eliminar(@PathVariable Integer idTipoNotificacion){
         serviceTipoNotificaciones.eliminar(idTipoNotificacion);
         return "Tipo Notificacion eliminado";

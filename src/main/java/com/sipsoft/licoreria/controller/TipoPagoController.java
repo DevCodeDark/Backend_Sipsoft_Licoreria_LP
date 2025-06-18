@@ -23,7 +23,6 @@ import com.sipsoft.licoreria.services.ITipoPagoService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class TipoPagoController {
     @Autowired
     private ITipoPagoService serviceTipoPago;
@@ -31,9 +30,11 @@ public class TipoPagoController {
     @Autowired EmpresaRepository repoEmpresa;
 
     @GetMapping("/tipos-pago")
+    @Transactional(readOnly = true)
     public List<TipoPago> buscarTodos() {
         return serviceTipoPago.buscarTodos();
     }    @PostMapping("/tipos-pago")
+    @Transactional
     public ResponseEntity<?> guardar(@RequestBody TipoPagoDTO dto) {
         TipoPago tipoPago = new TipoPago();
         tipoPago.setDescripcionPago(dto.getDescripcionPago());
@@ -44,6 +45,7 @@ public class TipoPagoController {
 
         return ResponseEntity.ok(serviceTipoPago.guardar(tipoPago));
     }    @PutMapping("/tipos-pago")
+    @Transactional
     public ResponseEntity<?> modificar(@RequestBody TipoPagoDTO dto) {
         if (dto.getIdTipoPago() == null) {
             return ResponseEntity.badRequest().body("ID no existe");
@@ -57,14 +59,12 @@ public class TipoPagoController {
         tipoPago.setIdEmpresa(empresa);
 
         return ResponseEntity.ok(serviceTipoPago.modificar(tipoPago));
-    }
-
-    @GetMapping("/tipos-pago/{idTipoPago}")
+    }    @GetMapping("/tipos-pago/{idTipoPago}")
+    @Transactional(readOnly = true)
     public Optional<TipoPago> buscarId(@PathVariable("idTipoPago") Integer idTipoPago) {
         return serviceTipoPago.buscarId(idTipoPago);
-    }
-
-    @DeleteMapping("/tipos-pago/{idTipoPago}")
+    }    @DeleteMapping("/tipos-pago/{idTipoPago}")
+    @Transactional
     public String eliminar(@PathVariable Integer idTipoPago){
         serviceTipoPago.eliminar(idTipoPago);
         return "Tipo Pago eliminado";

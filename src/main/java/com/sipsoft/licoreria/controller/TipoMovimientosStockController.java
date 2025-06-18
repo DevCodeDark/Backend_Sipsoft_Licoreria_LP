@@ -23,7 +23,6 @@ import com.sipsoft.licoreria.services.ITipoMovimientosStockService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class TipoMovimientosStockController {
     @Autowired
     private ITipoMovimientosStockService serviceTipoMovimientosStock;
@@ -32,10 +31,11 @@ public class TipoMovimientosStockController {
     private EmpresaRepository repoEmpresa;
 
     @GetMapping("/tipos-movimientos-stock")
+    @Transactional(readOnly = true)
     public List<TipoMovimientosStock> buscarTodos() {
         return serviceTipoMovimientosStock.buscarTodos();
-    }
-    @PostMapping("/tipos-movimientos-stock")
+    }    @PostMapping("/tipos-movimientos-stock")
+    @Transactional
     public  ResponseEntity <?>  guardar(@RequestBody TipoMovimientosStockDTO dto) {
         TipoMovimientosStock tipomovimientostock = new TipoMovimientosStock();
         tipomovimientostock.setDescripcionMovimiento(dto.getDescripcionMovimiento());
@@ -45,28 +45,25 @@ public class TipoMovimientosStockController {
         tipomovimientostock.setIdEmpresa(empresa);
 
         return ResponseEntity.ok(serviceTipoMovimientosStock.guardar(tipomovimientostock));
-    }
-
-    @PutMapping("/tipos-movimientos-stock")
+    }    @PutMapping("/tipos-movimientos-stock")
+    @Transactional
     public ResponseEntity <?> modificar(@RequestBody TipoMovimientosStockDTO dto) {
         if (dto.getIdTipoMovimiento() == null) {
             return ResponseEntity.badRequest().body("ID no existe");            
         }
         TipoMovimientosStock tipomovimientostock = new TipoMovimientosStock();
-        tipomovimientostock.setIdTipoMovimiento(dto.getIdTipoMovimiento());
-        tipomovimientostock.setDescripcionMovimiento(dto.getDescripcionMovimiento());
+        tipomovimientostock.setIdTipoMovimiento(dto.getIdTipoMovimiento());        tipomovimientostock.setDescripcionMovimiento(dto.getDescripcionMovimiento());
         
-        tipomovimientostock.setIdEmpresa(new Empresa(dto.getIdEmpresa()));    
+        Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
+        tipomovimientostock.setIdEmpresa(empresa);
 
         return ResponseEntity.ok(serviceTipoMovimientosStock.modificar(tipomovimientostock));
-    }
-
-    @GetMapping("/tipos-movimientos-stock/{idTipoMovimiento}")
+    }    @GetMapping("/tipos-movimientos-stock/{idTipoMovimiento}")
+    @Transactional(readOnly = true)
     public Optional<TipoMovimientosStock> buscarId(@PathVariable("idTipoMovimiento") Integer idTipoMovimiento) {
         return serviceTipoMovimientosStock.buscarId(idTipoMovimiento);
-    }
-
-    @DeleteMapping("/tipos-movimientos-stock/{idTipoMovimiento}")
+    }    @DeleteMapping("/tipos-movimientos-stock/{idTipoMovimiento}")
+    @Transactional
     public String eliminar(@PathVariable Integer idTipoMovimiento){
         serviceTipoMovimientosStock.eliminar(idTipoMovimiento);
         return "Tipo Movimiento Stock eliminado";

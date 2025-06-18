@@ -38,12 +38,12 @@ public class TransaccionController {
     private UsuarioRepository repoUsuario;
 
     @Autowired
-    private CajaRepository repoCaja;
-
-    @GetMapping("/transacciones")
+    private CajaRepository repoCaja;    @GetMapping("/transacciones")
+    @Transactional(readOnly = true)
     public List<Transaccion> buscarTodos() {
         return serviceTransaccion.buscarTodos();
     }    @PostMapping("/transacciones")
+    @Transactional
     public ResponseEntity<?> guardar(@RequestBody TransaccionDTO dto) {
         Transaccion transaccion = new Transaccion();
         transaccion.setMotivoTransaccion(dto.getMotivoTransaccion());
@@ -62,6 +62,7 @@ public class TransaccionController {
 
         return ResponseEntity.ok(serviceTransaccion.guardar(transaccion));
     }    @PutMapping("/transacciones")
+    @Transactional
     public ResponseEntity<?> modificar(@RequestBody TransaccionDTO dto) {
         if (dto.getIdTransaccion() == null) {
             return ResponseEntity.badRequest().body("ID no existe");
@@ -83,14 +84,12 @@ public class TransaccionController {
         transaccion.setIdCaja(caja);
 
         return ResponseEntity.ok(serviceTransaccion.modificar(transaccion));
-    }
-
-    @GetMapping("/transacciones/{idTransaccion}")
+    }    @GetMapping("/transacciones/{idTransaccion}")
+    @Transactional(readOnly = true)
     public Optional<Transaccion> buscarId(@PathVariable("idTransaccion") Integer idTransaccion) {
         return serviceTransaccion.buscarId(idTransaccion);
-    }
-
-    @DeleteMapping("/transacciones/{idTransaccion}")
+    }    @DeleteMapping("/transacciones/{idTransaccion}")
+    @Transactional
     public String eliminar(@PathVariable Integer idTransaccion) {
         serviceTransaccion.eliminar(idTransaccion);
         return "Transaccion eliminada";

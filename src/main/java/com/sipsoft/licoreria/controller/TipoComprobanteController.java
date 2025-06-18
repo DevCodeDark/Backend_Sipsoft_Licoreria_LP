@@ -19,33 +19,30 @@ import com.sipsoft.licoreria.services.ITipoComprobanteService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class TipoComprobanteController {
     @Autowired
     private ITipoComprobanteService serviceTipoComprobante;
 
     @GetMapping("/tipos-comprobante")
+    @Transactional(readOnly = true)
     public List<TipoComprobante> buscarTodos() {
         return serviceTipoComprobante.buscarTodos();
-    }
-    @PostMapping("/tipos-comprobante")
+    }    @PostMapping("/tipos-comprobante")
+    @Transactional
     public TipoComprobante guardar(@RequestBody TipoComprobante tipoComprobante) {
         serviceTipoComprobante.guardar(tipoComprobante);
         return tipoComprobante;
-    }
-
-    @PutMapping("/tipos-comprobante")
+    }    @PutMapping("/tipos-comprobante")
+    @Transactional
     public TipoComprobante modificar(@RequestBody TipoComprobante tipoComprobante) {
         serviceTipoComprobante.modificar(tipoComprobante);
         return tipoComprobante;
-    }
-
-    @GetMapping("/tipos-comprobante/{idTipoComprobante}")
+    }    @GetMapping("/tipos-comprobante/{idTipoComprobante}")
+    @Transactional(readOnly = true)
     public Optional<TipoComprobante> buscarId(@PathVariable("idTipoComprobante") Integer idTipoComprobante) {
         return serviceTipoComprobante.buscarId(idTipoComprobante);
-    }
-
-    @DeleteMapping("/tipos-comprobante/{idTipoComprobante}")
+    }    @DeleteMapping("/tipos-comprobante/{idTipoComprobante}")
+    @Transactional
     public String eliminar(@PathVariable Integer idTipoComprobante){
         serviceTipoComprobante.eliminar(idTipoComprobante);
         return "Tipo Comprobante eliminado";

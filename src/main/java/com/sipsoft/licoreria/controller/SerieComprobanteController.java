@@ -12,26 +12,24 @@ import com.sipsoft.licoreria.services.ISerieComprobanteService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class SerieComprobanteController {
     @Autowired
     private ISerieComprobanteService serviceSerieComprobante;
 
     @GetMapping("/series-comprobante")
+    @Transactional(readOnly = true)
     public List<SerieComprobanteDTO> buscarTodos() {
         return serviceSerieComprobante.bucarTodos().stream()
             .map(this::convertToDto)
             .collect(Collectors.toList());
-    }
-
-    @GetMapping("/series-comprobante/{idSerie}")
+    }    @GetMapping("/series-comprobante/{idSerie}")
+    @Transactional(readOnly = true)
     public ResponseEntity<SerieComprobanteDTO> buscarId(@PathVariable("idSerie") Integer idSerie) {
         return serviceSerieComprobante.buscarId(idSerie)
             .map(serie -> ResponseEntity.ok(convertToDto(serie)))
             .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping("/series-comprobante")
+    }    @PostMapping("/series-comprobante")
+    @Transactional
     public SerieComprobanteDTO guardar(@RequestBody SerieComprobanteDTO dto) {
         SerieComprobante serie = new SerieComprobante();
         serie.setNumSerie(dto.getNumSerie());
@@ -41,9 +39,8 @@ public class SerieComprobanteController {
 
         SerieComprobante savedSerie = serviceSerieComprobante.guardar(serie);
         return convertToDto(savedSerie);
-    }
-
-    @PutMapping("/series-comprobante")
+    }    @PutMapping("/series-comprobante")
+    @Transactional
     public ResponseEntity<SerieComprobanteDTO> modificar(@RequestBody SerieComprobanteDTO dto) {
         if (dto.getIdSerie() == null) {
             return ResponseEntity.badRequest().build();
@@ -60,9 +57,8 @@ public class SerieComprobanteController {
                 return ResponseEntity.ok(convertToDto(updatedSerie));
             })
             .orElse(ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/series-comprobante/{idSerie}")
+    }    @DeleteMapping("/series-comprobante/{idSerie}")
+    @Transactional
     public String eliminar(@PathVariable Integer idSerie){
         serviceSerieComprobante.eliminar(idSerie);
         return "Serie de Comprobante eliminada";
