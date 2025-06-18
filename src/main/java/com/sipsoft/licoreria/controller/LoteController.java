@@ -24,7 +24,6 @@ import com.sipsoft.licoreria.services.ILoteService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class LoteController {
     @Autowired
     private ILoteService serviceLote;
@@ -36,11 +35,13 @@ public class LoteController {
     private AlmacenesRepository repoAlmacen;
 
     @GetMapping("/lotes")
+    @Transactional(readOnly = true)
     public List<Lote> buscarTodos() {
         return serviceLote.bucarTodos();
     }
 
     @PostMapping("/lotes")
+    @Transactional
     public Lote guardar(@RequestBody LoteDTO dto) {
         Lote lote = new Lote();
         lote.setCodLote(dto.getCodLote());
@@ -62,6 +63,7 @@ public class LoteController {
     }
 
     @PutMapping("/lotes")
+    @Transactional
     public Lote modificar(@RequestBody LoteDTO dto) {
         Lote lote = new Lote();
         lote.setIdLote(dto.getIdLote());
@@ -84,12 +86,14 @@ public class LoteController {
     }
 
     @GetMapping("/lotes/{idLote}")
+    @Transactional(readOnly = true)
     public Optional<Lote> buscarId(@PathVariable("idLote") Integer idLote) {
         return serviceLote.buscarId(idLote);
     }
 
     @DeleteMapping("/lotes/{idLote}")
-    public String eliminar(@PathVariable Integer idLote){
+    @Transactional
+    public String eliminar(@PathVariable Integer idLote) {
         serviceLote.eliminar(idLote);
         return "Lote eliminado";
     }

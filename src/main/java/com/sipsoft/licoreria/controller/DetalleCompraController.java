@@ -12,12 +12,12 @@ import com.sipsoft.licoreria.services.IDetalleCompraService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class DetalleCompraController {
     @Autowired
     private IDetalleCompraService serviceDetalleCompra;
 
     @GetMapping("/detalle-compras")
+    @Transactional(readOnly = true)
     public List<DetalleCompraDTO> buscarTodos() {
         return serviceDetalleCompra.bucarTodos().stream()
                 .map(this::convertToDto)
@@ -25,6 +25,7 @@ public class DetalleCompraController {
     }
 
     @GetMapping("/detalle-compras/{idDetalleCompra}")
+    @Transactional(readOnly = true)
     public ResponseEntity<DetalleCompraDTO> buscarId(@PathVariable("idDetalleCompra") Integer idDetalleCompra) {
         return serviceDetalleCompra.buscarId(idDetalleCompra)
                 .map(detalle -> ResponseEntity.ok(convertToDto(detalle)))
@@ -32,16 +33,18 @@ public class DetalleCompraController {
     }
 
     @PostMapping("/detalle-compras")
+    @Transactional
     public DetalleCompraDTO guardar(@RequestBody DetalleCompraDTO dto) {
         DetalleCompra detalleCompra = new DetalleCompra();
         mapDtoToEntity(dto, detalleCompra);
         detalleCompra.setEstadoDetalleCompra(1); // Estado activo por defecto
-        
+
         DetalleCompra savedDetalle = serviceDetalleCompra.guardar(detalleCompra);
         return convertToDto(savedDetalle);
     }
 
     @PutMapping("/detalle-compras")
+    @Transactional
     public ResponseEntity<DetalleCompraDTO> modificar(@RequestBody DetalleCompraDTO dto) {
         if (dto.getIdDetalleCompra() == null) {
             return ResponseEntity.badRequest().build();
@@ -57,7 +60,8 @@ public class DetalleCompraController {
     }
 
     @DeleteMapping("/detalle-compras/{idDetalleCompra}")
-    public String eliminar(@PathVariable Integer idDetalleCompra){
+    @Transactional
+    public String eliminar(@PathVariable Integer idDetalleCompra) {
         serviceDetalleCompra.eliminar(idDetalleCompra);
         return "Detalle de Compra eliminado";
     }

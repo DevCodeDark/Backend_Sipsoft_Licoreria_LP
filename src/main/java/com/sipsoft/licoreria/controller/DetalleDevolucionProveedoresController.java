@@ -12,12 +12,12 @@ import com.sipsoft.licoreria.services.IDetalleDevolucionProveedoresService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class DetalleDevolucionProveedoresController {
     @Autowired
     private IDetalleDevolucionProveedoresService serviceDetalleDevolucionProveedores;
 
     @GetMapping("/detalle-devolucion-proveedores")
+    @Transactional(readOnly = true)
     public List<DetalleDevolucionProveedoresDTO> buscarTodos() {
         return serviceDetalleDevolucionProveedores.bucarTodos().stream()
                 .map(this::convertToDto)
@@ -25,21 +25,27 @@ public class DetalleDevolucionProveedoresController {
     }
 
     @GetMapping("/detalle-devolucion-proveedores/{idDetalleDevolucion}")
-    public ResponseEntity<DetalleDevolucionProveedoresDTO> buscarId(@PathVariable("idDetalleDevolucion") Integer idDetalleDevolucion) {
+    @Transactional(readOnly = true)
+    public ResponseEntity<DetalleDevolucionProveedoresDTO> buscarId(
+            @PathVariable("idDetalleDevolucion") Integer idDetalleDevolucion) {
         return serviceDetalleDevolucionProveedores.buscarId(idDetalleDevolucion)
                 .map(detalle -> ResponseEntity.ok(convertToDto(detalle)))
                 .orElse(ResponseEntity.notFound().build());
-    }    @PostMapping("/detalle-devolucion-proveedores")
+    }
+
+    @PostMapping("/detalle-devolucion-proveedores")
+    @Transactional
     public DetalleDevolucionProveedoresDTO guardar(@RequestBody DetalleDevolucionProveedoresDTO dto) {
         DetalleDevolucionProveedores detalle = new DetalleDevolucionProveedores();
         mapDtoToEntity(dto, detalle);
         detalle.setEstadoDetalleDevolucionProveedor(1); // Estado activo por defecto
-        
+
         DetalleDevolucionProveedores savedDetalle = serviceDetalleDevolucionProveedores.guardar(detalle);
         return convertToDto(savedDetalle);
     }
 
     @PutMapping("/detalle-devolucion-proveedores")
+    @Transactional
     public ResponseEntity<DetalleDevolucionProveedoresDTO> modificar(@RequestBody DetalleDevolucionProveedoresDTO dto) {
         if (dto.getIdDetalleDevolucion() == null) {
             return ResponseEntity.badRequest().build();
@@ -48,18 +54,22 @@ public class DetalleDevolucionProveedoresController {
         return serviceDetalleDevolucionProveedores.buscarId(dto.getIdDetalleDevolucion())
                 .map(detalleExistente -> {
                     mapDtoToEntity(dto, detalleExistente);
-                    DetalleDevolucionProveedores updatedDetalle = serviceDetalleDevolucionProveedores.modificar(detalleExistente);
+                    DetalleDevolucionProveedores updatedDetalle = serviceDetalleDevolucionProveedores
+                            .modificar(detalleExistente);
                     return ResponseEntity.ok(convertToDto(updatedDetalle));
                 })
                 .orElse(ResponseEntity.notFound().build());
-    }    @DeleteMapping("/detalle-devolucion-proveedores/{idDetalleDevolucion}")
-    public String eliminar(@PathVariable Integer idDetalleDevolucion){
+    }
+
+    @DeleteMapping("/detalle-devolucion-proveedores/{idDetalleDevolucion}")
+    @Transactional
+    public String eliminar(@PathVariable Integer idDetalleDevolucion) {
         serviceDetalleDevolucionProveedores.eliminar(idDetalleDevolucion);
         return "Detalle de Devolucion a Proveedor eliminado";
     }
 
     // --- Métodos de Ayuda ---
-    
+
     private DetalleDevolucionProveedoresDTO convertToDto(DetalleDevolucionProveedores entity) {
         DetalleDevolucionProveedoresDTO dto = new DetalleDevolucionProveedoresDTO();
         dto.setIdDetalleDevolucion(entity.getIdDetalleDevolucion());

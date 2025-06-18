@@ -23,7 +23,6 @@ import com.sipsoft.licoreria.services.IContratoProveedorService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class ContratoProveedorController {
     @Autowired
     private IContratoProveedorService serviceContratoProveedor;
@@ -32,55 +31,54 @@ public class ContratoProveedorController {
     private ProveedorRepository repoProveedor;
 
     @GetMapping("/contratos-proveedor")
+    @Transactional(readOnly = true)
     public List<ContratoProveedor> buscarTodos() {
         return serviceContratoProveedor.bucarTodos();
     }
+
     @PostMapping("/contratos-proveedor")
-    public ResponseEntity <?> guardar(@RequestBody ContratoProveedorDTO dto) {
-       ContratoProveedor contratoProveedor = new ContratoProveedor();
-       contratoProveedor.setRutaPdfContratoProveedor(dto.getRutaPdfContratoProveedor());
-       contratoProveedor.setFechaInicioContratoProveedor(dto.getFechaInicioContratoProveedor());
-       contratoProveedor.setFechaFinContratoProveedor(dto.getFechaFinContratoProveedor());
-       contratoProveedor.setDetallesContrato(dto.getDetallesContrato());;
-
-
+    @Transactional
+    public ResponseEntity<?> guardar(@RequestBody ContratoProveedorDTO dto) {
+        ContratoProveedor contratoProveedor = new ContratoProveedor();
+        contratoProveedor.setRutaPdfContratoProveedor(dto.getRutaPdfContratoProveedor());
+        contratoProveedor.setFechaInicioContratoProveedor(dto.getFechaInicioContratoProveedor());
+        contratoProveedor.setFechaFinContratoProveedor(dto.getFechaFinContratoProveedor());
+        contratoProveedor.setDetallesContrato(dto.getDetallesContrato());
 
         Proveedor proveedor = repoProveedor.findById(dto.getIdProveedor()).orElse(null);
-        
-        contratoProveedor.setIdProveedor(proveedor);      
-
+        contratoProveedor.setIdProveedor(proveedor);
 
         return ResponseEntity.ok(serviceContratoProveedor.guardar(contratoProveedor));
     }
 
     @PutMapping("/contratos-proveedor")
-    public ResponseEntity <?> modificar(@RequestBody ContratoProveedorDTO dto) {
+    @Transactional
+    public ResponseEntity<?> modificar(@RequestBody ContratoProveedorDTO dto) {
         if (dto.getIdContratoProveedor() == null) {
-            return ResponseEntity.badRequest().body("ID no existe");            
+            return ResponseEntity.badRequest().body("ID no existe");
         }
-       ContratoProveedor contratoProveedor = new ContratoProveedor();
-       contratoProveedor.setIdContratoProveedor(dto.getIdContratoProveedor());
-       contratoProveedor.setRutaPdfContratoProveedor(dto.getRutaPdfContratoProveedor());
-       contratoProveedor.setFechaInicioContratoProveedor(dto.getFechaInicioContratoProveedor());
-       contratoProveedor.setFechaFinContratoProveedor(dto.getFechaFinContratoProveedor());
-       contratoProveedor.setDetallesContrato(dto.getDetallesContrato());;
+        ContratoProveedor contratoProveedor = new ContratoProveedor();
+        contratoProveedor.setIdContratoProveedor(dto.getIdContratoProveedor());
+        contratoProveedor.setRutaPdfContratoProveedor(dto.getRutaPdfContratoProveedor());
+        contratoProveedor.setFechaInicioContratoProveedor(dto.getFechaInicioContratoProveedor());
+        contratoProveedor.setFechaFinContratoProveedor(dto.getFechaFinContratoProveedor());
+        contratoProveedor.setDetallesContrato(dto.getDetallesContrato());
 
-
-
-        
-        contratoProveedor.setIdProveedor(new Proveedor(dto.getIdProveedor()));      
-
+        Proveedor proveedor = repoProveedor.findById(dto.getIdProveedor()).orElse(null);
+        contratoProveedor.setIdProveedor(proveedor);
 
         return ResponseEntity.ok(serviceContratoProveedor.modificar(contratoProveedor));
     }
 
     @GetMapping("/contratos-proveedor/{idContratoProveedor}")
+    @Transactional(readOnly = true)
     public Optional<ContratoProveedor> buscarId(@PathVariable("idContratoProveedor") Integer idContratoProveedor) {
         return serviceContratoProveedor.buscarId(idContratoProveedor);
     }
 
     @DeleteMapping("/contratos-proveedor/{idContratoProveedor}")
-    public String eliminar(@PathVariable Integer idContratoProveedor){
+    @Transactional
+    public String eliminar(@PathVariable Integer idContratoProveedor) {
         serviceContratoProveedor.eliminar(idContratoProveedor);
         return "Contrato Proveedor eliminado";
     }

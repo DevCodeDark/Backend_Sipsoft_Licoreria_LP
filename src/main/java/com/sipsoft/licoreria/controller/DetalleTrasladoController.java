@@ -18,7 +18,6 @@ import com.sipsoft.licoreria.services.IDetalleTrasladoService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class DetalleTrasladoController {
     @Autowired
     private IDetalleTrasladoService serviceDetalleTraslado;
@@ -27,7 +26,10 @@ public class DetalleTrasladoController {
     private TrasladoRepository repoTraslado;
 
     @Autowired
-    private LoteRepository repoLote;    @GetMapping("/detalle-traslado")
+    private LoteRepository repoLote;
+
+    @GetMapping("/detalle-traslado")
+    @Transactional(readOnly = true)
     public List<DetalleTrasladoDTO> buscarTodos() {
         return serviceDetalleTraslado.buscarTodos().stream()
                 .map(this::convertToDto)
@@ -35,6 +37,7 @@ public class DetalleTrasladoController {
     }
 
     @GetMapping("/detalle-traslado/{idDetalleTraslado}")
+    @Transactional(readOnly = true)
     public ResponseEntity<DetalleTrasladoDTO> buscarId(@PathVariable("idDetalleTraslado") Integer idDetalleTraslado) {
         return serviceDetalleTraslado.buscarId(idDetalleTraslado)
                 .map(detalle -> ResponseEntity.ok(convertToDto(detalle)))
@@ -42,15 +45,17 @@ public class DetalleTrasladoController {
     }
 
     @PostMapping("/detalle-traslado")
+    @Transactional
     public DetalleTrasladoDTO guardar(@RequestBody DetalleTrasladoDTO dto) {
         DetalleTraslado detalleTraslado = new DetalleTraslado();
         mapDtoToEntity(dto, detalleTraslado);
-        
+
         DetalleTraslado savedDetalle = serviceDetalleTraslado.guardar(detalleTraslado);
         return convertToDto(savedDetalle);
     }
 
     @PutMapping("/detalle-traslado")
+    @Transactional
     public ResponseEntity<DetalleTrasladoDTO> modificar(@RequestBody DetalleTrasladoDTO dto) {
         if (dto.getIdDetalleTraslado() == null) {
             return ResponseEntity.badRequest().build();
@@ -66,7 +71,8 @@ public class DetalleTrasladoController {
     }
 
     @DeleteMapping("/detalle-traslado/{idDetalleTraslado}")
-    public String eliminar(@PathVariable Integer idDetalleTraslado){
+    @Transactional
+    public String eliminar(@PathVariable Integer idDetalleTraslado) {
         serviceDetalleTraslado.eliminar(idDetalleTraslado);
         return "Detalle Traslado eliminado";
     }
@@ -78,7 +84,7 @@ public class DetalleTrasladoController {
         dto.setIdDetalleTraslado(entity.getIdDetalleTraslado());
         dto.setCantidadTraslado(entity.getCantidadTraslado());
         dto.setEstadoDetalleTraslado(entity.getEstadoDetalleTraslado());
-        
+
         // Extraer IDs de las relaciones
         if (entity.getIdTraslado() != null) {
             dto.setIdTraslado(entity.getIdTraslado().getIdTraslado());
@@ -86,7 +92,7 @@ public class DetalleTrasladoController {
         if (entity.getIdLote() != null) {
             dto.setIdLote(entity.getIdLote().getIdLote());
         }
-        
+
         return dto;
     }
 

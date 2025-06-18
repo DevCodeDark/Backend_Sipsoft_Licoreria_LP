@@ -13,12 +13,12 @@ import com.sipsoft.licoreria.services.IDevolucionCompraService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class DevolucionCompraController {
     @Autowired
     private IDevolucionCompraService serviceDevolucionCompra;
 
     @GetMapping("/devolucion-compra")
+    @Transactional(readOnly = true)
     public List<DevolucionCompraDTO> buscarTodos() {
         return serviceDevolucionCompra.bucarTodos().stream()
                 .map(this::convertToDto)
@@ -26,26 +26,30 @@ public class DevolucionCompraController {
     }
 
     @GetMapping("/devolucion-compra/{idDevolucionCompra}")
-    public ResponseEntity<DevolucionCompraDTO> buscarId(@PathVariable("idDevolucionCompra") Integer idDevolucionCompra) {
+    @Transactional(readOnly = true)
+    public ResponseEntity<DevolucionCompraDTO> buscarId(
+            @PathVariable("idDevolucionCompra") Integer idDevolucionCompra) {
         return serviceDevolucionCompra.buscarId(idDevolucionCompra)
                 .map(devolucion -> ResponseEntity.ok(convertToDto(devolucion)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/devolucion-compra")
+    @Transactional
     public DevolucionCompraDTO guardar(@RequestBody DevolucionCompraDTO dto) {
         DevolucionCompra devolucion = new DevolucionCompra();
         mapDtoToEntity(dto, devolucion);
-        
+
         // Valores automáticos
         devolucion.setFechaDevolucionCompra(LocalDateTime.now());
         devolucion.setEstadoDevolucionCompra(1); // 1 = REGISTRADO
-        
+
         DevolucionCompra savedDevolucion = serviceDevolucionCompra.guardar(devolucion);
         return convertToDto(savedDevolucion);
     }
 
     @PutMapping("/devolucion-compra")
+    @Transactional
     public ResponseEntity<DevolucionCompraDTO> modificar(@RequestBody DevolucionCompraDTO dto) {
         if (dto.getIdDevolucionCompra() == null) {
             return ResponseEntity.badRequest().build();
@@ -54,12 +58,12 @@ public class DevolucionCompraController {
         return serviceDevolucionCompra.buscarId(dto.getIdDevolucionCompra())
                 .map(devolucionExistente -> {
                     mapDtoToEntity(dto, devolucionExistente);
-                    
+
                     // Opcional: Actualizar el estado si es necesario desde el DTO
-                    if(dto.getEstadoDevolucionCompra() != null) {
+                    if (dto.getEstadoDevolucionCompra() != null) {
                         devolucionExistente.setEstadoDevolucionCompra(dto.getEstadoDevolucionCompra());
                     }
-                    
+
                     DevolucionCompra updatedDevolucion = serviceDevolucionCompra.modificar(devolucionExistente);
                     return ResponseEntity.ok(convertToDto(updatedDevolucion));
                 })
@@ -67,7 +71,8 @@ public class DevolucionCompraController {
     }
 
     @DeleteMapping("/devolucion-compra/{idDevolucionCompra}")
-    public String eliminar(@PathVariable Integer idDevolucionCompra){
+    @Transactional
+    public String eliminar(@PathVariable Integer idDevolucionCompra) {
         serviceDevolucionCompra.eliminar(idDevolucionCompra);
         return "Devolucion de Compra eliminada";
     }

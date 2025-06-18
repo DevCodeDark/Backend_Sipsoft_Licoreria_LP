@@ -12,10 +12,12 @@ import com.sipsoft.licoreria.services.IDetalleOrdenCompraService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class DetalleOrdenCompraController {
     @Autowired
-    private IDetalleOrdenCompraService serviceDetalleOrdenCompra;    @GetMapping("/detalle-orden-compra")
+    private IDetalleOrdenCompraService serviceDetalleOrdenCompra;
+
+    @GetMapping("/detalle-orden-compra")
+    @Transactional(readOnly = true)
     public List<DetalleOrdenCompraDTO> buscarTodos() {
         return serviceDetalleOrdenCompra.buscarTodos().stream()
                 .map(this::convertToDto)
@@ -23,6 +25,7 @@ public class DetalleOrdenCompraController {
     }
 
     @GetMapping("/detalle-orden-compra/{idDetalleOrden}")
+    @Transactional(readOnly = true)
     public ResponseEntity<DetalleOrdenCompraDTO> buscarId(@PathVariable("idDetalleOrden") Integer idDetalleOrden) {
         return serviceDetalleOrdenCompra.buscarId(idDetalleOrden)
                 .map(detalle -> ResponseEntity.ok(convertToDto(detalle)))
@@ -30,16 +33,18 @@ public class DetalleOrdenCompraController {
     }
 
     @PostMapping("/detalle-orden-compra")
+    @Transactional
     public DetalleOrdenCompraDTO guardar(@RequestBody DetalleOrdenCompraDTO dto) {
         DetalleOrdenCompra detalle = new DetalleOrdenCompra();
         mapDtoToEntity(dto, detalle);
         detalle.setActivo(true); // Se establece como activo por defecto
-        
+
         DetalleOrdenCompra savedDetalle = serviceDetalleOrdenCompra.guardar(detalle);
         return convertToDto(savedDetalle);
     }
 
     @PutMapping("/detalle-orden-compra")
+    @Transactional
     public ResponseEntity<DetalleOrdenCompraDTO> modificar(@RequestBody DetalleOrdenCompraDTO dto) {
         if (dto.getIdDetalleOrden() == null) {
             return ResponseEntity.badRequest().build();
@@ -55,10 +60,11 @@ public class DetalleOrdenCompraController {
     }
 
     @DeleteMapping("/detalle-orden-compra/{idDetalleOrden}")
-    public String eliminar(@PathVariable Integer idDetalleOrden){
+    @Transactional
+    public String eliminar(@PathVariable Integer idDetalleOrden) {
         serviceDetalleOrdenCompra.eliminar(idDetalleOrden);
         return "Detalle de Orden de Compra eliminado";
-    }    // --- Métodos de Ayuda ---
+    } // --- Métodos de Ayuda ---
 
     private DetalleOrdenCompraDTO convertToDto(DetalleOrdenCompra entity) {
         DetalleOrdenCompraDTO dto = new DetalleOrdenCompraDTO();
