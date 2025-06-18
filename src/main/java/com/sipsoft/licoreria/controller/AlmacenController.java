@@ -26,16 +26,16 @@ import com.sipsoft.licoreria.services.IAlmacenesService;
 public class AlmacenController {
     @Autowired
     private IAlmacenesService serviceAlmacenes;
-
     @Autowired
-    private SucursalRepository repoSucursal; // AQUI @GetMapping("/almacenes")
+    private SucursalRepository repoSucursal;
 
+    @GetMapping("/almacenes")
     @Transactional(readOnly = true)
     public List<Almacen> buscarTodos() {
         return serviceAlmacenes.bucarTodos();
     }
 
-    @PostMapping("/almacenes") // AQUI
+    @PostMapping("/almacenes")
     @Transactional
     public ResponseEntity<?> guardar(@RequestBody AlmacenDTO dto) {
         Almacen almacen = new Almacen();
