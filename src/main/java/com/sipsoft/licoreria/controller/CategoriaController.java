@@ -22,7 +22,6 @@ import com.sipsoft.licoreria.services.ICategoriaService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class CategoriaController {
     @Autowired
     private ICategoriaService serviceCategoria;
@@ -31,11 +30,13 @@ public class CategoriaController {
     private EmpresaRepository repoEmpresa;
 
     @GetMapping("/categorias")
+    @Transactional(readOnly = true)
     public List<Categoria> buscarTodos() {
         return serviceCategoria.bucarTodos();
     }
 
     @PostMapping("/categorias")
+    @Transactional
     public Categoria guardar(@RequestBody CategoriaDTO dto) {
         Categoria categoria = new Categoria();
         categoria.setNombreCategoria(dto.getNombreCategoria());
@@ -47,6 +48,7 @@ public class CategoriaController {
     }
 
     @PutMapping("/categorias")
+    @Transactional
     public Categoria modificar(@RequestBody CategoriaDTO dto) {
         Categoria categoria = new Categoria();
         categoria.setIdCategoria(dto.getIdCategoria());
@@ -59,12 +61,14 @@ public class CategoriaController {
     }
 
     @GetMapping("/categorias/{idCategoria}")
+    @Transactional(readOnly = true)
     public Optional<Categoria> buscarId(@PathVariable("idCategoria") Integer idCategoria) {
         return serviceCategoria.buscarId(idCategoria);
     }
 
     @DeleteMapping("/categorias/{idCategoria}")
-    public String eliminar(@PathVariable Integer idCategoria){
+    @Transactional
+    public String eliminar(@PathVariable Integer idCategoria) {
         serviceCategoria.eliminar(idCategoria);
         return "Categoria eliminada";
     }

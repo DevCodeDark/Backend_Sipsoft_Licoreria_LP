@@ -14,12 +14,12 @@ import com.sipsoft.licoreria.services.ICompraService;
 
 @RestController
 @RequestMapping("/sipsoft")
-@Transactional(readOnly = true)
 public class CompraController {
     @Autowired
     private ICompraService serviceCompra;
 
     @GetMapping("/compras")
+    @Transactional(readOnly = true)
     public List<CompraDTO> buscarTodos() {
         return serviceCompra.bucarTodos().stream()
                 .map(this::convertToDto)
@@ -27,19 +27,20 @@ public class CompraController {
     }
 
     @GetMapping("/compras/{idCompra}")
+    @Transactional(readOnly = true)
     public ResponseEntity<CompraDTO> buscarId(@PathVariable("idCompra") Integer idCompra) {
         return serviceCompra.buscarId(idCompra)
                 .map(compra -> ResponseEntity.ok(convertToDto(compra)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
     @PostMapping("/compras")
+    @Transactional
     public CompraDTO guardar(@RequestBody CompraDTO compraDto) {
         Compra compra = new Compra();
-        
+
         mapDtoToEntityForCreate(compraDto, compra);
-        
+
         // Establecer valores automáticos en la creación
         LocalDateTime now = LocalDateTime.now();
         compra.setFechaCompra(now.toLocalDate());
@@ -52,6 +53,7 @@ public class CompraController {
     }
 
     @PutMapping("/compras")
+    @Transactional
     public ResponseEntity<CompraDTO> modificar(@RequestBody CompraDTO compraDto) {
         if (compraDto.getIdCompra() == null) {
             return ResponseEntity.badRequest().build();
@@ -74,7 +76,8 @@ public class CompraController {
     }
 
     @DeleteMapping("/compras/{idCompra}")
-    public String eliminar(@PathVariable Integer idCompra){
+    @Transactional
+    public String eliminar(@PathVariable Integer idCompra) {
         serviceCompra.eliminar(idCompra);
         return "Compra eliminada";
     }
