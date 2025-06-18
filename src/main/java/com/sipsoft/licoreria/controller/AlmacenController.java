@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,47 +26,53 @@ import com.sipsoft.licoreria.services.IAlmacenesService;
 public class AlmacenController {
     @Autowired
     private IAlmacenesService serviceAlmacenes;
-
     @Autowired
-    private SucursalRepository repoSucursal; //AQUI
+    private SucursalRepository repoSucursal;
 
     @GetMapping("/almacenes")
+    @Transactional(readOnly = true)
     public List<Almacen> buscarTodos() {
         return serviceAlmacenes.bucarTodos();
     }
-    @PostMapping("/almacenes") //AQUI
-    public ResponseEntity <?> guardar(@RequestBody AlmacenDTO dto) {
+
+    @PostMapping("/almacenes")
+    @Transactional
+    public ResponseEntity<?> guardar(@RequestBody AlmacenDTO dto) {
         Almacen almacen = new Almacen();
         almacen.setDescripcionAlmacen(dto.getDescripcionAlmacen());
-        
+        almacen.setEstadoAlmacen(1); // Estado activo por defecto
+
         Sucursal sucursal = repoSucursal.findById(dto.getIdSucursal()).orElse(null);
         almacen.setIdSucursal(sucursal);
-        
 
         return ResponseEntity.ok(serviceAlmacenes.guardar(almacen));
     }
 
     @PutMapping("/almacenes")
-    public ResponseEntity <?> modificar(@RequestBody AlmacenDTO dto) {
+    @Transactional
+    public ResponseEntity<?> modificar(@RequestBody AlmacenDTO dto) {
         if (dto.getIdAlmacen() == null) {
-            return ResponseEntity.badRequest().body("ID no existe");            
+            return ResponseEntity.badRequest().body("ID no existe");
         }
         Almacen almacen = new Almacen();
         almacen.setDescripcionAlmacen(dto.getDescripcionAlmacen());
         almacen.setIdAlmacen(dto.getIdAlmacen());
-        
-        almacen.setIdSucursal(new Sucursal(dto.getIdSucursal()));
+
+        Sucursal sucursal = repoSucursal.findById(dto.getIdSucursal()).orElse(null);
+        almacen.setIdSucursal(sucursal);
 
         return ResponseEntity.ok(serviceAlmacenes.modificar(almacen));
     }
 
     @GetMapping("/almacenes/{idAlmacen}")
+    @Transactional(readOnly = true)
     public Optional<Almacen> buscarId(@PathVariable("idAlmacen") Integer idAlmacen) {
         return serviceAlmacenes.buscarId(idAlmacen);
     }
 
     @DeleteMapping("/almacenes/{idAlmacen}")
-    public String eliminar(@PathVariable Integer idAlmacen){
+    @Transactional
+    public String eliminar(@PathVariable Integer idAlmacen) {
         serviceAlmacenes.eliminar(idAlmacen);
         return "Almacen eliminado";
     }

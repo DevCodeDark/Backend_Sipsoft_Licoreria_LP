@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.sipsoft.licoreria.dto.SerieComprobanteDTO;
 import com.sipsoft.licoreria.entity.SerieComprobante;
@@ -16,20 +17,19 @@ public class SerieComprobanteController {
     private ISerieComprobanteService serviceSerieComprobante;
 
     @GetMapping("/series-comprobante")
+    @Transactional(readOnly = true)
     public List<SerieComprobanteDTO> buscarTodos() {
         return serviceSerieComprobante.bucarTodos().stream()
             .map(this::convertToDto)
             .collect(Collectors.toList());
-    }
-
-    @GetMapping("/series-comprobante/{idSerie}")
+    }    @GetMapping("/series-comprobante/{idSerie}")
+    @Transactional(readOnly = true)
     public ResponseEntity<SerieComprobanteDTO> buscarId(@PathVariable("idSerie") Integer idSerie) {
         return serviceSerieComprobante.buscarId(idSerie)
             .map(serie -> ResponseEntity.ok(convertToDto(serie)))
             .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping("/series-comprobante")
+    }    @PostMapping("/series-comprobante")
+    @Transactional
     public SerieComprobanteDTO guardar(@RequestBody SerieComprobanteDTO dto) {
         SerieComprobante serie = new SerieComprobante();
         serie.setNumSerie(dto.getNumSerie());
@@ -39,9 +39,8 @@ public class SerieComprobanteController {
 
         SerieComprobante savedSerie = serviceSerieComprobante.guardar(serie);
         return convertToDto(savedSerie);
-    }
-
-    @PutMapping("/series-comprobante")
+    }    @PutMapping("/series-comprobante")
+    @Transactional
     public ResponseEntity<SerieComprobanteDTO> modificar(@RequestBody SerieComprobanteDTO dto) {
         if (dto.getIdSerie() == null) {
             return ResponseEntity.badRequest().build();
@@ -58,9 +57,8 @@ public class SerieComprobanteController {
                 return ResponseEntity.ok(convertToDto(updatedSerie));
             })
             .orElse(ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/series-comprobante/{idSerie}")
+    }    @DeleteMapping("/series-comprobante/{idSerie}")
+    @Transactional
     public String eliminar(@PathVariable Integer idSerie){
         serviceSerieComprobante.eliminar(idSerie);
         return "Serie de Comprobante eliminada";

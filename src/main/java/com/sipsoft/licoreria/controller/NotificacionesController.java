@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,24 +32,27 @@ public class NotificacionesController {
     private INotificacionesService serviceNotificaciones;
 
     @Autowired
-    private ProductoRepository repoProducto; //AQUI
-    
+    private ProductoRepository repoProducto; // AQUI
+
     @Autowired
-    private TipoNotificacionesRepository repoTipoNoti; //AQUI
-    
+    private TipoNotificacionesRepository repoTipoNoti; // AQUI
+
     @Autowired
-    private ContratoProveedorRepository repoContratoProv; //AQUI
+    private ContratoProveedorRepository repoContratoProv; // AQUI
 
     @GetMapping("/notificaciones")
+    @Transactional(readOnly = true)
     public List<Notificaciones> buscarTodos() {
         return serviceNotificaciones.bucarTodos();
     }
+
     @PostMapping("/notificaciones")
-    public ResponseEntity <?> guardar(@RequestBody NotificacionesDTO dto) {
+    @Transactional
+    public ResponseEntity<?> guardar(@RequestBody NotificacionesDTO dto) {
         Notificaciones notificacion = new Notificaciones();
         notificacion.setFechaNotificacion(dto.getFechaNotificacion());
         notificacion.setMensaje(dto.getMensaje());
-        
+
         Producto producto = repoProducto.findById(dto.getIdProducto()).orElse(null);
         notificacion.setIdProducto(producto);
 
@@ -62,9 +66,10 @@ public class NotificacionesController {
     }
 
     @PutMapping("/notificaciones")
-    public ResponseEntity <?> modificar(@RequestBody NotificacionesDTO dto) {
-       if (dto.getIdNotificacion()== null) {
-            return ResponseEntity.badRequest().body("ID no existe");            
+    @Transactional
+    public ResponseEntity<?> modificar(@RequestBody NotificacionesDTO dto) {
+        if (dto.getIdNotificacion() == null) {
+            return ResponseEntity.badRequest().body("ID no existe");
         }
 
         Notificaciones notificaciones = new Notificaciones();
@@ -72,21 +77,28 @@ public class NotificacionesController {
         notificaciones.setIdNotificacion(dto.getIdNotificacion());
         notificaciones.setMensaje(dto.getMensaje());
 
-        notificaciones.setIdProducto(new Producto(dto.getIdProducto()));
-        notificaciones.setIdTipoNotificacion(new TipoNotificaciones(dto.getIdTipoNotificacion()));
-        notificaciones.setIdContratoProveedor(new ContratoProveedor(dto.getIdContratoProveedor()));
+        Producto producto = repoProducto.findById(dto.getIdProducto()).orElse(null);
+        notificaciones.setIdProducto(producto);
+
+        TipoNotificaciones tiponotificaciones = repoTipoNoti.findById(dto.getIdTipoNotificacion()).orElse(null);
+        notificaciones.setIdTipoNotificacion(tiponotificaciones);
+
+        ContratoProveedor contratoproveedor = repoContratoProv.findById(dto.getIdContratoProveedor()).orElse(null);
+        notificaciones.setIdContratoProveedor(contratoproveedor);
 
         return ResponseEntity.ok(serviceNotificaciones.modificar(notificaciones));
-        
+
     }
 
     @GetMapping("/notificaciones/{idNotificacion}")
+    @Transactional(readOnly = true)
     public Optional<Notificaciones> buscarId(@PathVariable("idNotificacion") Integer idNotificacion) {
         return serviceNotificaciones.buscarId(idNotificacion);
     }
 
     @DeleteMapping("/notificaciones/{idNotificacion}")
-    public String eliminar(@PathVariable Integer idNotificacion){
+    @Transactional
+    public String eliminar(@PathVariable Integer idNotificacion) {
         serviceNotificaciones.eliminar(idNotificacion);
         return "Notificacion eliminada";
     }

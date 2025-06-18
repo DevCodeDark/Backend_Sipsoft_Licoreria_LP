@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,9 +37,8 @@ public class SegmentoModuloController {
     
     public SegmentoModuloController(ISegmentoModuloService segmentoModuloService) {
         this.segmentoModuloService = segmentoModuloService;
-    }
-
-    @GetMapping("/segmentos-modulo")
+    }    @GetMapping("/segmentos-modulo")
+    @Transactional(readOnly = true)
     @Operation(summary = "Obtener todos los segmentos de módulo activos", description = "Retorna la lista de todos los segmentos de módulo activos")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente"),
@@ -47,9 +47,8 @@ public class SegmentoModuloController {
     public ResponseEntity<List<SegmentoModulo>> buscarTodos() {
         List<SegmentoModulo> segmentosModulo = segmentoModuloService.buscarActivos();
         return ResponseEntity.ok(segmentosModulo);
-    }
-
-    @GetMapping("/segmentos-modulo/con-modulos")
+    }    @GetMapping("/segmentos-modulo/con-modulos")
+    @Transactional(readOnly = true)
     @Operation(summary = "Obtener segmentos de módulo con sus módulos", description = "Retorna la lista de segmentos de módulo activos con sus módulos activos")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente"),
@@ -58,9 +57,8 @@ public class SegmentoModuloController {
     public ResponseEntity<List<SegmentoModulo>> buscarTodosConModulos() {
         List<SegmentoModulo> segmentosModulo = segmentoModuloService.buscarActivosConModulos();
         return ResponseEntity.ok(segmentosModulo);
-    }
-
-    @GetMapping("/segmentos-modulo/{id}")
+    }    @GetMapping("/segmentos-modulo/{id}")
+    @Transactional(readOnly = true)
     @Operation(summary = "Obtener segmento de módulo por ID", description = "Retorna un segmento de módulo específico por su ID")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Segmento de módulo encontrado"),
@@ -73,9 +71,8 @@ public class SegmentoModuloController {
         Optional<SegmentoModulo> segmentoModuloOpt = segmentoModuloService.buscarPorIdActivo(id);
         return segmentoModuloOpt.map(ResponseEntity::ok)
                                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/segmentos-modulo/{id}/con-modulos")
+    }    @GetMapping("/segmentos-modulo/{id}/con-modulos")
+    @Transactional(readOnly = true)
     @Operation(summary = "Obtener segmento de módulo con sus módulos por ID", description = "Retorna un segmento de módulo con sus módulos activos por su ID")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Segmento de módulo encontrado"),
@@ -88,9 +85,8 @@ public class SegmentoModuloController {
         Optional<SegmentoModulo> segmentoModuloOpt = segmentoModuloService.buscarPorIdActivoConModulos(id);
         return segmentoModuloOpt.map(ResponseEntity::ok)
                                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping("/segmentos-modulo")
+    }    @PostMapping("/segmentos-modulo")
+    @Transactional
     @Operation(summary = "Crear un nuevo segmento de módulo", description = "Crea un nuevo segmento de módulo en el sistema")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Segmento de módulo creado exitosamente"),
@@ -117,9 +113,8 @@ public class SegmentoModuloController {
         
         SegmentoModulo segmentoModuloGuardado = segmentoModuloService.guardar(segmentoModulo);
         return ResponseEntity.status(HttpStatus.CREATED).body(segmentoModuloGuardado);
-    }
-
-    @PutMapping("/segmentos-modulo")
+    }    @PutMapping("/segmentos-modulo")
+    @Transactional
     @Operation(summary = "Actualizar un segmento de módulo", description = "Actualiza un segmento de módulo existente")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Segmento de módulo actualizado exitosamente"),
@@ -159,9 +154,8 @@ public class SegmentoModuloController {
         
         SegmentoModulo segmentoModuloActualizado = segmentoModuloService.actualizar(segmentoModulo);
         return ResponseEntity.ok(segmentoModuloActualizado);
-    }
-
-    @DeleteMapping("/segmentos-modulo/{id}")
+    }    @DeleteMapping("/segmentos-modulo/{id}")
+    @Transactional
     @Operation(summary = "Eliminar un segmento de módulo", description = "Elimina lógicamente un segmento de módulo (cambia estado a inactivo)")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Segmento de módulo eliminado exitosamente"),
@@ -178,9 +172,8 @@ public class SegmentoModuloController {
         
         segmentoModuloService.eliminarLogico(id);
         return ResponseEntity.ok().body("Segmento de módulo eliminado exitosamente");
-    }
-
-    @GetMapping("/segmentos-modulo/buscar")
+    }    @GetMapping("/segmentos-modulo/buscar")
+    @Transactional(readOnly = true)
     @Operation(summary = "Buscar segmentos de módulo por descripción", description = "Busca segmentos de módulo que contengan el texto especificado en la descripción")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Búsqueda realizada exitosamente"),

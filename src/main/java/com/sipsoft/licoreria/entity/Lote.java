@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,21 +31,21 @@ public class Lote {
     private Integer stockActual;
     private Integer flagLote;
     private Integer estadoLote = 1;
-
+    private Integer idProducto;
+    private Integer idAlmacen;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idProducto")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Producto idProducto;
-
+    @JoinColumn(name = "idProducto", insertable = false, updatable = false)
+    @JsonIgnore
+    private Producto producto;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idAlmacen")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Almacen idAlmacen;
+    @JoinColumn(name = "idAlmacen", insertable = false, updatable = false)
+    @JsonIgnore
+    private Almacen almacen;
 
     public Lote() {
     }
 
-    public Lote(Integer id){
+    public Lote(Integer id) {
         this.idLote = id;
     }
 
@@ -113,20 +113,36 @@ public class Lote {
         this.estadoLote = estadoLote;
     }
 
-    public Producto getIdProducto() {
+    public Integer getIdProducto() {
         return idProducto;
     }
 
-    public void setIdProducto(Producto idProducto) {
+    public void setIdProducto(Integer idProducto) {
         this.idProducto = idProducto;
     }
 
-    public Almacen getIdAlmacen() {
+    public Integer getIdAlmacen() {
         return idAlmacen;
     }
 
-    public void setIdAlmacen(Almacen idAlmacen) {
+    public void setIdAlmacen(Integer idAlmacen) {
         this.idAlmacen = idAlmacen;
+    }
+
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
+    }
+
+    public Almacen getAlmacen() {
+        return almacen;
+    }
+
+    public void setAlmacen(Almacen almacen) {
+        this.almacen = almacen;
     }
 
     @Override

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,14 +26,15 @@ public class RolController {
     private IRolService serviceRol;
 
     @GetMapping("/roles")
+    @Transactional(readOnly = true)
     public List<Rol> buscarTodos() {
         return serviceRol.bucarTodos();
     }    /**
      * Endpoint para crear un nuevo rol.
      * @param rolDto DTO con la información del rol a crear.
      * @return El rol creado y guardado.
-     */
-    @PostMapping("/roles")
+     */    @PostMapping("/roles")
+    @Transactional
     public Rol guardar(@RequestBody RolDTO rolDto) {
         Rol rol = new Rol();
         rol.setDescripcionRol(rolDto.getDescripcionRol());
@@ -45,8 +47,8 @@ public class RolController {
      * Endpoint para modificar un rol existente.
      * @param rolDto DTO con la información a actualizar.
      * @return El rol modificado o un mensaje de error si no se encuentra.
-     */
-    @PutMapping("/roles")
+     */    @PutMapping("/roles")
+    @Transactional
     public ResponseEntity<Object> modificar(@RequestBody RolDTO rolDto) {
         if (rolDto.getIdRol() == null) {
             return ResponseEntity.badRequest().body("El idRol es requerido para modificar.");
@@ -67,14 +69,12 @@ public class RolController {
 
         Rol rolModificado = serviceRol.modificar(rolExistente);
         return ResponseEntity.ok(rolModificado);
-    }
-
-    @GetMapping("/roles/{idRol}")
+    }    @GetMapping("/roles/{idRol}")
+    @Transactional(readOnly = true)
     public Optional<Rol> buscarId(@PathVariable("idRol") Integer idRol) {
         return serviceRol.buscarId(idRol);
-    }
-
-    @DeleteMapping("/roles/{idRol}")
+    }    @DeleteMapping("/roles/{idRol}")
+    @Transactional
     public String eliminar(@PathVariable Integer idRol){
         serviceRol.eliminar(idRol);
         return "Rol eliminado";

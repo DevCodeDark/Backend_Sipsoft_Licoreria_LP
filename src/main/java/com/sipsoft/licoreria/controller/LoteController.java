@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,10 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sipsoft.licoreria.entity.Lote;
 import com.sipsoft.licoreria.dto.LoteDTO;
-import com.sipsoft.licoreria.entity.Producto;
-import com.sipsoft.licoreria.entity.Almacen;
-import com.sipsoft.licoreria.repository.ProductoRepository;
-import com.sipsoft.licoreria.repository.AlmacenesRepository;
 import com.sipsoft.licoreria.services.ILoteService;
 
 @RestController
@@ -27,18 +24,14 @@ public class LoteController {
     @Autowired
     private ILoteService serviceLote;
 
-    @Autowired
-    private ProductoRepository repoProducto;
-
-    @Autowired
-    private AlmacenesRepository repoAlmacen;
-
     @GetMapping("/lotes")
+    @Transactional(readOnly = true)
     public List<Lote> buscarTodos() {
         return serviceLote.bucarTodos();
     }
 
     @PostMapping("/lotes")
+    @Transactional
     public Lote guardar(@RequestBody LoteDTO dto) {
         Lote lote = new Lote();
         lote.setCodLote(dto.getCodLote());
@@ -48,18 +41,15 @@ public class LoteController {
         lote.setStockActual(dto.getStockActual());
         lote.setFlagLote(dto.getFlagLote());
         lote.setEstadoLote(dto.getEstadoLote());
-
-        Producto producto = repoProducto.findById(dto.getIdProducto()).orElse(null);
-        lote.setIdProducto(producto);
-
-        Almacen almacen = repoAlmacen.findById(dto.getIdAlmacen()).orElse(null);
-        lote.setIdAlmacen(almacen);
+        lote.setIdProducto(dto.getIdProducto());
+        lote.setIdAlmacen(dto.getIdAlmacen());
 
         serviceLote.guardar(lote);
         return lote;
     }
 
     @PutMapping("/lotes")
+    @Transactional
     public Lote modificar(@RequestBody LoteDTO dto) {
         Lote lote = new Lote();
         lote.setIdLote(dto.getIdLote());
@@ -70,24 +60,22 @@ public class LoteController {
         lote.setStockActual(dto.getStockActual());
         lote.setFlagLote(dto.getFlagLote());
         lote.setEstadoLote(dto.getEstadoLote());
-
-        Producto producto = repoProducto.findById(dto.getIdProducto()).orElse(null);
-        lote.setIdProducto(producto);
-
-        Almacen almacen = repoAlmacen.findById(dto.getIdAlmacen()).orElse(null);
-        lote.setIdAlmacen(almacen);
+        lote.setIdProducto(dto.getIdProducto());
+        lote.setIdAlmacen(dto.getIdAlmacen());
 
         serviceLote.modificar(lote);
         return lote;
     }
 
     @GetMapping("/lotes/{idLote}")
+    @Transactional(readOnly = true)
     public Optional<Lote> buscarId(@PathVariable("idLote") Integer idLote) {
         return serviceLote.buscarId(idLote);
     }
 
     @DeleteMapping("/lotes/{idLote}")
-    public String eliminar(@PathVariable Integer idLote){
+    @Transactional
+    public String eliminar(@PathVariable Integer idLote) {
         serviceLote.eliminar(idLote);
         return "Lote eliminado";
     }

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,12 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sipsoft.licoreria.entity.Producto;
 import com.sipsoft.licoreria.dto.ProductoDTO;
-import com.sipsoft.licoreria.entity.Empresa;
-import com.sipsoft.licoreria.entity.Categoria;
-import com.sipsoft.licoreria.entity.UnidadMedida;
-import com.sipsoft.licoreria.repository.EmpresaRepository;
-import com.sipsoft.licoreria.repository.CategoriaRepository;
-import com.sipsoft.licoreria.repository.UnidadMedidaRepository;
 import com.sipsoft.licoreria.services.IProductoService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,33 +35,26 @@ public class ProductoController {
     @Autowired
     private IProductoService serviceProducto;
 
-    @Autowired
-    private EmpresaRepository repoEmpresa;
-
-    @Autowired
-    private CategoriaRepository repoCategoria;
-
-    @Autowired
-    private UnidadMedidaRepository repoUnidadMedida;    @GetMapping("/productos")
-    @Operation(summary = "Obtener todos los productos", 
-               description = "Retrieves a list of all products in the system")
+    @GetMapping("/productos")
+    @Transactional(readOnly = true)
+    @Operation(summary = "Obtener todos los productos", description = "Retrieves a list of all products in the system")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista de productos obtenida exitosamente",
-                    content = @Content(schema = @Schema(implementation = Producto.class))),
-        @ApiResponse(responseCode = "401", description = "No autorizado"),
-        @ApiResponse(responseCode = "403", description = "Acceso denegado")
+            @ApiResponse(responseCode = "200", description = "Lista de productos obtenida exitosamente", content = @Content(schema = @Schema(implementation = Producto.class))),
+            @ApiResponse(responseCode = "401", description = "No autorizado"),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado")
     })
     public List<Producto> buscarTodos() {
         return serviceProducto.bucarTodos();
-    }    @PostMapping("/productos")
-    @Operation(summary = "Crear un nuevo producto", 
-               description = "Creates a new product in the system")
+    }
+
+    @PostMapping("/productos")
+    @Transactional
+    @Operation(summary = "Crear un nuevo producto", description = "Creates a new product in the system")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Producto creado exitosamente",
-                    content = @Content(schema = @Schema(implementation = Producto.class))),
-        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
-        @ApiResponse(responseCode = "401", description = "No autorizado"),
-        @ApiResponse(responseCode = "403", description = "Acceso denegado")
+            @ApiResponse(responseCode = "200", description = "Producto creado exitosamente", content = @Content(schema = @Schema(implementation = Producto.class))),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
+            @ApiResponse(responseCode = "401", description = "No autorizado"),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado")
     })
     public Producto guardar(@RequestBody ProductoDTO dto) {
         Producto producto = new Producto();
@@ -78,28 +65,23 @@ public class ProductoController {
         producto.setPrecioVentaProducto(dto.getPrecioVentaProducto());
         producto.setGananciaPorcentaje(dto.getGananciaPorcentaje());
         producto.setEstadoProducto(dto.getEstadoProducto());
-
-        Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
-        producto.setEmpresa(empresa);
-
-        Categoria categoria = repoCategoria.findById(dto.getIdCategoria()).orElse(null);
-        producto.setIdCategoria(categoria);
-
-        UnidadMedida unidadMedida = repoUnidadMedida.findById(dto.getIdUnidadMedida()).orElse(null);
-        producto.setIdUnidadMedida(unidadMedida);
+        producto.setIdEmpresa(dto.getIdEmpresa());
+        producto.setIdCategoria(dto.getIdCategoria());
+        producto.setIdUnidadMedida(dto.getIdUnidadMedida());
 
         serviceProducto.guardar(producto);
         return producto;
-    }    @PutMapping("/productos")
-    @Operation(summary = "Actualizar un producto existente", 
-               description = "Updates an existing product in the system")
+    }
+
+    @PutMapping("/productos")
+    @Transactional
+    @Operation(summary = "Actualizar un producto existente", description = "Updates an existing product in the system")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Producto actualizado exitosamente",
-                    content = @Content(schema = @Schema(implementation = Producto.class))),
-        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
-        @ApiResponse(responseCode = "401", description = "No autorizado"),
-        @ApiResponse(responseCode = "403", description = "Acceso denegado"),
-        @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+            @ApiResponse(responseCode = "200", description = "Producto actualizado exitosamente", content = @Content(schema = @Schema(implementation = Producto.class))),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
+            @ApiResponse(responseCode = "401", description = "No autorizado"),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado"),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
     public Producto modificar(@RequestBody ProductoDTO dto) {
         Producto producto = new Producto();
@@ -111,42 +93,42 @@ public class ProductoController {
         producto.setPrecioVentaProducto(dto.getPrecioVentaProducto());
         producto.setGananciaPorcentaje(dto.getGananciaPorcentaje());
         producto.setEstadoProducto(dto.getEstadoProducto());
-
-        Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
-        producto.setEmpresa(empresa);
-
-        Categoria categoria = repoCategoria.findById(dto.getIdCategoria()).orElse(null);
-        producto.setIdCategoria(categoria);
-
-        UnidadMedida unidadMedida = repoUnidadMedida.findById(dto.getIdUnidadMedida()).orElse(null);
-        producto.setIdUnidadMedida(unidadMedida);
+        producto.setPrecioVentaProducto(dto.getPrecioVentaProducto());
+        producto.setGananciaPorcentaje(dto.getGananciaPorcentaje());
+        producto.setEstadoProducto(dto.getEstadoProducto());
+        producto.setIdEmpresa(dto.getIdEmpresa());
+        producto.setIdCategoria(dto.getIdCategoria());
+        producto.setIdUnidadMedida(dto.getIdUnidadMedida());
 
         serviceProducto.modificar(producto);
         return producto;
-    }    @GetMapping("/productos/{idProducto}")
-    @Operation(summary = "Obtener un producto por ID", 
-               description = "Retrieves a specific product by its ID")
+    }
+
+    @GetMapping("/productos/{idProducto}")
+    @Transactional(readOnly = true)
+    @Operation(summary = "Obtener un producto por ID", description = "Retrieves a specific product by its ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Producto encontrado",
-                    content = @Content(schema = @Schema(implementation = Producto.class))),
-        @ApiResponse(responseCode = "401", description = "No autorizado"),
-        @ApiResponse(responseCode = "403", description = "Acceso denegado"),
-        @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+            @ApiResponse(responseCode = "200", description = "Producto encontrado", content = @Content(schema = @Schema(implementation = Producto.class))),
+            @ApiResponse(responseCode = "401", description = "No autorizado"),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado"),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
-    public Optional<Producto> buscarId(@Parameter(description = "ID del producto a buscar", required = true)
-                                       @PathVariable("idProducto") Integer idProducto) {
+    public Optional<Producto> buscarId(
+            @Parameter(description = "ID del producto a buscar", required = true) @PathVariable("idProducto") Integer idProducto) {
         return serviceProducto.buscarId(idProducto);
-    }    @DeleteMapping("/productos/{idProducto}")
-    @Operation(summary = "Eliminar un producto", 
-               description = "Deletes a product from the system")
+    }
+
+    @DeleteMapping("/productos/{idProducto}")
+    @Transactional
+    @Operation(summary = "Eliminar un producto", description = "Deletes a product from the system")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Producto eliminado exitosamente"),
-        @ApiResponse(responseCode = "401", description = "No autorizado"),
-        @ApiResponse(responseCode = "403", description = "Acceso denegado"),
-        @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+            @ApiResponse(responseCode = "200", description = "Producto eliminado exitosamente"),
+            @ApiResponse(responseCode = "401", description = "No autorizado"),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado"),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
-    public String eliminar(@Parameter(description = "ID del producto a eliminar", required = true)
-                          @PathVariable Integer idProducto){
+    public String eliminar(
+            @Parameter(description = "ID del producto a eliminar", required = true) @PathVariable Integer idProducto) {
         serviceProducto.eliminar(idProducto);
         return "Producto eliminado";
     }

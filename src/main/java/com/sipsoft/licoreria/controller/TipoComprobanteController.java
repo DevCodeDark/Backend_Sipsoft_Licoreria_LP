@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,27 +24,25 @@ public class TipoComprobanteController {
     private ITipoComprobanteService serviceTipoComprobante;
 
     @GetMapping("/tipos-comprobante")
+    @Transactional(readOnly = true)
     public List<TipoComprobante> buscarTodos() {
         return serviceTipoComprobante.buscarTodos();
-    }
-    @PostMapping("/tipos-comprobante")
+    }    @PostMapping("/tipos-comprobante")
+    @Transactional
     public TipoComprobante guardar(@RequestBody TipoComprobante tipoComprobante) {
         serviceTipoComprobante.guardar(tipoComprobante);
         return tipoComprobante;
-    }
-
-    @PutMapping("/tipos-comprobante")
+    }    @PutMapping("/tipos-comprobante")
+    @Transactional
     public TipoComprobante modificar(@RequestBody TipoComprobante tipoComprobante) {
         serviceTipoComprobante.modificar(tipoComprobante);
         return tipoComprobante;
-    }
-
-    @GetMapping("/tipos-comprobante/{idTipoComprobante}")
+    }    @GetMapping("/tipos-comprobante/{idTipoComprobante}")
+    @Transactional(readOnly = true)
     public Optional<TipoComprobante> buscarId(@PathVariable("idTipoComprobante") Integer idTipoComprobante) {
         return serviceTipoComprobante.buscarId(idTipoComprobante);
-    }
-
-    @DeleteMapping("/tipos-comprobante/{idTipoComprobante}")
+    }    @DeleteMapping("/tipos-comprobante/{idTipoComprobante}")
+    @Transactional
     public String eliminar(@PathVariable Integer idTipoComprobante){
         serviceTipoComprobante.eliminar(idTipoComprobante);
         return "Tipo Comprobante eliminado";

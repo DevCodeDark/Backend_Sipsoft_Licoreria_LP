@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.sipsoft.licoreria.dto.ProveedorDTO;
 import com.sipsoft.licoreria.entity.Proveedor;
@@ -18,9 +19,11 @@ public class ProveedorController {
 
     /**
      * GET /proveedores
+     * 
      * @return Lista de todos los proveedores activos formateados como DTO.
      */
     @GetMapping("/proveedores")
+    @Transactional(readOnly = true)
     public List<ProveedorDTO> buscarTodos() {
         return serviceProveedor.bucarTodos().stream()
                 .map(this::convertToDto)
@@ -29,10 +32,12 @@ public class ProveedorController {
 
     /**
      * GET /proveedores/{id}
+     * 
      * @param idProveedor el ID del proveedor a buscar.
      * @return El proveedor encontrado como DTO, o 404 si no existe.
      */
     @GetMapping("/proveedores/{idProveedor}")
+    @Transactional(readOnly = true)
     public ResponseEntity<ProveedorDTO> buscarId(@PathVariable("idProveedor") Integer idProveedor) {
         return serviceProveedor.buscarId(idProveedor)
                 .map(proveedor -> ResponseEntity.ok(convertToDto(proveedor)))
@@ -41,16 +46,19 @@ public class ProveedorController {
 
     /**
      * POST /proveedores
+     * 
      * @param proveedorDto DTO con los datos del nuevo proveedor.
-     * @return El DTO del proveedor creado con los campos automáticos (ID, fecha, estado).
+     * @return El DTO del proveedor creado con los campos automáticos (ID, fecha,
+     *         estado).
      */
     @PostMapping("/proveedores")
+    @Transactional
     public ProveedorDTO guardar(@RequestBody ProveedorDTO proveedorDto) {
         Proveedor proveedor = new Proveedor();
-        
+
         // Mapear datos del DTO a la entidad
         mapDtoToEntity(proveedorDto, proveedor);
-        
+
         // Establecer valores automáticos para la creación
         proveedor.setFechaRegistroProveedor(LocalDate.now());
         proveedor.setEstadoProveedor(1); // 1 = Activo
@@ -61,10 +69,12 @@ public class ProveedorController {
 
     /**
      * PUT /proveedores
+     * 
      * @param proveedorDto DTO con los datos a actualizar.
      * @return El DTO del proveedor actualizado, o 404 si no existe.
      */
     @PutMapping("/proveedores")
+    @Transactional
     public ResponseEntity<ProveedorDTO> modificar(@RequestBody ProveedorDTO proveedorDto) {
         if (proveedorDto.getIdProveedor() == null) {
             return ResponseEntity.badRequest().body(null);
@@ -82,7 +92,8 @@ public class ProveedorController {
     }
 
     @DeleteMapping("/proveedores/{idProveedor}")
-    public String eliminar(@PathVariable Integer idProveedor){
+    @Transactional
+    public String eliminar(@PathVariable Integer idProveedor) {
         serviceProveedor.eliminar(idProveedor);
         return "Proveedor eliminado";
     }

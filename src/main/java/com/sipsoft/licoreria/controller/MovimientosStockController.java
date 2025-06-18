@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,47 +36,57 @@ public class MovimientosStockController {
     private TipoMovimientosStockRepository repoTipoMovimientosStock;
 
     @GetMapping("/movimientos-stock")
+    @Transactional(readOnly = true)
     public List<MovimientosStock> buscarTodos() {
         return serviceMovimientosStock.bucarTodos();
     }
+
     @PostMapping("/movimientos-stock")
-    public ResponseEntity <?> guardar(@RequestBody MovimientoStockDTO dto) {
-       MovimientosStock movimientosStock = new MovimientosStock();
-       movimientosStock.setCantidadMovimientoStock(dto.getCantidadMovimientoStock());
-       movimientosStock.setFechaMovimientoStock(dto.getFechaMovimientoStock());
+    @Transactional
+    public ResponseEntity<?> guardar(@RequestBody MovimientoStockDTO dto) {
+        MovimientosStock movimientosStock = new MovimientosStock();
+        movimientosStock.setCantidadMovimientoStock(dto.getCantidadMovimientoStock());
+        movimientosStock.setFechaMovimientoStock(dto.getFechaMovimientoStock());
 
-        TipoMovimientosStock tipoMovimientosStock = repoTipoMovimientosStock.findById(dto.getIdTipoMovimiento()).orElse(null);
+        TipoMovimientosStock tipoMovimientosStock = repoTipoMovimientosStock.findById(dto.getIdTipoMovimiento())
+                .orElse(null);
         Lote lote = repoLote.findById(dto.getIdLote()).orElse(null);
-
-        movimientosStock.setIdTipoMovimiento(tipoMovimientosStock); 
-        movimientosStock.setIdLote(lote);        
+        movimientosStock.setIdTipoMovimiento(tipoMovimientosStock);
+        movimientosStock.setIdLote(lote);
 
         return ResponseEntity.ok(serviceMovimientosStock.guardar(movimientosStock));
     }
 
     @PutMapping("/movimientos-stock")
-    public ResponseEntity <?> modificar(@RequestBody MovimientoStockDTO dto) {
+    @Transactional
+    public ResponseEntity<?> modificar(@RequestBody MovimientoStockDTO dto) {
         if (dto.getIdMovimientoStock() == null) {
-            return ResponseEntity.badRequest().body("ID no existe");            
+            return ResponseEntity.badRequest().body("ID no existe");
         }
         MovimientosStock movimientosStock = new MovimientosStock();
         movimientosStock.setIdMovimientoStock(dto.getIdMovimientoStock());
         movimientosStock.setCantidadMovimientoStock(dto.getCantidadMovimientoStock());
         movimientosStock.setFechaMovimientoStock(dto.getFechaMovimientoStock());
 
-        movimientosStock.setIdTipoMovimiento(new TipoMovimientosStock(dto.getIdTipoMovimiento()));
-        movimientosStock.setIdLote(new Lote(dto.getIdLote()));        
+        TipoMovimientosStock tipoMovimientosStock = repoTipoMovimientosStock.findById(dto.getIdTipoMovimiento())
+                .orElse(null);
+        Lote lote = repoLote.findById(dto.getIdLote()).orElse(null);
+
+        movimientosStock.setIdTipoMovimiento(tipoMovimientosStock);
+        movimientosStock.setIdLote(lote);
 
         return ResponseEntity.ok(serviceMovimientosStock.modificar(movimientosStock));
     }
 
     @GetMapping("/movimientos-stock/{idMovimientoStock}")
+    @Transactional(readOnly = true)
     public Optional<MovimientosStock> buscarId(@PathVariable("idMovimientoStock") Integer idMovimientoStock) {
         return serviceMovimientosStock.buscarId(idMovimientoStock);
     }
 
     @DeleteMapping("/movimientos-stock/{idMovimientoStock}")
-    public String eliminar(@PathVariable Integer idMovimientoStock){
+    @Transactional
+    public String eliminar(@PathVariable Integer idMovimientoStock) {
         serviceMovimientosStock.eliminar(idMovimientoStock);
         return "Movimiento Stock eliminado";
     }

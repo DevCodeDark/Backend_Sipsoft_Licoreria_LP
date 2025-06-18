@@ -3,7 +3,8 @@ package com.sipsoft.licoreria.entity;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,11 +24,9 @@ public class Almacen {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idAlmacen;
     private String descripcionAlmacen;
-    private Integer estadoAlmacen = 1;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    private Integer estadoAlmacen = 1;    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idSucursal")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
     private Sucursal idSucursal;
 
     public Integer getIdAlmacen() {
@@ -60,6 +59,10 @@ public class Almacen {
 
     public void setIdSucursal(Sucursal idSucursal) {
         this.idSucursal = idSucursal;
+    }    // Método para obtener solo el ID de la sucursal sin cargar la entidad completa
+    @JsonProperty("idSucursal")
+    public Integer getIdSucursalValue() {
+        return this.idSucursal != null ? this.idSucursal.getIdSucursal() : null;
     }
 
     @Override

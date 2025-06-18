@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,12 +26,14 @@ public class DeudaProveedorController {
     private IDeudaProveedorService serviceDeudaProveedor;
 
     @GetMapping("/deuda-proveedor")
+    @Transactional(readOnly = true)
     public List<DeudaProveedor> buscarTodos() {
         return serviceDeudaProveedor.bucarTodos();
     }
 
     @PostMapping("/deuda-proveedor")
-    public ResponseEntity <?> guardar(@RequestBody DeudaProveedorDTO dto) {
+    @Transactional
+    public ResponseEntity<?> guardar(@RequestBody DeudaProveedorDTO dto) {
         DeudaProveedor deudaProveedor = new DeudaProveedor();
         deudaProveedor.setIdCompra(dto.getIdCompra());
         deudaProveedor.setFechaInicioDeuda(dto.getFechaInicioDeuda());
@@ -43,9 +46,10 @@ public class DeudaProveedorController {
     }
 
     @PutMapping("/deuda-proveedor")
-    public ResponseEntity <?> modificar(@RequestBody DeudaProveedorDTO dto) {
+    @Transactional
+    public ResponseEntity<?> modificar(@RequestBody DeudaProveedorDTO dto) {
         if (dto.getIdDeuda() == null) {
-            return ResponseEntity.badRequest().body("ID no existe");            
+            return ResponseEntity.badRequest().body("ID no existe");
         }
         DeudaProveedor deudaProveedor = new DeudaProveedor();
         deudaProveedor.setIdDeuda(dto.getIdDeuda());
@@ -60,12 +64,14 @@ public class DeudaProveedorController {
     }
 
     @GetMapping("/deuda-proveedor/{idDeuda}")
+    @Transactional(readOnly = true)
     public Optional<DeudaProveedor> buscarId(@PathVariable("idDeuda") Integer idDeuda) {
         return serviceDeudaProveedor.buscarId(idDeuda);
     }
 
     @DeleteMapping("/deuda-proveedor/{idDeuda}")
-    public String eliminar(@PathVariable Integer idDeuda){
+    @Transactional
+    public String eliminar(@PathVariable Integer idDeuda) {
         serviceDeudaProveedor.eliminar(idDeuda);
         return "Deuda Proveedor eliminada";
     }

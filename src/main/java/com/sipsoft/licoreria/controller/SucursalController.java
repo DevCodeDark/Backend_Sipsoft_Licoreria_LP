@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,9 +31,13 @@ public class SucursalController {
     private EmpresaRepository repoEmpresa;
 
     @GetMapping("/sucursales")
+    @Transactional(readOnly = true)
     public List<Sucursal> buscarTodos() {
         return serviceSucursal.buscarTodos();
-    }    @PostMapping("/sucursales")
+    }
+
+    @PostMapping("/sucursales")
+    @Transactional
     public ResponseEntity<?> guardar(@RequestBody SucursalDTO dto) {
         Sucursal sucursal = new Sucursal();
         sucursal.setUbicacionSucursal(dto.getUbicacionSucursal());
@@ -42,10 +47,13 @@ public class SucursalController {
         sucursal.setIdEmpresa(empresa);
 
         return ResponseEntity.ok(serviceSucursal.guardar(sucursal));
-    }    @PutMapping("/sucursales")
+    }
+
+    @PutMapping("/sucursales")
+    @Transactional
     public ResponseEntity<?> modificar(@RequestBody SucursalDTO dto) {
         if (dto.getIdSucursal() == null) {
-            return ResponseEntity.badRequest().body("ID no existe");            
+            return ResponseEntity.badRequest().body("ID no existe");
         }
         Sucursal sucursal = new Sucursal();
         sucursal.setIdSucursal(dto.getIdSucursal());
@@ -59,11 +67,13 @@ public class SucursalController {
     }
 
     @GetMapping("/sucursales/{idSucursal}")
+    @Transactional(readOnly = true)
     public Optional<Sucursal> buscarId(@PathVariable("idSucursal") Integer idSucursal) {
         return serviceSucursal.buscarId(idSucursal);
     }
 
     @DeleteMapping("/sucursales/{idSucursal}")
+    @Transactional
     public String eliminar(@PathVariable Integer idSucursal) {
         serviceSucursal.eliminar(idSucursal);
         return "Sucursal eliminada";

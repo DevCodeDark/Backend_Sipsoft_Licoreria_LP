@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.sipsoft.licoreria.dto.CajaDTO;
 import com.sipsoft.licoreria.entity.Caja;
@@ -14,23 +15,20 @@ import com.sipsoft.licoreria.services.ICajaService;
 @RequestMapping("/sipsoft")
 public class CajaController {
     @Autowired
-    private ICajaService serviceCaja;
-
-    @GetMapping("/cajas")
+    private ICajaService serviceCaja;    @GetMapping("/cajas")
+    @Transactional(readOnly = true)
     public List<CajaDTO> buscarTodos() {
         return serviceCaja.bucarTodos().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
-    }
-
-    @GetMapping("/cajas/{idCaja}")
+    }    @GetMapping("/cajas/{idCaja}")
+    @Transactional(readOnly = true)
     public ResponseEntity<CajaDTO> buscarId(@PathVariable("idCaja") Integer idCaja) {
         return serviceCaja.buscarId(idCaja)
                 .map(caja -> ResponseEntity.ok(convertToDto(caja)))
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping("/cajas")
+    }    @PostMapping("/cajas")
+    @Transactional
     public CajaDTO guardar(@RequestBody CajaDTO dto) {
         Caja caja = new Caja();
         caja.setNumCaja(dto.getNumCaja());
@@ -44,9 +42,8 @@ public class CajaController {
 
         Caja savedCaja = serviceCaja.guardar(caja);
         return convertToDto(savedCaja);
-    }
-
-    @PutMapping("/cajas")
+    }    @PutMapping("/cajas")
+    @Transactional
     public ResponseEntity<CajaDTO> modificar(@RequestBody CajaDTO dto) {
         if (dto.getIdCaja() == null) {
             return ResponseEntity.badRequest().build();
@@ -67,9 +64,8 @@ public class CajaController {
                     return ResponseEntity.ok(convertToDto(updatedCaja));
                 })
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/cajas/{idCaja}")
+    }    @DeleteMapping("/cajas/{idCaja}")
+    @Transactional
     public String eliminar(@PathVariable Integer idCaja){
         serviceCaja.eliminar(idCaja);
         return "Caja eliminada";

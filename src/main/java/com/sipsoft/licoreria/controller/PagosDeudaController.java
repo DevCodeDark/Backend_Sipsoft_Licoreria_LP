@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,50 +26,57 @@ import com.sipsoft.licoreria.services.IPagosDeudaService;
 public class PagosDeudaController {
     @Autowired
     private IPagosDeudaService servicePagosDeuda;
-    
+
     @Autowired
     private DeudaProveedorRepository repoDeudaProveedor;
 
     @GetMapping("/pagos-deuda")
+    @Transactional(readOnly = true)
     public List<PagosDeuda> buscarTodos() {
         return servicePagosDeuda.bucarTodos();
     }
+
     @PostMapping("/pagos-deuda")
-    public ResponseEntity <?> guardar(@RequestBody PagosDeudaDTO dto) {
-       PagosDeuda pagosDeuda = new PagosDeuda();
-       pagosDeuda.setFechaPagoParcialDeuda(dto.getFechaPagoParcialDeuda());
-       pagosDeuda.setMontoAbonado(dto.getMontoAbonado());
-       pagosDeuda.setObservaciones(dto.getObservaciones());
+    @Transactional
+    public ResponseEntity<?> guardar(@RequestBody PagosDeudaDTO dto) {
+        PagosDeuda pagosDeuda = new PagosDeuda();
+        pagosDeuda.setFechaPagoParcialDeuda(dto.getFechaPagoParcialDeuda());
+        pagosDeuda.setMontoAbonado(dto.getMontoAbonado());
+        pagosDeuda.setObservaciones(dto.getObservaciones());
 
         DeudaProveedor deudaProveedor = repoDeudaProveedor.findById(dto.getIdDeuda()).orElse(null);
-        pagosDeuda.setIdDeuda(deudaProveedor);        
+        pagosDeuda.setIdDeuda(deudaProveedor);
 
         return ResponseEntity.ok(servicePagosDeuda.guardar(pagosDeuda));
     }
 
     @PutMapping("/pagos-deuda")
-    public ResponseEntity <?> modificar(@RequestBody PagosDeudaDTO dto) {
+    @Transactional
+    public ResponseEntity<?> modificar(@RequestBody PagosDeudaDTO dto) {
         if (dto.getIdPagosDeuda() == null) {
-            return ResponseEntity.badRequest().body("ID no existe");            
+            return ResponseEntity.badRequest().body("ID no existe");
         }
         PagosDeuda pagosDeuda = new PagosDeuda();
         pagosDeuda.setIdPagosDeuda(dto.getIdPagosDeuda());
         pagosDeuda.setFechaPagoParcialDeuda(dto.getFechaPagoParcialDeuda());
         pagosDeuda.setMontoAbonado(dto.getMontoAbonado());
         pagosDeuda.setObservaciones(dto.getObservaciones());
-        
-        pagosDeuda.setIdDeuda(new DeudaProveedor(dto.getIdDeuda()));
+
+        DeudaProveedor deudaProveedor = repoDeudaProveedor.findById(dto.getIdDeuda()).orElse(null);
+        pagosDeuda.setIdDeuda(deudaProveedor);
 
         return ResponseEntity.ok(servicePagosDeuda.modificar(pagosDeuda));
     }
 
     @GetMapping("/pagos-deuda/{idPagosDeuda}")
+    @Transactional(readOnly = true)
     public Optional<PagosDeuda> buscarId(@PathVariable("idPagosDeuda") Integer idPagosDeuda) {
         return servicePagosDeuda.buscarId(idPagosDeuda);
     }
 
     @DeleteMapping("/pagos-deuda/{idPagosDeuda}")
-    public String eliminar(@PathVariable Integer idPagosDeuda){
+    @Transactional
+    public String eliminar(@PathVariable Integer idPagosDeuda) {
         servicePagosDeuda.eliminar(idPagosDeuda);
         return "Pago Deuda eliminado";
     }

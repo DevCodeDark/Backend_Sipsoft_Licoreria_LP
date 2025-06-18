@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,11 +30,13 @@ public class UnidadMedidaController {
     private EmpresaRepository repoEmpresa;
 
     @GetMapping("/unidades-medida")
+    @Transactional(readOnly = true)
     public List<UnidadMedida> buscarTodos() {
         return serviceUnidadMedida.buscarTodos();
     }
 
     @PostMapping("/unidades-medida")
+    @Transactional
     public UnidadMedida guardar(@RequestBody UnidadMedidaDTO dto) {
         UnidadMedida unidad = new UnidadMedida();
         unidad.setNombreUnidadMedida(dto.getNombreUnidadMedida());
@@ -46,6 +49,7 @@ public class UnidadMedidaController {
     }
 
     @PutMapping("/unidades-medida")
+    @Transactional
     public UnidadMedida modificar(@RequestBody UnidadMedidaDTO dto) {
         UnidadMedida unidad = new UnidadMedida();
         unidad.setIdUnidadMedida(dto.getIdUnidadMedida());
@@ -59,12 +63,14 @@ public class UnidadMedidaController {
     }
 
     @GetMapping("/unidades-medida/{idUnidadMedida}")
+    @Transactional(readOnly = true)
     public Optional<UnidadMedida> buscarId(@PathVariable("idUnidadMedida") Integer idUnidadMedida) {
         return serviceUnidadMedida.buscarId(idUnidadMedida);
     }
 
     @DeleteMapping("/unidades-medida/{idUnidadMedida}")
-    public String eliminar(@PathVariable Integer idUnidadMedida){
+    @Transactional
+    public String eliminar(@PathVariable Integer idUnidadMedida) {
         serviceUnidadMedida.eliminar(idUnidadMedida);
         return "Unidad Medida eliminada";
     }

@@ -3,6 +3,7 @@ package com.sipsoft.licoreria.entity;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
@@ -24,26 +25,23 @@ public class Producto {
     private Integer idProducto;
     private String codBarras;
     private String descripcionProducto;
+    private Integer idEmpresa;
+    private Integer idCategoria;
+    private Integer idUnidadMedida;
     private Integer stockMinimo;
     private String imagenProducto;
     private Float precioVentaProducto;
     private Float gananciaPorcentaje;
-    private Integer estadoProducto = 1;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idEmpresa")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Empresa empresa;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idCategoria")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Categoria idCategoria;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idUnidadMedida")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private UnidadMedida idUnidadMedida;
+    private Integer estadoProducto = 1;    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idEmpresa", insertable = false, updatable = false)
+    @JsonIgnore
+    private Empresa empresa;    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idCategoria", insertable = false, updatable = false)
+    @JsonIgnore
+    private Categoria categoria;    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idUnidadMedida", insertable = false, updatable = false)
+    @JsonIgnore
+    private UnidadMedida unidadMedida;
 
     public Producto() {
     }
@@ -74,6 +72,30 @@ public class Producto {
 
     public void setDescripcionProducto(String descripcionProducto) {
         this.descripcionProducto = descripcionProducto;
+    }
+
+    public Integer getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(Integer idEmpresa) {
+        this.idEmpresa = idEmpresa;
+    }
+
+    public Integer getIdCategoria() {
+        return idCategoria;
+    }
+
+    public void setIdCategoria(Integer idCategoria) {
+        this.idCategoria = idCategoria;
+    }
+
+    public Integer getIdUnidadMedida() {
+        return idUnidadMedida;
+    }
+
+    public void setIdUnidadMedida(Integer idUnidadMedida) {
+        this.idUnidadMedida = idUnidadMedida;
     }
 
     public Integer getStockMinimo() {
@@ -118,34 +140,30 @@ public class Producto {
 
     public Empresa getEmpresa() {
         return empresa;
-    }
-
-    public void setEmpresa(Empresa empresa) {
+    }    public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
     }
 
-    public Categoria getIdCategoria() {
-        return idCategoria;
+    public Categoria getCategoria() {
+        return categoria;
     }
 
-    public void setIdCategoria(Categoria idCategoria) {
-        this.idCategoria = idCategoria;
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
-    public UnidadMedida getIdUnidadMedida() {
-        return idUnidadMedida;
+    public UnidadMedida getUnidadMedida() {
+        return unidadMedida;
     }
 
-    public void setIdUnidadMedida(UnidadMedida idUnidadMedida) {
-        this.idUnidadMedida = idUnidadMedida;
-    }
-
-    @Override
+    public void setUnidadMedida(UnidadMedida unidadMedida) {
+        this.unidadMedida = unidadMedida;
+    }    @Override
     public String toString() {
         return "Producto [idProducto=" + idProducto + ", codBarras=" + codBarras + ", descripcionProducto="
-                + descripcionProducto + ", stockMinimo=" + stockMinimo + ", imagenProducto=" + imagenProducto
+                + descripcionProducto + ", idEmpresa=" + idEmpresa + ", idCategoria=" + idCategoria
+                + ", idUnidadMedida=" + idUnidadMedida + ", stockMinimo=" + stockMinimo + ", imagenProducto=" + imagenProducto
                 + ", precioVentaProducto=" + precioVentaProducto + ", gananciaPorcentaje=" + gananciaPorcentaje
-                + ", estadoProducto=" + estadoProducto + ", empresa=" + empresa + ", idCategoria=" + idCategoria
-                + ", idUnidadMedida=" + idUnidadMedida + "]";
+                + ", estadoProducto=" + estadoProducto + "]";
     }
 }

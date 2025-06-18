@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +29,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Empresas", description = "Gestión de empresas del sistema")
 public class EmpresaController {
     @Autowired
-    private IEmpresaService serviceEmpresa;    @GetMapping("/empresas")
+    private IEmpresaService serviceEmpresa;
+
+    @GetMapping("/empresas")
+    @Transactional(readOnly = true)
     @Operation(summary = "Obtener todas las empresas", security = @SecurityRequirement(name = "bearerAuth"))
     public List<Empresa> buscarTodos() {
         return serviceEmpresa.bucarTodos();
@@ -36,10 +40,12 @@ public class EmpresaController {
 
     /**
      * Endpoint para crear una nueva empresa.
+     * 
      * @param empresaDto DTO con la información de la empresa a crear.
      * @return La entidad Empresa creada y guardada.
      */
     @PostMapping("/empresas")
+    @Transactional
     public Empresa guardar(@RequestBody EmpresaDTO empresaDto) {
         Empresa empresa = new Empresa();
         empresa.setNombreEmpresa(empresaDto.getNombreEmpresa());
@@ -52,15 +58,18 @@ public class EmpresaController {
 
     /**
      * Endpoint para modificar una empresa existente.
+     * 
      * @param empresaDto DTO con los datos a actualizar.
-     * @return La entidad Empresa actualizada o un mensaje de error si no se encuentra.
+     * @return La entidad Empresa actualizada o un mensaje de error si no se
+     *         encuentra.
      */
     @PutMapping("/empresas")
+    @Transactional
     public ResponseEntity<?> modificar(@RequestBody EmpresaDTO empresaDto) {
         if (empresaDto.getIdEmpresa() == null) {
             return ResponseEntity.badRequest().body("El idEmpresa es requerido para modificar.");
         }
-        
+
         Optional<Empresa> empresaOpt = serviceEmpresa.buscarId(empresaDto.getIdEmpresa());
         if (empresaOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("No se encontró la empresa con ID: " + empresaDto.getIdEmpresa());
@@ -70,18 +79,20 @@ public class EmpresaController {
         empresaExistente.setNombreEmpresa(empresaDto.getNombreEmpresa());
         empresaExistente.setRucEmpresa(empresaDto.getRucEmpresa());
         empresaExistente.setLogoEmpresa(empresaDto.getLogoEmpresa());
-        
+
         Empresa empresaModificada = serviceEmpresa.modificar(empresaExistente);
         return ResponseEntity.ok(empresaModificada);
     }
 
     @GetMapping("/empresas/{idEmpresa}")
+    @Transactional(readOnly = true)
     public Optional<Empresa> buscarId(@PathVariable("idEmpresa") Integer idEmpresa) {
         return serviceEmpresa.buscarId(idEmpresa);
     }
 
     @DeleteMapping("/empresas/{idEmpresa}")
-    public String eliminar(@PathVariable Integer idEmpresa){
+    @Transactional
+    public String eliminar(@PathVariable Integer idEmpresa) {
         serviceEmpresa.eliminar(idEmpresa);
         return "Empresa eliminada";
     }

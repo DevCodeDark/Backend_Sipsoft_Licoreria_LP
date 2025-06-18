@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.sipsoft.licoreria.dto.OrdenCompraDTO;
 import com.sipsoft.licoreria.entity.OrdenCompra;
@@ -17,6 +18,7 @@ public class OrdenCompraController {
     private IOrdenCompraService serviceOrdenCompra;
 
     @GetMapping("/ordenes-compra")
+    @Transactional(readOnly = true)
     public List<OrdenCompraDTO> buscarTodos() {
         return serviceOrdenCompra.bucarTodos().stream()
                 .map(this::convertToDto)
@@ -24,6 +26,7 @@ public class OrdenCompraController {
     }
 
     @GetMapping("/ordenes-compra/{idOrden}")
+    @Transactional(readOnly = true)
     public ResponseEntity<OrdenCompraDTO> buscarId(@PathVariable("idOrden") Integer idOrden) {
         return serviceOrdenCompra.buscarId(idOrden)
                 .map(orden -> ResponseEntity.ok(convertToDto(orden)))
@@ -31,6 +34,7 @@ public class OrdenCompraController {
     }
 
     @PostMapping("/ordenes-compra")
+    @Transactional
     public OrdenCompraDTO guardar(@RequestBody OrdenCompraDTO dto) {
         OrdenCompra orden = new OrdenCompra();
         mapDtoToEntity(dto, orden);
@@ -43,12 +47,13 @@ public class OrdenCompraController {
         if (orden.getEstado() == null) {
             orden.setEstado("GENERADA");
         }
-        
+
         OrdenCompra savedOrden = serviceOrdenCompra.guardar(orden);
         return convertToDto(savedOrden);
     }
 
     @PutMapping("/ordenes-compra")
+    @Transactional
     public ResponseEntity<OrdenCompraDTO> modificar(@RequestBody OrdenCompraDTO dto) {
         if (dto.getIdOrden() == null) {
             return ResponseEntity.badRequest().build();
@@ -58,7 +63,7 @@ public class OrdenCompraController {
                 .map(ordenExistente -> {
                     mapDtoToEntity(dto, ordenExistente);
                     ordenExistente.setFechaActualizacion(LocalDateTime.now());
-                    
+
                     OrdenCompra updatedOrden = serviceOrdenCompra.modificar(ordenExistente);
                     return ResponseEntity.ok(convertToDto(updatedOrden));
                 })
@@ -66,7 +71,8 @@ public class OrdenCompraController {
     }
 
     @DeleteMapping("/ordenes-compra/{idOrden}")
-    public String eliminar(@PathVariable Integer idOrden){
+    @Transactional
+    public String eliminar(@PathVariable Integer idOrden) {
         serviceOrdenCompra.eliminar(idOrden);
         return "Orden de Compra eliminada";
     }

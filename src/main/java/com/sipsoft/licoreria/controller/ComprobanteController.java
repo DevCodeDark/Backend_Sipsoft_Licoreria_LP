@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.sipsoft.licoreria.dto.ComprobanteDTO;
 import com.sipsoft.licoreria.entity.Comprobante;
@@ -17,6 +18,7 @@ public class ComprobanteController {
     private IComprobanteService serviceComprobante;
 
     @GetMapping("/comprobantes")
+    @Transactional(readOnly = true)
     public List<ComprobanteDTO> buscarTodos() {
         return serviceComprobante.bucarTodos().stream()
                 .map(this::convertToDto)
@@ -24,6 +26,7 @@ public class ComprobanteController {
     }
 
     @GetMapping("/comprobantes/{idComprobante}")
+    @Transactional(readOnly = true)
     public ResponseEntity<ComprobanteDTO> buscarId(@PathVariable("idComprobante") Integer idComprobante) {
         return serviceComprobante.buscarId(idComprobante)
                 .map(comprobante -> ResponseEntity.ok(convertToDto(comprobante)))
@@ -31,19 +34,21 @@ public class ComprobanteController {
     }
 
     @PostMapping("/comprobantes")
+    @Transactional
     public ComprobanteDTO guardar(@RequestBody ComprobanteDTO dto) {
         Comprobante comprobante = new Comprobante();
         mapDtoToEntity(dto, comprobante);
-        
+
         // Valores automáticos
         comprobante.setFechaEmision(LocalDate.now());
         comprobante.setEstadoComprobante(1); // 1 = Activo
-        
+
         Comprobante savedComprobante = serviceComprobante.guardar(comprobante);
         return convertToDto(savedComprobante);
     }
 
     @PutMapping("/comprobantes")
+    @Transactional
     public ResponseEntity<ComprobanteDTO> modificar(@RequestBody ComprobanteDTO dto) {
         if (dto.getIdComprobante() == null) {
             return ResponseEntity.badRequest().build();
@@ -56,16 +61,18 @@ public class ComprobanteController {
                     Comprobante updatedComprobante = serviceComprobante.modificar(comprobanteExistente);
                     return ResponseEntity.ok(convertToDto(updatedComprobante));
                 })
-                .orElse(ResponseEntity.notFound().build());    }
+                .orElse(ResponseEntity.notFound().build());
+    }
 
     @DeleteMapping("/comprobantes/{idComprobante}")
-    public String eliminar(@PathVariable Integer idComprobante){
+    @Transactional
+    public String eliminar(@PathVariable Integer idComprobante) {
         serviceComprobante.eliminar(idComprobante);
         return "Comprobante eliminado";
     }
 
     // --- Métodos de Ayuda ---
-    
+
     private ComprobanteDTO convertToDto(Comprobante entity) {
         ComprobanteDTO dto = new ComprobanteDTO();
         dto.setIdComprobante(entity.getIdComprobante());

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.sipsoft.licoreria.dto.DetalleVentaDTO;
 import com.sipsoft.licoreria.entity.DetalleVenta;
@@ -16,6 +17,7 @@ public class DetalleVentaController {
     private IDetalleVentaService serviceDetalleVenta;
 
     @GetMapping("/detalle-ventas")
+    @Transactional(readOnly = true)
     public List<DetalleVentaDTO> buscarTodos() {
         return serviceDetalleVenta.bucarTodos().stream()
                 .map(this::convertToDto)
@@ -23,6 +25,7 @@ public class DetalleVentaController {
     }
 
     @GetMapping("/detalle-ventas/{idDetalleVenta}")
+    @Transactional(readOnly = true)
     public ResponseEntity<DetalleVentaDTO> buscarId(@PathVariable("idDetalleVenta") Integer idDetalleVenta) {
         return serviceDetalleVenta.buscarId(idDetalleVenta)
                 .map(detalle -> ResponseEntity.ok(convertToDto(detalle)))
@@ -30,16 +33,18 @@ public class DetalleVentaController {
     }
 
     @PostMapping("/detalle-ventas")
+    @Transactional
     public DetalleVentaDTO guardar(@RequestBody DetalleVentaDTO dto) {
         DetalleVenta detalle = new DetalleVenta();
         mapDtoToEntity(dto, detalle);
         detalle.setEstadoDetalleVenta(1); // Estado activo por defecto
-        
+
         DetalleVenta savedDetalle = serviceDetalleVenta.guardar(detalle);
         return convertToDto(savedDetalle);
     }
 
     @PutMapping("/detalle-ventas")
+    @Transactional
     public ResponseEntity<DetalleVentaDTO> modificar(@RequestBody DetalleVentaDTO dto) {
         if (dto.getIdDetalleVenta() == null) {
             return ResponseEntity.badRequest().build();
@@ -55,7 +60,8 @@ public class DetalleVentaController {
     }
 
     @DeleteMapping("/detalle-ventas/{idDetalleVenta}")
-    public String eliminar(@PathVariable Integer idDetalleVenta){
+    @Transactional
+    public String eliminar(@PathVariable Integer idDetalleVenta) {
         serviceDetalleVenta.eliminar(idDetalleVenta);
         return "Detalle de Venta eliminado";
     }

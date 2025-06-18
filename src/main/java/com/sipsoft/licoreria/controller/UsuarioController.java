@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,9 +42,8 @@ public class UsuarioController {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
-    @GetMapping("/usuarios")
+    private BCryptPasswordEncoder passwordEncoder;    @GetMapping("/usuarios")
+    @Transactional(readOnly = true)
     @Operation(summary = "Obtener todos los usuarios", security = @SecurityRequirement(name = "bearerAuth"))
     public List<Usuario> buscarTodos() {
         return serviceUsuario.buscarTodos();
@@ -54,8 +54,8 @@ public class UsuarioController {
      * 
      * @param usuarioDto DTO con la información del usuario a crear.
      * @return El usuario creado con sus credenciales generadas.
-     */
-    @PostMapping("/usuarios")
+     */    @PostMapping("/usuarios")
+    @Transactional
     @Operation(summary = "Crear un nuevo usuario", security = @SecurityRequirement(name = "bearerAuth"))
     public Usuario guardar(@RequestBody UsuarioDTO usuarioDto) {
         Usuario usuario = new Usuario();
@@ -83,8 +83,8 @@ public class UsuarioController {
      * 
      * @param usuarioDto DTO con la información a actualizar.
      * @return El usuario modificado o un mensaje de error si no se encuentra.
-     */
-    @PutMapping("/usuarios")
+     */    @PutMapping("/usuarios")
+    @Transactional
     @Operation(summary = "Modificar un usuario existente", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<?> modificar(@RequestBody UsuarioDTO usuarioDto) {
         if (usuarioDto.getIdUsuario() == null) {
@@ -113,15 +113,13 @@ public class UsuarioController {
 
         Usuario usuarioModificado = serviceUsuario.modificar(usuarioExistente);
         return ResponseEntity.ok(usuarioModificado);
-    }
-
-    @GetMapping("/usuarios/{idUsuario}")
+    }    @GetMapping("/usuarios/{idUsuario}")
+    @Transactional(readOnly = true)
     @Operation(summary = "Buscar usuario por ID", security = @SecurityRequirement(name = "bearerAuth"))
     public Optional<Usuario> buscarId(@PathVariable("idUsuario") Integer idUsuario) {
         return serviceUsuario.buscarId(idUsuario);
-    }
-
-    @DeleteMapping("/usuarios/{idUsuario}")
+    }    @DeleteMapping("/usuarios/{idUsuario}")
+    @Transactional
     @Operation(summary = "Eliminar usuario por ID", security = @SecurityRequirement(name = "bearerAuth"))
     public String eliminar(@PathVariable Integer idUsuario) {
         serviceUsuario.eliminar(idUsuario);
