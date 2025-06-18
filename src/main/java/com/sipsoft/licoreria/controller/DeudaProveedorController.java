@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import com.sipsoft.licoreria.services.IDeudaProveedorService;
 
 @RestController
 @RequestMapping("/sipsoft")
+@Transactional(readOnly = true)
 public class DeudaProveedorController {
     @Autowired
     private IDeudaProveedorService serviceDeudaProveedor;

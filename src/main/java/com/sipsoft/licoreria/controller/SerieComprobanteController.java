@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.sipsoft.licoreria.dto.SerieComprobanteDTO;
 import com.sipsoft.licoreria.entity.SerieComprobante;
@@ -11,6 +12,7 @@ import com.sipsoft.licoreria.services.ISerieComprobanteService;
 
 @RestController
 @RequestMapping("/sipsoft")
+@Transactional(readOnly = true)
 public class SerieComprobanteController {
     @Autowired
     private ISerieComprobanteService serviceSerieComprobante;

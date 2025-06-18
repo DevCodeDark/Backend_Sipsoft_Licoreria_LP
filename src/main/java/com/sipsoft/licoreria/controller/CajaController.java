@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.sipsoft.licoreria.dto.CajaDTO;
 import com.sipsoft.licoreria.entity.Caja;
@@ -12,6 +13,7 @@ import com.sipsoft.licoreria.services.ICajaService;
 
 @RestController
 @RequestMapping("/sipsoft")
+@Transactional(readOnly = true)
 public class CajaController {
     @Autowired
     private ICajaService serviceCaja;

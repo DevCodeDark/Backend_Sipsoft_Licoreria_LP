@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.sipsoft.licoreria.dto.DetalleOrdenCompraDTO;
 import com.sipsoft.licoreria.entity.DetalleOrdenCompra;
@@ -11,6 +12,7 @@ import com.sipsoft.licoreria.services.IDetalleOrdenCompraService;
 
 @RestController
 @RequestMapping("/sipsoft")
+@Transactional(readOnly = true)
 public class DetalleOrdenCompraController {
     @Autowired
     private IDetalleOrdenCompraService serviceDetalleOrdenCompra;    @GetMapping("/detalle-orden-compra")

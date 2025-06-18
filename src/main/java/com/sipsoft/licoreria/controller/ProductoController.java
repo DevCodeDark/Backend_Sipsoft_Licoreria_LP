@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,12 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sipsoft.licoreria.entity.Producto;
 import com.sipsoft.licoreria.dto.ProductoDTO;
-import com.sipsoft.licoreria.entity.Empresa;
-import com.sipsoft.licoreria.entity.Categoria;
-import com.sipsoft.licoreria.entity.UnidadMedida;
-import com.sipsoft.licoreria.repository.EmpresaRepository;
-import com.sipsoft.licoreria.repository.CategoriaRepository;
-import com.sipsoft.licoreria.repository.UnidadMedidaRepository;
 import com.sipsoft.licoreria.services.IProductoService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,20 +30,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/sipsoft")
+@Transactional(readOnly = true)
 @Tag(name = "Productos", description = "Gestión de productos e inventario")
 @SecurityRequirement(name = "bearerAuth")
 public class ProductoController {
     @Autowired
-    private IProductoService serviceProducto;
-
-    @Autowired
-    private EmpresaRepository repoEmpresa;
-
-    @Autowired
-    private CategoriaRepository repoCategoria;
-
-    @Autowired
-    private UnidadMedidaRepository repoUnidadMedida;    @GetMapping("/productos")
+    private IProductoService serviceProducto;@GetMapping("/productos")
     @Operation(summary = "Obtener todos los productos", 
                description = "Retrieves a list of all products in the system")
     @ApiResponses(value = {
@@ -74,19 +61,12 @@ public class ProductoController {
         producto.setCodBarras(dto.getCodBarras());
         producto.setDescripcionProducto(dto.getDescripcionProducto());
         producto.setStockMinimo(dto.getStockMinimo());
-        producto.setImagenProducto(dto.getImagenProducto());
-        producto.setPrecioVentaProducto(dto.getPrecioVentaProducto());
+        producto.setImagenProducto(dto.getImagenProducto());        producto.setPrecioVentaProducto(dto.getPrecioVentaProducto());
         producto.setGananciaPorcentaje(dto.getGananciaPorcentaje());
         producto.setEstadoProducto(dto.getEstadoProducto());
-
-        Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
-        producto.setEmpresa(empresa);
-
-        Categoria categoria = repoCategoria.findById(dto.getIdCategoria()).orElse(null);
-        producto.setIdCategoria(categoria);
-
-        UnidadMedida unidadMedida = repoUnidadMedida.findById(dto.getIdUnidadMedida()).orElse(null);
-        producto.setIdUnidadMedida(unidadMedida);
+        producto.setIdEmpresa(dto.getIdEmpresa());
+        producto.setIdCategoria(dto.getIdCategoria());
+        producto.setIdUnidadMedida(dto.getIdUnidadMedida());
 
         serviceProducto.guardar(producto);
         return producto;
@@ -110,16 +90,12 @@ public class ProductoController {
         producto.setImagenProducto(dto.getImagenProducto());
         producto.setPrecioVentaProducto(dto.getPrecioVentaProducto());
         producto.setGananciaPorcentaje(dto.getGananciaPorcentaje());
+        producto.setEstadoProducto(dto.getEstadoProducto());        producto.setPrecioVentaProducto(dto.getPrecioVentaProducto());
+        producto.setGananciaPorcentaje(dto.getGananciaPorcentaje());
         producto.setEstadoProducto(dto.getEstadoProducto());
-
-        Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
-        producto.setEmpresa(empresa);
-
-        Categoria categoria = repoCategoria.findById(dto.getIdCategoria()).orElse(null);
-        producto.setIdCategoria(categoria);
-
-        UnidadMedida unidadMedida = repoUnidadMedida.findById(dto.getIdUnidadMedida()).orElse(null);
-        producto.setIdUnidadMedida(unidadMedida);
+        producto.setIdEmpresa(dto.getIdEmpresa());
+        producto.setIdCategoria(dto.getIdCategoria());
+        producto.setIdUnidadMedida(dto.getIdUnidadMedida());
 
         serviceProducto.modificar(producto);
         return producto;
