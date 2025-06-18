@@ -7,6 +7,7 @@ import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -28,10 +29,11 @@ public class Venta {
     private Float montoTotalVenta;
     private LocalDateTime fechaAnulacion;
     private String direccion;
-    private String referencia;
-    private Integer estadoVenta = 1;
+    private String referencia;    private Integer estadoVenta = 1;
     private Float igv;
-    private String tipoDocumento;    @ManyToOne(fetch = FetchType.LAZY)
+    
+    @Column(name = "tipo_documento")
+    private String tipoDocumento;@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idCliente")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Cliente idCliente;
