@@ -18,7 +18,7 @@ public class TrasladoController {
 
     @GetMapping("/traslados")
     public List<TrasladoDTO> buscarTodos() {
-        return serviceTraslado.bucarTodos().stream()
+        return serviceTraslado.buscarTodos().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }

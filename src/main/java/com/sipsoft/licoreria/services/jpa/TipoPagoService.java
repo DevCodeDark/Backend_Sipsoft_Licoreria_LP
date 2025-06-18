@@ -15,7 +15,7 @@ public class TipoPagoService implements ITipoPagoService {
     @Autowired
     private TipoPagoRepository repoTipoPago;
     
-    public List<TipoPago> bucarTodos() {
+    public List<TipoPago> buscarTodos() {
         return repoTipoPago.findAll();
     }
     

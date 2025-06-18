@@ -30,7 +30,7 @@ public class UnidadMedidaController {
 
     @GetMapping("/unidades-medida")
     public List<UnidadMedida> buscarTodos() {
-        return serviceUnidadMedida.bucarTodos();
+        return serviceUnidadMedida.buscarTodos();
     }
 
     @PostMapping("/unidades-medida")

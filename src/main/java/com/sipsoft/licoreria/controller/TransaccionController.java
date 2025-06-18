@@ -41,15 +41,14 @@ public class TransaccionController {
 
     @GetMapping("/transacciones")
     public List<Transaccion> buscarTodos() {
-        return serviceTransaccion.bucarTodos();
-    }
-
-    @PostMapping("/transacciones")
+        return serviceTransaccion.buscarTodos();
+    }    @PostMapping("/transacciones")
     public ResponseEntity<?> guardar(@RequestBody TransaccionDTO dto) {
         Transaccion transaccion = new Transaccion();
         transaccion.setMotivoTransaccion(dto.getMotivoTransaccion());
         transaccion.setMontoTransaccion(dto.getMontoTransaccion());
         transaccion.setTipo(dto.getTipo());
+        transaccion.setEstado(dto.getEstado() != null ? dto.getEstado() : 1);
         transaccion.setFechaTransaccion(dto.getFechaTransaccion());
 
         TipoPago tipoPago = repoPago.findById(dto.getIdTipoPago()).orElse(null);
@@ -61,9 +60,7 @@ public class TransaccionController {
         transaccion.setIdCaja(caja);
 
         return ResponseEntity.ok(serviceTransaccion.guardar(transaccion));
-    }
-
-    @PutMapping("/transacciones")
+    }    @PutMapping("/transacciones")
     public ResponseEntity<?> modificar(@RequestBody TransaccionDTO dto) {
         if (dto.getIdTransaccion() == null) {
             return ResponseEntity.badRequest().body("ID no existe");
@@ -73,6 +70,7 @@ public class TransaccionController {
         transaccion.setMotivoTransaccion(dto.getMotivoTransaccion());
         transaccion.setMontoTransaccion(dto.getMontoTransaccion());
         transaccion.setTipo(dto.getTipo());
+        transaccion.setEstado(dto.getEstado() != null ? dto.getEstado() : 1);
         transaccion.setFechaTransaccion(dto.getFechaTransaccion());
 
         TipoPago tipoPago = repoPago.findById(dto.getIdTipoPago()).orElse(null);

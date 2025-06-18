@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.sipsoft.licoreria.entity.TipoPago;
 
 public interface ITipoPagoService {
-    List<TipoPago> bucarTodos();
+    List<TipoPago> buscarTodos();
     TipoPago guardar(TipoPago tipoPago);
     TipoPago modificar(TipoPago tipoPago);
     Optional<TipoPago> buscarId(Integer idTipoPago);

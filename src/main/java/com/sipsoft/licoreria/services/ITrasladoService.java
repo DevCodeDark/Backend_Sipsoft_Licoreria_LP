@@ -5,7 +5,7 @@ import java.util.Optional;
 import com.sipsoft.licoreria.entity.Traslado;
 
 public interface ITrasladoService {
-    List<Traslado> bucarTodos();
+    List<Traslado> buscarTodos();
     Traslado guardar(Traslado traslado);
     Traslado modificar(Traslado traslado);
     Optional<Traslado> buscarId(Integer idTraslado);
