@@ -32,7 +32,6 @@ public class Comprobante {
     private Integer idVenta;
     private Integer idSerie;
     private Integer idCaja;
-    private Integer idCompra;
     private Integer idTipoComprobante;
 
     @JsonIgnore
@@ -52,12 +51,6 @@ public class Comprobante {
     @JoinColumn(name = "idCaja", insertable = false, updatable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Caja caja;
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idCompra", insertable = false, updatable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Compra compra;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -129,18 +122,11 @@ public class Comprobante {
     }
     public void setIdSerie(Integer idSerie) { 
         this.idSerie = idSerie; 
-    }
-    public Integer getIdCaja() { 
+    }    public Integer getIdCaja() { 
         return idCaja; 
     }
     public void setIdCaja(Integer idCaja) { 
         this.idCaja = idCaja; 
-    }
-    public Integer getIdCompra() { 
-        return idCompra; 
-    }
-    public void setIdCompra(Integer idCompra) { 
-        this.idCompra = idCompra; 
     }
     public Integer getIdTipoComprobante() { 
         return idTipoComprobante; 
@@ -162,15 +148,8 @@ public class Comprobante {
     }
     public Caja getCaja() { 
         return caja; 
-    }
-    public void setCaja(Caja caja) { 
+    }    public void setCaja(Caja caja) { 
         this.caja = caja; 
-    }
-    public Compra getCompra() { 
-        return compra; 
-    }
-    public void setCompra(Compra compra) { 
-        this.compra = compra; 
     }
     public TipoComprobante getTipoComprobante() { 
         return tipoComprobante; 

@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sipsoft.licoreria.dto.ClienteDTO;
 import com.sipsoft.licoreria.entity.Cliente;
-import com.sipsoft.licoreria.entity.Empresa;
-import com.sipsoft.licoreria.repository.EmpresaRepository;
 import com.sipsoft.licoreria.services.IClienteService;
 
 @RestController
@@ -26,54 +24,35 @@ public class ClienteController {
     @Autowired
     private IClienteService serviceCliente;
 
-    @Autowired
-    private EmpresaRepository repoEmpresa;
-
     @GetMapping("/clientes")
     public List<Cliente> buscarTodos() {
         return serviceCliente.bucarTodos();
-    }
-    @PostMapping("/clientes")
-    public ResponseEntity <?> guardar(@RequestBody ClienteDTO dto) {
+    }    @PostMapping("/clientes")
+    public ResponseEntity<Cliente> guardar(@RequestBody ClienteDTO dto) {
         Cliente cliente = new Cliente();
+        cliente.setIdEmpresa(dto.getIdEmpresa());
         cliente.setNumDocumento(dto.getNumDocumento());
-        cliente.setRazonSocial(dto.getRazonSocial());
         cliente.setNombreCliente(dto.getNombreCliente());
         cliente.setApellidoCliente(dto.getApellidoCliente());
         cliente.setTelefonoCliente(dto.getTelefonoCliente());
-        cliente.setFrecuenciaCompra(dto.getFrecuenciaCompra());
-        cliente.setMontoTotalComprado(dto.getMontoTotalComprado());
-        cliente.setNombreRazonSocial(dto.getNombreRazonSocial());
         cliente.setTipoCliente(dto.getTipoCliente());
-
-
-        Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
-        
-        cliente.setIdEmpresa(empresa);      
-
+        cliente.setEstadoCliente(dto.getEstadoCliente());
 
         return ResponseEntity.ok(serviceCliente.guardar(cliente));
-    }
-
-    @PutMapping("/clientes")
-    public ResponseEntity <?> modificar(@RequestBody ClienteDTO dto) {
+    }    @PutMapping("/clientes")
+    public ResponseEntity<Object> modificar(@RequestBody ClienteDTO dto) {
         if (dto.getIdCliente() == null) {
             return ResponseEntity.badRequest().body("ID no existe");            
         }
         Cliente cliente = new Cliente();
         cliente.setIdCliente(dto.getIdCliente());
+        cliente.setIdEmpresa(dto.getIdEmpresa());
         cliente.setNumDocumento(dto.getNumDocumento());
-        cliente.setRazonSocial(dto.getRazonSocial());
         cliente.setNombreCliente(dto.getNombreCliente());
         cliente.setApellidoCliente(dto.getApellidoCliente());
         cliente.setTelefonoCliente(dto.getTelefonoCliente());
-        cliente.setFrecuenciaCompra(dto.getFrecuenciaCompra());
-        cliente.setMontoTotalComprado(dto.getMontoTotalComprado());
-        cliente.setNombreRazonSocial(dto.getNombreRazonSocial());
-        cliente.setTipoCliente(dto.getTipoCliente());      
-        
-        cliente.setIdEmpresa(new Empresa(dto.getIdEmpresa()));    
-
+        cliente.setTipoCliente(dto.getTipoCliente());
+        cliente.setEstadoCliente(dto.getEstadoCliente());
 
         return ResponseEntity.ok(serviceCliente.modificar(cliente));
     }
