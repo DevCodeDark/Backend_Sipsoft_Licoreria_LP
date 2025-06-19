@@ -24,7 +24,8 @@ public class Registro {
     @JsonIgnore
     @Column(name = "accessToken", nullable = true, length = 500)
     private String accessToken;
-      @Column(name = "clienteId", nullable = false, length = 255, unique = true)
+    
+    @Column(name = "clienteId", nullable = false, length = 255, unique = true)
     private String clienteId;
     
     @Column(name = "llaveSecreta", nullable = false, length = 255)
