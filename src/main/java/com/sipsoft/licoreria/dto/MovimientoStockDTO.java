@@ -2,17 +2,7 @@ package com.sipsoft.licoreria.dto;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "movimientos_stock")
 public class MovimientoStockDTO {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idMovimientoStock;
     private Integer cantidadMovimientoStock;
     private LocalDateTime fechaMovimientoStock;

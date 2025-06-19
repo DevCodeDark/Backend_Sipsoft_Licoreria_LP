@@ -1,7 +1,8 @@
 package com.sipsoft.licoreria.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,51 +38,49 @@ public class MovimientosStockController {
 
     @GetMapping("/movimientos-stock")
     @Transactional(readOnly = true)
-    public List<MovimientosStock> buscarTodos() {
-        return serviceMovimientosStock.bucarTodos();
-    }
-
-    @PostMapping("/movimientos-stock")
-    @Transactional
-    public ResponseEntity<?> guardar(@RequestBody MovimientoStockDTO dto) {
-        MovimientosStock movimientosStock = new MovimientosStock();
-        movimientosStock.setCantidadMovimientoStock(dto.getCantidadMovimientoStock());
-        movimientosStock.setFechaMovimientoStock(dto.getFechaMovimientoStock());
-
-        TipoMovimientosStock tipoMovimientosStock = repoTipoMovimientosStock.findById(dto.getIdTipoMovimiento())
-                .orElse(null);
-        Lote lote = repoLote.findById(dto.getIdLote()).orElse(null);
-        movimientosStock.setIdTipoMovimiento(tipoMovimientosStock);
-        movimientosStock.setIdLote(lote);
-
-        return ResponseEntity.ok(serviceMovimientosStock.guardar(movimientosStock));
-    }
-
-    @PutMapping("/movimientos-stock")
-    @Transactional
-    public ResponseEntity<?> modificar(@RequestBody MovimientoStockDTO dto) {
-        if (dto.getIdMovimientoStock() == null) {
-            return ResponseEntity.badRequest().body("ID no existe");
-        }
-        MovimientosStock movimientosStock = new MovimientosStock();
-        movimientosStock.setIdMovimientoStock(dto.getIdMovimientoStock());
-        movimientosStock.setCantidadMovimientoStock(dto.getCantidadMovimientoStock());
-        movimientosStock.setFechaMovimientoStock(dto.getFechaMovimientoStock());
-
-        TipoMovimientosStock tipoMovimientosStock = repoTipoMovimientosStock.findById(dto.getIdTipoMovimiento())
-                .orElse(null);
-        Lote lote = repoLote.findById(dto.getIdLote()).orElse(null);
-
-        movimientosStock.setIdTipoMovimiento(tipoMovimientosStock);
-        movimientosStock.setIdLote(lote);
-
-        return ResponseEntity.ok(serviceMovimientosStock.modificar(movimientosStock));
+    public List<MovimientoStockDTO> buscarTodos() {
+        return serviceMovimientosStock.bucarTodos().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/movimientos-stock/{idMovimientoStock}")
     @Transactional(readOnly = true)
-    public Optional<MovimientosStock> buscarId(@PathVariable("idMovimientoStock") Integer idMovimientoStock) {
-        return serviceMovimientosStock.buscarId(idMovimientoStock);
+    public ResponseEntity<MovimientoStockDTO> buscarId(@PathVariable("idMovimientoStock") Integer idMovimientoStock) {
+        return serviceMovimientosStock.buscarId(idMovimientoStock)
+                .map(movimiento -> ResponseEntity.ok(convertToDto(movimiento)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/movimientos-stock")
+    @Transactional
+    public MovimientoStockDTO guardar(@RequestBody MovimientoStockDTO dto) {
+        MovimientosStock movimientosStock = new MovimientosStock();
+        mapDtoToEntity(dto, movimientosStock);
+        
+        // Asignar fecha automáticamente si no se proporciona
+        if (dto.getFechaMovimientoStock() == null) {
+            movimientosStock.setFechaMovimientoStock(LocalDateTime.now());
+        }
+
+        MovimientosStock savedMovimiento = serviceMovimientosStock.guardar(movimientosStock);
+        return convertToDto(savedMovimiento);
+    }
+
+    @PutMapping("/movimientos-stock")
+    @Transactional
+    public ResponseEntity<MovimientoStockDTO> modificar(@RequestBody MovimientoStockDTO dto) {
+        if (dto.getIdMovimientoStock() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return serviceMovimientosStock.buscarId(dto.getIdMovimientoStock())
+                .map(movimientoExistente -> {
+                    mapDtoToEntity(dto, movimientoExistente);
+                    MovimientosStock updatedMovimiento = serviceMovimientosStock.modificar(movimientoExistente);
+                    return ResponseEntity.ok(convertToDto(updatedMovimiento));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/movimientos-stock/{idMovimientoStock}")
@@ -89,5 +88,34 @@ public class MovimientosStockController {
     public String eliminar(@PathVariable Integer idMovimientoStock) {
         serviceMovimientosStock.eliminar(idMovimientoStock);
         return "Movimiento Stock eliminado";
+    }
+
+    // --- Métodos de Ayuda ---
+
+    private MovimientoStockDTO convertToDto(MovimientosStock entity) {
+        MovimientoStockDTO dto = new MovimientoStockDTO();
+        dto.setIdMovimientoStock(entity.getIdMovimientoStock());
+        dto.setCantidadMovimientoStock(entity.getCantidadMovimientoStock());
+        dto.setFechaMovimientoStock(entity.getFechaMovimientoStock());
+        dto.setIdLote(entity.getIdLote());
+        dto.setIdTipoMovimiento(entity.getIdTipoMovimiento());
+        return dto;
+    }
+
+    private void mapDtoToEntity(MovimientoStockDTO dto, MovimientosStock entity) {
+        entity.setCantidadMovimientoStock(dto.getCantidadMovimientoStock());
+        entity.setFechaMovimientoStock(dto.getFechaMovimientoStock());
+        entity.setIdLote(dto.getIdLote());
+        entity.setIdTipoMovimiento(dto.getIdTipoMovimiento());
+
+        // Establecer relaciones por ID
+        if (dto.getIdLote() != null) {
+            Lote lote = repoLote.findById(dto.getIdLote()).orElse(null);
+            entity.setLote(lote);
+        }
+        if (dto.getIdTipoMovimiento() != null) {
+            TipoMovimientosStock tipoMovimiento = repoTipoMovimientosStock.findById(dto.getIdTipoMovimiento()).orElse(null);
+            entity.setTipoMovimiento(tipoMovimiento);
+        }
     }
 }
