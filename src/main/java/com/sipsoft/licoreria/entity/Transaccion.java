@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,7 +20,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "transaccion")
 @SQLDelete(sql = "UPDATE transaccion SET estado = 0 WHERE idTransaccion = ?")
-@Where(clause = "estado = 1")
+@SQLRestriction("estado = 1")
 public class Transaccion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,20 +30,19 @@ public class Transaccion {
     private String tipo;
     private Integer estado = 1;
     private LocalDateTime fechaTransaccion;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idTipoPago")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
     private TipoPago idTipoPago;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idUsuario")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
     private Usuario idUsuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idCaja")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
     private Caja idCaja;
 
     public Transaccion() {
@@ -67,7 +66,9 @@ public class Transaccion {
 
     public void setMotivoTransaccion(String motivoTransaccion) {
         this.motivoTransaccion = motivoTransaccion;
-    }    public BigDecimal getMontoTransaccion() {
+    }
+
+    public BigDecimal getMontoTransaccion() {
         return montoTransaccion;
     }
 
@@ -123,6 +124,19 @@ public class Transaccion {
         this.idCaja = idCaja;
     }
 
+    // Métodos helper para obtener IDs de las relaciones
+    public Integer getTipoPagoId() {
+        return idTipoPago != null ? idTipoPago.getIdTipoPago() : null;
+    }
+
+    public Integer getUsuarioId() {
+        return idUsuario != null ? idUsuario.getIdUsuario() : null;
+    }
+
+    public Integer getCajaId() {
+        return idCaja != null ? idCaja.getIdCaja() : null;
+    }
+
     @Override
     public String toString() {
         return "Transaccion [idTransaccion=" + idTransaccion + ", motivoTransaccion=" + motivoTransaccion
@@ -131,5 +145,4 @@ public class Transaccion {
                 + ", idCaja=" + idCaja + "]";
     }
 
-    
 }
