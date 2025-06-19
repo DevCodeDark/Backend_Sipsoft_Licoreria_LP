@@ -23,7 +23,8 @@ import jakarta.persistence.Table;
 @Table(name = "venta")
 @SQLDelete(sql = "UPDATE venta SET estadoVenta = 0 WHERE idVenta = ?")
 @Where(clause = "estadoVenta = 1")
-public class Venta {    @Id
+public class Venta {
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idVenta;
     private Integer idCliente;
@@ -32,31 +33,40 @@ public class Venta {    @Id
     private LocalDateTime fechaVenta;
     private BigDecimal montoTotalVenta;
     private LocalDateTime fechaAnulacion;
+
+    @Column(name = "direccion", nullable = true)
     private String direccion;
+
+    @Column(name = "referencia")
     private String referencia;
+
     private Integer estadoVenta = 1;
     private Integer idUsuario;
-    
+
     @Column(name = "tipo_documento")
-    private String tipoDocumento;    
+    private String tipoDocumento;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idCliente", insertable = false, updatable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Cliente cliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idCaja", insertable = false, updatable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Caja caja;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idUsuario", insertable = false, updatable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Usuario usuario;
-    
+
     public Venta() {
     }
-    public Venta(Integer id) { this.idVenta = id; }
+
+    public Venta(Integer id) {
+        this.idVenta = id;
+    }
+
     public Integer getIdVenta() {
         return idVenta;
     }
@@ -67,7 +77,9 @@ public class Venta {    @Id
 
     public LocalDateTime getFechaVenta() {
         return fechaVenta;
-    }    public void setFechaVenta(LocalDateTime fechaVenta) {
+    }
+
+    public void setFechaVenta(LocalDateTime fechaVenta) {
         this.fechaVenta = fechaVenta;
     }
 
@@ -93,7 +105,9 @@ public class Venta {    @Id
 
     public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
-    }public BigDecimal getMontoTotalVenta() {
+    }
+
+    public BigDecimal getMontoTotalVenta() {
         return montoTotalVenta;
     }
 
@@ -131,19 +145,24 @@ public class Venta {    @Id
 
     public void setEstadoVenta(Integer estadoVenta) {
         this.estadoVenta = estadoVenta;
-    }    public String getTipoDocumento() {
+    }
+
+    public String getTipoDocumento() {
         return tipoDocumento;
     }
 
     public void setTipoDocumento(String tipoDocumento) {
         this.tipoDocumento = tipoDocumento;
-    }    public BigDecimal getIgv() {
+    }
+
+    public BigDecimal getIgv() {
         return igv;
     }
 
     public void setIgv(BigDecimal igv) {
         this.igv = igv;
-    }    
+    }
+
     @JsonIgnore
     public Cliente getCliente() {
         return cliente;
@@ -169,10 +188,14 @@ public class Venta {    @Id
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
-    }@Override
-    public String toString() {        return "Venta [idVenta=" + idVenta + ", idCliente=" + idCliente + ", idCaja=" + idCaja 
+    }
+
+    @Override
+    public String toString() {
+        return "Venta [idVenta=" + idVenta + ", idCliente=" + idCliente + ", idCaja=" + idCaja
                 + ", igv=" + igv + ", fechaVenta=" + fechaVenta + ", montoTotalVenta=" + montoTotalVenta
                 + ", fechaAnulacion=" + fechaAnulacion + ", direccion=" + direccion + ", referencia=" + referencia
-                + ", estadoVenta=" + estadoVenta + ", idUsuario=" + idUsuario + ", tipoDocumento=" + tipoDocumento + "]";
+                + ", estadoVenta=" + estadoVenta + ", idUsuario=" + idUsuario + ", tipoDocumento=" + tipoDocumento
+                + "]";
     }
 }
