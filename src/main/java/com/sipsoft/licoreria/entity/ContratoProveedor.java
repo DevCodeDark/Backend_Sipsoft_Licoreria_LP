@@ -18,7 +18,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "contrato_proveedor")
-@SQLDelete(sql = "UPDATE contrato_proveedor SET estadoContrato = 0 WHERE idContratoProveedor = ?")
+@SQLDelete(sql = "UPDATE contrato_proveedor SET estadoContratoProveedor = 0 WHERE idContratoProveedor = ?")
 @Where(clause = "estadoContratoProveedor = 1")
 public class ContratoProveedor {
     @Id

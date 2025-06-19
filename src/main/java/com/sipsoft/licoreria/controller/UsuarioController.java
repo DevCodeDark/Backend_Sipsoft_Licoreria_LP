@@ -65,9 +65,11 @@ public class UsuarioController {
         usuario.setApellidoUsuario(usuarioDto.getApellidoUsuario());
         usuario.setTelefonoUsuario(usuarioDto.getTelefonoUsuario());
         usuario.setDniUsuario(usuarioDto.getDniUsuario());
+        usuario.setUsuario(usuarioDto.getUsuario());
         usuario.setEmailUsuario(usuarioDto.getEmailUsuario());
         usuario.setIdRol(usuarioDto.getIdRol());
-        usuario.setIdEmpresa(usuarioDto.getIdEmpresa());        // Cifrar la contraseña
+        usuario.setIdSucursal(usuarioDto.getIdSucursal());
+        usuario.setIdEmpresa(usuarioDto.getIdEmpresa());        
         if (usuarioDto.getContrasenaUsuario() != null && !usuarioDto.getContrasenaUsuario().isEmpty()) {
             usuario.setContrasenaUsuario(passwordEncoder.encode(usuarioDto.getContrasenaUsuario()));
         }
@@ -103,8 +105,11 @@ public class UsuarioController {
         usuarioExistente.setApellidoUsuario(usuarioDto.getApellidoUsuario());
         usuarioExistente.setTelefonoUsuario(usuarioDto.getTelefonoUsuario());
         usuarioExistente.setDniUsuario(usuarioDto.getDniUsuario());
+        usuarioExistente.setUsuario(usuarioDto.getUsuario());
         usuarioExistente.setEmailUsuario(usuarioDto.getEmailUsuario());
-        usuarioExistente.setIdRol(usuarioDto.getIdRol());        usuarioExistente.setIdEmpresa(usuarioDto.getIdEmpresa());
+        usuarioExistente.setIdRol(usuarioDto.getIdRol());  
+        usuarioExistente.setIdSucursal(usuarioDto.getIdSucursal());         
+        usuarioExistente.setIdEmpresa(usuarioDto.getIdEmpresa());
 
         // Actualizar contraseña solo si se proporciona una nueva
         if (usuarioDto.getContrasenaUsuario() != null && !usuarioDto.getContrasenaUsuario().isEmpty()) {
