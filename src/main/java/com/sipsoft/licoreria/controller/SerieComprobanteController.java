@@ -20,15 +20,19 @@ public class SerieComprobanteController {
     @Transactional(readOnly = true)
     public List<SerieComprobanteDTO> buscarTodos() {
         return serviceSerieComprobante.bucarTodos().stream()
-            .map(this::convertToDto)
-            .collect(Collectors.toList());
-    }    @GetMapping("/series-comprobante/{idSerie}")
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/series-comprobante/{idSerie}")
     @Transactional(readOnly = true)
     public ResponseEntity<SerieComprobanteDTO> buscarId(@PathVariable("idSerie") Integer idSerie) {
         return serviceSerieComprobante.buscarId(idSerie)
-            .map(serie -> ResponseEntity.ok(convertToDto(serie)))
-            .orElse(ResponseEntity.notFound().build());
-    }    @PostMapping("/series-comprobante")
+                .map(serie -> ResponseEntity.ok(convertToDto(serie)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/series-comprobante")
     @Transactional
     public SerieComprobanteDTO guardar(@RequestBody SerieComprobanteDTO dto) {
         SerieComprobante serie = new SerieComprobante();
@@ -39,7 +43,9 @@ public class SerieComprobanteController {
 
         SerieComprobante savedSerie = serviceSerieComprobante.guardar(serie);
         return convertToDto(savedSerie);
-    }    @PutMapping("/series-comprobante")
+    }
+
+    @PutMapping("/series-comprobante")
     @Transactional
     public ResponseEntity<SerieComprobanteDTO> modificar(@RequestBody SerieComprobanteDTO dto) {
         if (dto.getIdSerie() == null) {
@@ -47,19 +53,20 @@ public class SerieComprobanteController {
         }
 
         return serviceSerieComprobante.buscarId(dto.getIdSerie())
-            .map(serieExistente -> {
-                serieExistente.setNumSerie(dto.getNumSerie());
-                serieExistente.setEstadoSerie(dto.getEstadoSerie());
-                serieExistente.setIdTipoComprobante(dto.getIdTipoComprobante());
-                serieExistente.setIdEmpresa(dto.getIdEmpresa());
+                .map(serieExistente -> {
+                    serieExistente.setNumSerie(dto.getNumSerie());
+                    serieExistente.setIdTipoComprobante(dto.getIdTipoComprobante());
+                    serieExistente.setIdEmpresa(dto.getIdEmpresa());
 
-                SerieComprobante updatedSerie = serviceSerieComprobante.modificar(serieExistente);
-                return ResponseEntity.ok(convertToDto(updatedSerie));
-            })
-            .orElse(ResponseEntity.notFound().build());
-    }    @DeleteMapping("/series-comprobante/{idSerie}")
+                    SerieComprobante updatedSerie = serviceSerieComprobante.modificar(serieExistente);
+                    return ResponseEntity.ok(convertToDto(updatedSerie));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/series-comprobante/{idSerie}")
     @Transactional
-    public String eliminar(@PathVariable Integer idSerie){
+    public String eliminar(@PathVariable Integer idSerie) {
         serviceSerieComprobante.eliminar(idSerie);
         return "Serie de Comprobante eliminada";
     }
