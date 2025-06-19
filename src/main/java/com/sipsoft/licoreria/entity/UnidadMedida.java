@@ -1,9 +1,9 @@
 package com.sipsoft.licoreria.entity;
 
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "unidad_medida")
 @SQLDelete(sql = "UPDATE unidad_medida SET estadoUnidadMedida = 0 WHERE idUnidadMedida = ?")
-@Where(clause = "estadoUnidadMedida = 1")
+@SQLRestriction("estadoUnidadMedida = 1")
 public class UnidadMedida {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +25,9 @@ public class UnidadMedida {
     private String nombreUnidadMedida;
     private String abreviaturaUnidadMedida;
     private Integer estadoUnidadMedida = 1;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idEmpresa")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
     private Empresa idEmpresa;
 
     public UnidadMedida() {
@@ -72,6 +71,11 @@ public class UnidadMedida {
 
     public void setIdEmpresa(Empresa idEmpresa) {
         this.idEmpresa = idEmpresa;
+    }
+
+    // Método helper para obtener ID de la relación
+    public Integer getEmpresaId() {
+        return idEmpresa != null ? idEmpresa.getIdEmpresa() : null;
     }
 
     @Override
