@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,40 +33,92 @@ public class TipoMovimientosStockController {
 
     @GetMapping("/tipos-movimientos-stock")
     @Transactional(readOnly = true)
-    public List<TipoMovimientosStock> buscarTodos() {
-        return serviceTipoMovimientosStock.buscarTodos();
-    }    @PostMapping("/tipos-movimientos-stock")
-    @Transactional
-    public  ResponseEntity <?>  guardar(@RequestBody TipoMovimientosStockDTO dto) {
-        TipoMovimientosStock tipomovimientostock = new TipoMovimientosStock();
-        tipomovimientostock.setDescripcionMovimiento(dto.getDescripcionMovimiento());
-        
-        Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
-        
-        tipomovimientostock.setIdEmpresa(empresa);
-
-        return ResponseEntity.ok(serviceTipoMovimientosStock.guardar(tipomovimientostock));
-    }    @PutMapping("/tipos-movimientos-stock")
-    @Transactional
-    public ResponseEntity <?> modificar(@RequestBody TipoMovimientosStockDTO dto) {
-        if (dto.getIdTipoMovimiento() == null) {
-            return ResponseEntity.badRequest().body("ID no existe");            
+    public ResponseEntity<List<TipoMovimientosStockDTO>> buscarTodos() {
+        try {
+            List<TipoMovimientosStock> tipoMovimientos = serviceTipoMovimientosStock.buscarTodos();
+            List<TipoMovimientosStockDTO> tipoMovimientosDTO = tipoMovimientos.stream()
+                    .map(this::convertirEntidadADTO)
+                    .toList();
+            return ResponseEntity.ok(tipoMovimientosDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        TipoMovimientosStock tipomovimientostock = new TipoMovimientosStock();
-        tipomovimientostock.setIdTipoMovimiento(dto.getIdTipoMovimiento());        tipomovimientostock.setDescripcionMovimiento(dto.getDescripcionMovimiento());
-        
-        Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
-        tipomovimientostock.setIdEmpresa(empresa);
+    }
 
-        return ResponseEntity.ok(serviceTipoMovimientosStock.modificar(tipomovimientostock));
-    }    @GetMapping("/tipos-movimientos-stock/{idTipoMovimiento}")
-    @Transactional(readOnly = true)
-    public Optional<TipoMovimientosStock> buscarId(@PathVariable("idTipoMovimiento") Integer idTipoMovimiento) {
-        return serviceTipoMovimientosStock.buscarId(idTipoMovimiento);
-    }    @DeleteMapping("/tipos-movimientos-stock/{idTipoMovimiento}")
+    @PostMapping("/tipos-movimientos-stock")
     @Transactional
-    public String eliminar(@PathVariable Integer idTipoMovimiento){
+    public ResponseEntity<TipoMovimientosStockDTO> guardar(@RequestBody TipoMovimientosStockDTO dto) {
+        try {
+            TipoMovimientosStock tipomovimientostock = new TipoMovimientosStock();
+            tipomovimientostock.setDescripcionMovimiento(dto.getDescripcionMovimiento());
+
+            if (dto.getIdEmpresa() != null) {
+                Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
+                tipomovimientostock.setIdEmpresa(empresa);
+            }
+
+            TipoMovimientosStock guardado = serviceTipoMovimientosStock.guardar(tipomovimientostock);
+            TipoMovimientosStockDTO resultDto = convertirEntidadADTO(guardado);
+            return ResponseEntity.status(HttpStatus.CREATED).body(resultDto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("/tipos-movimientos-stock")
+    @Transactional
+    public ResponseEntity<TipoMovimientosStockDTO> modificar(@RequestBody TipoMovimientosStockDTO dto) {
+        try {
+            if (dto.getIdTipoMovimiento() == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            TipoMovimientosStock tipomovimientostock = new TipoMovimientosStock();
+            tipomovimientostock.setIdTipoMovimiento(dto.getIdTipoMovimiento());
+            tipomovimientostock.setDescripcionMovimiento(dto.getDescripcionMovimiento());
+
+            if (dto.getIdEmpresa() != null) {
+                Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
+                tipomovimientostock.setIdEmpresa(empresa);
+            }
+
+            TipoMovimientosStock modificado = serviceTipoMovimientosStock.modificar(tipomovimientostock);
+            TipoMovimientosStockDTO resultDto = convertirEntidadADTO(modificado);
+            return ResponseEntity.ok(resultDto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/tipos-movimientos-stock/{idTipoMovimiento}")
+    @Transactional(readOnly = true)
+    public ResponseEntity<TipoMovimientosStockDTO> buscarId(
+            @PathVariable("idTipoMovimiento") Integer idTipoMovimiento) {
+        try {
+            Optional<TipoMovimientosStock> tipoMovimiento = serviceTipoMovimientosStock.buscarId(idTipoMovimiento);
+            if (tipoMovimiento.isPresent()) {
+                TipoMovimientosStockDTO dto = convertirEntidadADTO(tipoMovimiento.get());
+                return ResponseEntity.ok(dto);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("/tipos-movimientos-stock/{idTipoMovimiento}")
+    @Transactional
+    public String eliminar(@PathVariable Integer idTipoMovimiento) {
         serviceTipoMovimientosStock.eliminar(idTipoMovimiento);
         return "Tipo Movimiento Stock eliminado";
+    }
+
+    // Métodos de conversión
+    private TipoMovimientosStockDTO convertirEntidadADTO(TipoMovimientosStock entidad) {
+        TipoMovimientosStockDTO dto = new TipoMovimientosStockDTO();
+        dto.setIdTipoMovimiento(entidad.getIdTipoMovimiento());
+        dto.setDescripcionMovimiento(entidad.getDescripcionMovimiento());
+        dto.setIdEmpresa(entidad.getEmpresaId());
+        return dto;
     }
 }

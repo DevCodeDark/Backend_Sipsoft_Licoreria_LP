@@ -1,6 +1,6 @@
 package com.sipsoft.licoreria.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,13 +21,13 @@ public class TipoMovimientosStock {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idEmpresa")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
     private Empresa idEmpresa;
 
     public TipoMovimientosStock() {
     }
 
-    public TipoMovimientosStock(Integer id){
+    public TipoMovimientosStock(Integer id) {
         this.idTipoMovimiento = id;
     }
 
@@ -55,10 +55,15 @@ public class TipoMovimientosStock {
         this.idEmpresa = idEmpresa;
     }
 
+    // Método helper para obtener ID de la relación
+    public Integer getEmpresaId() {
+        return idEmpresa != null ? idEmpresa.getIdEmpresa() : null;
+    }
+
     @Override
     public String toString() {
         return "TipoMovimientosStock [idTipoMovimiento=" + idTipoMovimiento + ", descripcionMovimiento="
                 + descripcionMovimiento + ", idEmpresa=" + idEmpresa + "]";
     }
-    
+
 }
