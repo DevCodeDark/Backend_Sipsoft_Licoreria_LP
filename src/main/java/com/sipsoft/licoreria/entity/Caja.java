@@ -1,12 +1,16 @@
 package com.sipsoft.licoreria.entity;
 
 import java.time.LocalDateTime;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "caja")
+@SQLDelete(sql = "UPDATE caja SET estadoCaja = 0 WHERE idCaja = ?")
+@Where(clause = "estadoCaja = 1")
 public class Caja {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

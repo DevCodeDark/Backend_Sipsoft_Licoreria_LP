@@ -15,19 +15,25 @@ import com.sipsoft.licoreria.services.ICajaService;
 @RequestMapping("/sipsoft")
 public class CajaController {
     @Autowired
-    private ICajaService serviceCaja;    @GetMapping("/cajas")
+    private ICajaService serviceCaja;
+
+    @GetMapping("/cajas")
     @Transactional(readOnly = true)
     public List<CajaDTO> buscarTodos() {
         return serviceCaja.bucarTodos().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
-    }    @GetMapping("/cajas/{idCaja}")
+    }
+
+    @GetMapping("/cajas/{idCaja}")
     @Transactional(readOnly = true)
     public ResponseEntity<CajaDTO> buscarId(@PathVariable("idCaja") Integer idCaja) {
         return serviceCaja.buscarId(idCaja)
                 .map(caja -> ResponseEntity.ok(convertToDto(caja)))
                 .orElse(ResponseEntity.notFound().build());
-    }    @PostMapping("/cajas")
+    }
+
+    @PostMapping("/cajas")
     @Transactional
     public CajaDTO guardar(@RequestBody CajaDTO dto) {
         Caja caja = new Caja();
@@ -35,14 +41,16 @@ public class CajaController {
         caja.setMontoInicialCaja(dto.getMontoInicialCaja());
         caja.setIdSucursal(dto.getIdSucursal());
         caja.setIdUsuarioApertura(dto.getIdUsuarioApertura());
-        
+
         // Valores automáticos
         caja.setFechaaperturaCaja(LocalDateTime.now());
         caja.setEstadoCaja(1); // 1 = Abierta
 
         Caja savedCaja = serviceCaja.guardar(caja);
         return convertToDto(savedCaja);
-    }    @PutMapping("/cajas")
+    }
+
+    @PutMapping("/cajas")
     @Transactional
     public ResponseEntity<CajaDTO> modificar(@RequestBody CajaDTO dto) {
         if (dto.getIdCaja() == null) {
@@ -58,15 +66,24 @@ public class CajaController {
                     cajaExistente.setIdSucursal(dto.getIdSucursal());
                     cajaExistente.setIdUsuarioApertura(dto.getIdUsuarioApertura());
                     cajaExistente.setIdUsuarioCierre(dto.getIdUsuarioCierre());
-                    cajaExistente.setEstadoCaja(dto.getEstadoCaja());
+
+                    // Solo actualizar el estado si se proporciona en el DTO, sino mantener el valor
+                    // por defecto (1)
+                    if (dto.getEstadoCaja() != null) {
+                        cajaExistente.setEstadoCaja(dto.getEstadoCaja());
+                    } else {
+                        cajaExistente.setEstadoCaja(1); // Estado activo por defecto
+                    }
 
                     Caja updatedCaja = serviceCaja.modificar(cajaExistente);
                     return ResponseEntity.ok(convertToDto(updatedCaja));
                 })
                 .orElse(ResponseEntity.notFound().build());
-    }    @DeleteMapping("/cajas/{idCaja}")
+    }
+
+    @DeleteMapping("/cajas/{idCaja}")
     @Transactional
-    public String eliminar(@PathVariable Integer idCaja){
+    public String eliminar(@PathVariable Integer idCaja) {
         serviceCaja.eliminar(idCaja);
         return "Caja eliminada";
     }
