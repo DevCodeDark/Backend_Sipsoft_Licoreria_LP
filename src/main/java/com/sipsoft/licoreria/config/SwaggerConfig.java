@@ -36,7 +36,8 @@ import io.swagger.v3.oas.annotations.servers.Server;
     ),
     servers = {
         @Server(url = "http://localhost:8080", description = "Servidor Local"),
-        @Server(url = "http://sipsoft.spring.informaticapp.com:2001", description = "Servidor de Producción")
+        @Server(url = "http://sipsoft.spring.informaticapp.com:2001", description = "Servidor de Producción (HTTP)"),
+        @Server(url = "https://sipsoft.spring.informaticapp.com:2001", description = "Servidor de Producción (HTTPS)")
     }
 )
 @SecurityScheme(
