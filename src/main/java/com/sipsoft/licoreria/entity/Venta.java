@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -142,7 +143,9 @@ public class Venta {    @Id
 
     public void setIgv(BigDecimal igv) {
         this.igv = igv;
-    }    public Cliente getCliente() {
+    }    
+    @JsonIgnore
+    public Cliente getCliente() {
         return cliente;
     }
 
@@ -150,6 +153,7 @@ public class Venta {    @Id
         this.cliente = cliente;
     }
 
+    @JsonIgnore
     public Caja getCaja() {
         return caja;
     }
@@ -158,6 +162,7 @@ public class Venta {    @Id
         this.caja = caja;
     }
 
+    @JsonIgnore
     public Usuario getUsuario() {
         return usuario;
     }
