@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
@@ -29,11 +30,13 @@ public class ContratoProveedor {
     private LocalDate fechaFinContratoProveedor;
     private String detallesContrato;
     private Integer estadoContratoProveedor = 1;
+    private Integer idProveedor;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idProveedor")
+    @JoinColumn(name = "idProveedor", insertable = false, updatable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Proveedor idProveedor;
+    private Proveedor proveedor;
 
     public ContratoProveedor() {
     }
@@ -80,9 +83,7 @@ public class ContratoProveedor {
 
     public void setDetallesContrato(String detallesContrato) {
         this.detallesContrato = detallesContrato;
-    }
-
-    public Integer getEstadoContratoProveedor() {
+    }    public Integer getEstadoContratoProveedor() {
         return estadoContratoProveedor;
     }
 
@@ -90,12 +91,23 @@ public class ContratoProveedor {
         this.estadoContratoProveedor = estadoContratoProveedor;
     }
 
-    public Proveedor getIdProveedor() {
+    public Integer getIdProveedor() {
         return idProveedor;
     }
 
-    public void setIdProveedor(Proveedor idProveedor) {
+    public void setIdProveedor(Integer idProveedor) {
         this.idProveedor = idProveedor;
+    }
+
+    public Proveedor getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(Proveedor proveedor) {
+        this.proveedor = proveedor;
+        if (proveedor != null) {
+            this.idProveedor = proveedor.getIdProveedor();
+        }
     }
 
     @Override
