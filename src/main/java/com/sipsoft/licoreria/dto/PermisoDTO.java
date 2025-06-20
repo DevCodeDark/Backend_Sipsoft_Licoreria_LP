@@ -4,6 +4,15 @@ public class PermisoDTO {
     private Integer idPermiso;
     private Integer idRol;
     private Integer idModulo;
+    private Integer estadoPermiso;
+
+    public Integer getEstadoPermiso() {
+        return estadoPermiso;
+    }
+
+    public void setEstadoPermiso(Integer estadoPermiso) {
+        this.estadoPermiso = estadoPermiso;
+    }
 
     // Getters y Setters
     public Integer getIdPermiso() {

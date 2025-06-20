@@ -11,4 +11,14 @@ public interface IPermisoService {
     Permiso modificar(Permiso permiso);
     Optional<Permiso> buscarId(Integer idPermiso);
     void eliminar(Integer idPermiso);
+
+    List<Permiso> buscarPorRol(Integer idRol);
+
+    List<Permiso> buscarPorRolActivos(Integer idRol);
+
+    //actualizarPermisos
+    void actualizarPermisos(Integer idRol, List<Integer> modulosSeleccionados);
+
+    Optional<Permiso> buscarPorRolYModulo(Integer idRol, Integer idModulo);
+
 }
