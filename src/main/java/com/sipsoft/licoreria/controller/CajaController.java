@@ -2,7 +2,6 @@ package com.sipsoft.licoreria.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +21,41 @@ public class CajaController {
     public List<CajaDTO> buscarTodos() {
         return serviceCaja.bucarTodos().stream()
                 .map(this::convertToDto)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    @GetMapping("/cajas/activas")
+    @Transactional(readOnly = true)
+    public List<CajaDTO> buscarCajasActivas() {
+        return serviceCaja.buscarCajasActivas().stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
+    @GetMapping("/cajas/inactivas")
+    @Transactional(readOnly = true)
+    public List<CajaDTO> buscarCajasInactivas() {
+        return serviceCaja.buscarCajasInactivas().stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
+    @GetMapping("/cajas/estado/{estado}")
+    @Transactional(readOnly = true)
+    public List<CajaDTO> buscarPorEstado(@PathVariable("estado") Integer estado) {
+        return serviceCaja.buscarPorEstado(estado).stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
+    @GetMapping("/cajas/sucursal/{idSucursal}/estado/{estado}")
+    @Transactional(readOnly = true)
+    public List<CajaDTO> buscarPorSucursalYEstado(
+            @PathVariable("idSucursal") Integer idSucursal,
+            @PathVariable("estado") Integer estado) {
+        return serviceCaja.buscarPorSucursalYEstado(idSucursal, estado).stream()
+                .map(this::convertToDto)
+                .toList();
     }
 
     @GetMapping("/cajas/{idCaja}")

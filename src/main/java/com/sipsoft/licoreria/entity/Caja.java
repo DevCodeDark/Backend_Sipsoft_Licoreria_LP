@@ -2,7 +2,6 @@ package com.sipsoft.licoreria.entity;
 
 import java.time.LocalDateTime;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -10,7 +9,6 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "caja")
 @SQLDelete(sql = "UPDATE caja SET estadoCaja = 0 WHERE idCaja = ?")
-@Where(clause = "estadoCaja = 1")
 public class Caja {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,23 +26,24 @@ public class Caja {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idSucursal", insertable = false, updatable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Sucursal sucursal;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idUsuarioApertura", insertable = false, updatable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Usuario usuarioApertura;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idUsuarioCierre", insertable = false, updatable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Usuario usuarioCierre;
 
     // --- Getters y Setters ---
-    public Caja() {}
+    public Caja() {
+    }
 
     public Caja(Integer id) {
         this.idCaja = id;

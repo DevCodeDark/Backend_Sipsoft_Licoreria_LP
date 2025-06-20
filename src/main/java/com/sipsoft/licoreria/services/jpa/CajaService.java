@@ -32,9 +32,28 @@ public class CajaService implements ICajaService {
     public Optional<Caja> buscarId(Integer idCaja) {
         return repoCaja.findById(idCaja);
     }
-    
-    @Override
+      @Override
     public void eliminar(Integer idCaja) {
         repoCaja.deleteById(idCaja);
+    }
+    
+    @Override
+    public List<Caja> buscarPorEstado(Integer estadoCaja) {
+        return repoCaja.findByEstadoCaja(estadoCaja);
+    }
+    
+    @Override
+    public List<Caja> buscarCajasActivas() {
+        return repoCaja.findCajasActivas();
+    }
+    
+    @Override
+    public List<Caja> buscarCajasInactivas() {
+        return repoCaja.findCajasInactivas();
+    }
+    
+    @Override
+    public List<Caja> buscarPorSucursalYEstado(Integer idSucursal, Integer estadoCaja) {
+        return repoCaja.findByIdSucursalAndEstadoCaja(idSucursal, estadoCaja);
     }
 }
