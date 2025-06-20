@@ -83,7 +83,12 @@ public class DetalleOrdenCompraController {
         entity.setCantidadSolicitada(dto.getCantidadSolicitada());
         entity.setObservacionesDetalle(dto.getObservacionesDetalle());
         entity.setPrecioUnitario(dto.getPrecioUnitario());
-        entity.setEstadoDetalleOrdenCompra(dto.getEstadoDetalleOrdenCompra());
+
+        // Si el estado no se proporciona, se mantiene el valor por defecto (1)
+        if (dto.getEstadoDetalleOrdenCompra() != null) {
+            entity.setEstadoDetalleOrdenCompra(dto.getEstadoDetalleOrdenCompra());
+        }
+
         entity.setIdOrden(dto.getIdOrden());
         entity.setIdProducto(dto.getIdProducto());
     }

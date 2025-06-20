@@ -66,7 +66,7 @@ public class RegistroController {
     }
 
     @PostMapping("/token")
-    @Transactional(readOnly = true)
+    @Transactional
     @Operation(summary = "Obtener token de acceso", description = "Autentica al cliente con su clienteId y llaveSecreta para obtener un token de acceso (JWT).")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Token generado exitosamente", content = @Content(schema = @Schema(implementation = TokenResponseDTO.class))),

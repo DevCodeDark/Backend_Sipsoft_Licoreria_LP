@@ -98,8 +98,12 @@ public class DetalleTrasladoController {
 
     private void mapDtoToEntity(DetalleTrasladoDTO dto, DetalleTraslado entity) {
         entity.setCantidadTraslado(dto.getCantidadTraslado());
+
+        // Si el estado no se envía en el DTO, se asigna el valor por defecto 1
         if (dto.getEstadoDetalleTraslado() != null) {
             entity.setEstadoDetalleTraslado(dto.getEstadoDetalleTraslado());
+        } else {
+            entity.setEstadoDetalleTraslado(1);
         }
 
         // Establecer relaciones por ID

@@ -2,7 +2,7 @@ package com.sipsoft.licoreria.entity;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,29 +15,28 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "segmento_modulo")
 public class SegmentoModulo {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idSegmento")
     private Integer idSegmento;
-    
+
     @Column(name = "descripcionSegmento", length = 255, nullable = false)
     private String descripcionSegmento;
-    
+
     @Column(name = "iconoSegmento", length = 255)
     private String iconoSegmento;
-    
+
     @Column(name = "estadoSegmento", nullable = false, columnDefinition = "int(1) default 1")
     private Integer estadoSegmento;
-    
     @OneToMany(mappedBy = "idSegmento")
-    @JsonManagedReference
+    @JsonIgnore
     private List<Modulo> modulos;
-    
+
     public SegmentoModulo() {
         this.estadoSegmento = 1;
     }
-    
+
     public SegmentoModulo(String descripcionSegmento, String iconoSegmento) {
         this();
         this.descripcionSegmento = descripcionSegmento;

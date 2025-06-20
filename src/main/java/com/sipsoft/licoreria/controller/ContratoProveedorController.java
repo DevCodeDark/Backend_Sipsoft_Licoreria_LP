@@ -44,9 +44,10 @@ public class ContratoProveedorController {
         contratoProveedor.setFechaInicioContratoProveedor(dto.getFechaInicioContratoProveedor());
         contratoProveedor.setFechaFinContratoProveedor(dto.getFechaFinContratoProveedor());
         contratoProveedor.setDetallesContrato(dto.getDetallesContrato());
+        contratoProveedor.setIdProveedor(dto.getIdProveedor());
 
         Proveedor proveedor = repoProveedor.findById(dto.getIdProveedor()).orElse(null);
-        contratoProveedor.setIdProveedor(proveedor);
+        contratoProveedor.setProveedor(proveedor);
 
         return ResponseEntity.ok(serviceContratoProveedor.guardar(contratoProveedor));
     }
@@ -63,9 +64,10 @@ public class ContratoProveedorController {
         contratoProveedor.setFechaInicioContratoProveedor(dto.getFechaInicioContratoProveedor());
         contratoProveedor.setFechaFinContratoProveedor(dto.getFechaFinContratoProveedor());
         contratoProveedor.setDetallesContrato(dto.getDetallesContrato());
+        contratoProveedor.setIdProveedor(dto.getIdProveedor());
 
         Proveedor proveedor = repoProveedor.findById(dto.getIdProveedor()).orElse(null);
-        contratoProveedor.setIdProveedor(proveedor);
+        contratoProveedor.setProveedor(proveedor);
 
         return ResponseEntity.ok(serviceContratoProveedor.modificar(contratoProveedor));
     }

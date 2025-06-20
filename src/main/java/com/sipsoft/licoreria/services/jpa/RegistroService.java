@@ -8,11 +8,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.crypto.SecretKey;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Date;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -118,37 +117,21 @@ public class RegistroService implements IRegistroService {
     public boolean existePorEmail(String email) {
         return registroRepository.existsByEmail(email);
     }    @Override
+    @Transactional
     public String generarToken(String clienteId, String llaveSecreta) {
-        System.out.println("=== DEBUG AUTENTICACIÓN ===");
-        System.out.println("ClienteId recibido: " + clienteId);
-        System.out.println("LlaveSecreta recibida: " + llaveSecreta);
-        
         Optional<Registro> registroOpt = registroRepository.findByClienteId(clienteId);
         if (registroOpt.isPresent()) {
             Registro registro = registroOpt.get();
-            System.out.println("Registro encontrado - Email: " + registro.getEmail());
-            System.out.println("Nombre: " + registro.getNombre() + ", Apellido: " + registro.getApellido());
-            
-            // Reconstruir la llave secreta esperada
-            String llaveEsperada = registro.getEmail() + registro.getNombre() + registro.getApellido();
-            System.out.println("Llave esperada: " + llaveEsperada);
-            System.out.println("Llave recibida: " + llaveSecreta);
-            System.out.println("Son iguales: " + llaveEsperada.equals(llaveSecreta));
             
             if (passwordEncoder.matches(llaveSecreta, registro.getLlaveSecreta())) {
-                System.out.println("✓ Credenciales válidas - Generando token");
-                
                 // Usar JwtUtil para generar el token con la información completa
                 String token = jwtUtil.generarTokenCompleto(registro.getEmail(), registro.getClienteId());
-                
+                  // Guardar el token en la base de datos con flush explícito
                 registro.setAccessToken(token);
-                registroRepository.save(registro);
+                registroRepository.saveAndFlush(registro);
+                
                 return token;
-            } else {
-                System.out.println("✗ Credenciales inválidas - Hash no coincide");
             }
-        } else {
-            System.out.println("✗ ClienteId no encontrado en la base de datos");
         }
         return null;
     }

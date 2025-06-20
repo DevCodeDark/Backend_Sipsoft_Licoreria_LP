@@ -2,28 +2,14 @@ package com.sipsoft.licoreria.dto;
 
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "notificaciones")
-@SQLDelete(sql = "UPDATE notificaciones SET estadoNotificacion = 0 WHERE idNotificacion = ?")
-@Where(clause = "estadoNotificacion = 1")
-
 public class NotificacionesDTO {
-     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)private Integer idNotificacion;
+    private Integer idNotificacion;
     private LocalDateTime fechaNotificacion;
     private String mensaje;
     private Integer idProducto;
     private Integer idTipoNotificacion;
     private Integer idContratoProveedor;
-    private Integer estadoNotificacion = 1;
+    private Integer estadoNotificacion;
 
     public Integer getIdNotificacion() {
         return idNotificacion;

@@ -1,9 +1,9 @@
 package com.sipsoft.licoreria.entity;
 
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "tipo_pago")
 @SQLDelete(sql = "UPDATE tipo_pago SET estadoTipoPago = 0 WHERE idTipoPago = ?")
-@Where(clause = "estadoTipoPago = 1")
+@SQLRestriction("estadoTipoPago = 1")
 public class TipoPago {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,7 @@ public class TipoPago {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idEmpresa")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
     private Empresa idEmpresa;
 
     public TipoPago() {
@@ -64,13 +64,20 @@ public class TipoPago {
     public void setIdEmpresa(Empresa idEmpresa) {
         this.idEmpresa = idEmpresa;
     }
-    public TipoPago(Integer id) { this.idTipoPago = id; }
+
+    // Método helper para obtener ID de la relación
+    public Integer getEmpresaId() {
+        return idEmpresa != null ? idEmpresa.getIdEmpresa() : null;
+    }
+
+    public TipoPago(Integer id) {
+        this.idTipoPago = id;
+    }
+
     @Override
     public String toString() {
         return "TipoPago [idTipoPago=" + idTipoPago + ", descripcionPago=" + descripcionPago + ", estadoTipoPago="
                 + estadoTipoPago + ", idEmpresa=" + idEmpresa + "]";
     }
 
-    
-    
 }

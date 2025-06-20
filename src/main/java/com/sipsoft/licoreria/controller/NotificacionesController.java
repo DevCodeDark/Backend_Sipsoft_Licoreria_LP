@@ -1,9 +1,9 @@
 package com.sipsoft.licoreria.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sipsoft.licoreria.dto.NotificacionesDTO;
-import com.sipsoft.licoreria.entity.ContratoProveedor;
 import com.sipsoft.licoreria.entity.Notificaciones;
-import com.sipsoft.licoreria.entity.Producto;
-import com.sipsoft.licoreria.entity.TipoNotificaciones;
 import com.sipsoft.licoreria.repository.ContratoProveedorRepository;
 import com.sipsoft.licoreria.repository.ProductoRepository;
 import com.sipsoft.licoreria.repository.TipoNotificacionesRepository;
@@ -32,74 +29,112 @@ public class NotificacionesController {
     private INotificacionesService serviceNotificaciones;
 
     @Autowired
-    private ProductoRepository repoProducto; // AQUI
+    private ProductoRepository repoProducto;
 
     @Autowired
-    private TipoNotificacionesRepository repoTipoNoti; // AQUI
+    private TipoNotificacionesRepository repoTipoNoti;
 
     @Autowired
-    private ContratoProveedorRepository repoContratoProv; // AQUI
+    private ContratoProveedorRepository repoContratoProv;
 
     @GetMapping("/notificaciones")
     @Transactional(readOnly = true)
-    public List<Notificaciones> buscarTodos() {
-        return serviceNotificaciones.bucarTodos();
+    public ResponseEntity<List<NotificacionesDTO>> buscarTodos() {
+        try {
+            List<Notificaciones> notificaciones = serviceNotificaciones.bucarTodos();
+            List<NotificacionesDTO> notificacionesDTO = notificaciones.stream()
+                    .map(this::convertirEntidadADTO)
+                    .toList();
+            return ResponseEntity.ok(notificacionesDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping("/notificaciones")
     @Transactional
-    public ResponseEntity<?> guardar(@RequestBody NotificacionesDTO dto) {
-        Notificaciones notificacion = new Notificaciones();
-        notificacion.setFechaNotificacion(dto.getFechaNotificacion());
-        notificacion.setMensaje(dto.getMensaje());
-
-        Producto producto = repoProducto.findById(dto.getIdProducto()).orElse(null);
-        notificacion.setIdProducto(producto);
-
-        TipoNotificaciones tiponotificaciones = repoTipoNoti.findById(dto.getIdTipoNotificacion()).orElse(null);
-        notificacion.setIdTipoNotificacion(tiponotificaciones);
-
-        ContratoProveedor contratoproveedor = repoContratoProv.findById(dto.getIdContratoProveedor()).orElse(null);
-        notificacion.setIdContratoProveedor(contratoproveedor);
-
-        return ResponseEntity.ok(serviceNotificaciones.guardar(notificacion));
+    public ResponseEntity<NotificacionesDTO> guardar(@RequestBody NotificacionesDTO dto) {
+        try {
+            Notificaciones notificacion = convertirDTOAEntidad(dto);
+            Notificaciones notificacionGuardada = serviceNotificaciones.guardar(notificacion);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(convertirEntidadADTO(notificacionGuardada));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PutMapping("/notificaciones")
     @Transactional
-    public ResponseEntity<?> modificar(@RequestBody NotificacionesDTO dto) {
-        if (dto.getIdNotificacion() == null) {
-            return ResponseEntity.badRequest().body("ID no existe");
+    public ResponseEntity<NotificacionesDTO> modificar(@RequestBody NotificacionesDTO dto) {
+        try {
+            if (dto.getIdNotificacion() == null) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            Notificaciones notificacion = convertirDTOAEntidad(dto);
+            Notificaciones notificacionModificada = serviceNotificaciones.modificar(notificacion);
+            return ResponseEntity.ok(convertirEntidadADTO(notificacionModificada));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-
-        Notificaciones notificaciones = new Notificaciones();
-        notificaciones.setFechaNotificacion(dto.getFechaNotificacion());
-        notificaciones.setIdNotificacion(dto.getIdNotificacion());
-        notificaciones.setMensaje(dto.getMensaje());
-
-        Producto producto = repoProducto.findById(dto.getIdProducto()).orElse(null);
-        notificaciones.setIdProducto(producto);
-
-        TipoNotificaciones tiponotificaciones = repoTipoNoti.findById(dto.getIdTipoNotificacion()).orElse(null);
-        notificaciones.setIdTipoNotificacion(tiponotificaciones);
-
-        ContratoProveedor contratoproveedor = repoContratoProv.findById(dto.getIdContratoProveedor()).orElse(null);
-        notificaciones.setIdContratoProveedor(contratoproveedor);
-
-        return ResponseEntity.ok(serviceNotificaciones.modificar(notificaciones));
-
     }
 
     @GetMapping("/notificaciones/{idNotificacion}")
     @Transactional(readOnly = true)
-    public Optional<Notificaciones> buscarId(@PathVariable("idNotificacion") Integer idNotificacion) {
-        return serviceNotificaciones.buscarId(idNotificacion);
+    public ResponseEntity<NotificacionesDTO> buscarId(@PathVariable("idNotificacion") Integer idNotificacion) {
+        try {
+            return serviceNotificaciones.buscarId(idNotificacion)
+                    .map(notificacion -> ResponseEntity.ok(convertirEntidadADTO(notificacion)))
+                    .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @DeleteMapping("/notificaciones/{idNotificacion}")
     @Transactional
-    public String eliminar(@PathVariable Integer idNotificacion) {
-        serviceNotificaciones.eliminar(idNotificacion);
-        return "Notificacion eliminada";
+    public ResponseEntity<String> eliminar(@PathVariable Integer idNotificacion) {
+        try {
+            serviceNotificaciones.eliminar(idNotificacion);
+            return ResponseEntity.ok("Notificacion eliminada");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al eliminar la notificación");
+        }
+    }
+
+    // Métodos de conversión entre entidad y DTO
+    private NotificacionesDTO convertirEntidadADTO(Notificaciones notificacion) {
+        NotificacionesDTO dto = new NotificacionesDTO();
+        dto.setIdNotificacion(notificacion.getIdNotificacion());
+        dto.setFechaNotificacion(notificacion.getFechaNotificacion());
+        dto.setMensaje(notificacion.getMensaje());
+        dto.setEstadoNotificacion(notificacion.getEstadoNotificacion());
+        dto.setIdProducto(notificacion.getProductoId());
+        dto.setIdContratoProveedor(notificacion.getContratoProveedorId());
+        dto.setIdTipoNotificacion(notificacion.getTipoNotificacionId());
+        return dto;
+    }
+
+    private Notificaciones convertirDTOAEntidad(NotificacionesDTO dto) {
+        Notificaciones notificacion = new Notificaciones();
+        notificacion.setIdNotificacion(dto.getIdNotificacion());
+        notificacion.setFechaNotificacion(dto.getFechaNotificacion());
+        notificacion.setMensaje(dto.getMensaje());
+        notificacion.setEstadoNotificacion(dto.getEstadoNotificacion() != null ? dto.getEstadoNotificacion() : 1);
+
+        // Cargar las relaciones si los IDs están presentes
+        if (dto.getIdProducto() != null) {
+            notificacion.setIdProducto(repoProducto.findById(dto.getIdProducto()).orElse(null));
+        }
+        if (dto.getIdContratoProveedor() != null) {
+            notificacion.setIdContratoProveedor(repoContratoProv.findById(dto.getIdContratoProveedor()).orElse(null));
+        }
+        if (dto.getIdTipoNotificacion() != null) {
+            notificacion.setIdTipoNotificacion(repoTipoNoti.findById(dto.getIdTipoNotificacion()).orElse(null));
+        }
+
+        return notificacion;
     }
 }
