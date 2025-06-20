@@ -1,8 +1,5 @@
 package com.sipsoft.licoreria.entity;
 
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -17,8 +14,6 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "permiso")
-@SQLDelete(sql = "UPDATE permiso SET estadoPermiso = 0 WHERE idPermiso = ?")
-@Where(clause = "estadoPermiso = 1")
 public class Permiso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

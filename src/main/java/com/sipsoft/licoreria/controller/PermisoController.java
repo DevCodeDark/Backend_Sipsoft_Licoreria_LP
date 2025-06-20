@@ -38,15 +38,24 @@ public class PermisoController {
      * @return El permiso creado.
      */
     @PostMapping("/permisos")
-    @Transactional
-    public Permiso guardar(@RequestBody PermisoDTO permisoDto) {
-        Permiso permiso = new Permiso();
+@Transactional
+public Permiso guardar(@RequestBody PermisoDTO permisoDto) {
+    // Buscar si ya existe un permiso para ese rol y módulo
+    Optional<Permiso> permisoExistenteOpt = servicePermiso.buscarPorRolYModulo(permisoDto.getIdRol(), permisoDto.getIdModulo());
+    Permiso permiso;
+    if (permisoExistenteOpt.isPresent()) {
+        // Si existe, actualiza el estadoPermiso
+        permiso = permisoExistenteOpt.get();
+        permiso.setEstadoPermiso(permisoDto.getEstadoPermiso() != null ? permisoDto.getEstadoPermiso() : 1);
+    } else {
+        // Si no existe, crea uno nuevo
+        permiso = new Permiso();
         permiso.setIdRol(permisoDto.getIdRol());
         permiso.setIdModulo(permisoDto.getIdModulo());
-        permiso.setEstadoPermiso(1); // Se establece el estado activo por defecto
-
-        return servicePermiso.guardar(permiso);
+        permiso.setEstadoPermiso(permisoDto.getEstadoPermiso() != null ? permisoDto.getEstadoPermiso() : 1);
     }
+    return servicePermiso.guardar(permiso);
+}
 
     /**
      * Endpoint para modificar un permiso existente.
@@ -55,24 +64,24 @@ public class PermisoController {
      * @return El permiso modificado o un mensaje de error si no se encuentra.
      */
     @PutMapping("/permisos")
-    @Transactional
-    public ResponseEntity<?> modificar(@RequestBody PermisoDTO permisoDto) {
-        if (permisoDto.getIdPermiso() == null) {
-            return ResponseEntity.badRequest().body("El idPermiso es requerido para modificar.");
-        }
-
-        Optional<Permiso> permisoOpt = servicePermiso.buscarId(permisoDto.getIdPermiso());
-        if (permisoOpt.isEmpty()) {
-            return ResponseEntity.badRequest().body("No se encontró el Permiso con ID: " + permisoDto.getIdPermiso());
-        }
-
-        Permiso permisoExistente = permisoOpt.get();
-        permisoExistente.setIdRol(permisoDto.getIdRol());
-        permisoExistente.setIdModulo(permisoDto.getIdModulo());
-
-        Permiso permisoModificado = servicePermiso.modificar(permisoExistente);
-        return ResponseEntity.ok(permisoModificado);
+@Transactional
+public ResponseEntity<?> modificar(@RequestBody PermisoDTO permisoDto) {
+    if (permisoDto.getIdPermiso() == null) {
+        return ResponseEntity.badRequest().body("El idPermiso es requerido para modificar.");
     }
+
+    Optional<Permiso> permisoOpt = servicePermiso.buscarId(permisoDto.getIdPermiso());
+    if (permisoOpt.isEmpty()) {
+        return ResponseEntity.badRequest().body("No se encontró el Permiso con ID: " + permisoDto.getIdPermiso());
+    }
+
+    Permiso permisoExistente = permisoOpt.get();
+    // ¡NO actualizar idRol ni idModulo!
+    permisoExistente.setEstadoPermiso(permisoDto.getEstadoPermiso());
+
+    Permiso permisoModificado = servicePermiso.modificar(permisoExistente);
+    return ResponseEntity.ok(permisoModificado);
+}
 
     @GetMapping("/permisos/{idPermiso}")
     @Transactional(readOnly = true)
@@ -86,4 +95,12 @@ public class PermisoController {
         servicePermiso.eliminar(idPermiso);
         return "Permiso eliminado";
     }
+
+    @GetMapping("/permisos/rol/{idRol}")
+    @Transactional(readOnly = true)
+    public List<Permiso> buscarPorRol(@PathVariable("idRol") Integer idRol) {
+        return servicePermiso.buscarPorRol(idRol);
+    }
+    
+    
 }
