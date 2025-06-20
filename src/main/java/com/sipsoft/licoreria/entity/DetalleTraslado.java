@@ -11,8 +11,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 @Entity
 @Table(name = "detalle_traslado")
+@SQLDelete(sql = "UPDATE detalle_traslado SET estadoDetalleTraslado = 0 WHERE idDetalleTraslado = ?")
+@SQLRestriction("estadoDetalleTraslado = 1")
 public class DetalleTraslado {    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idDetalleTraslado;

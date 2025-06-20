@@ -3,12 +3,17 @@ package com.sipsoft.licoreria.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class VentaDTO {
     private Integer idVenta;
     private LocalDateTime fechaVenta;
     private BigDecimal montoTotalVenta;
     private LocalDateTime fechaAnulacion;
+    
+    @JsonProperty("dirección")
     private String direccion;
+    
     private String referencia;
     private Integer estadoVenta;
     private BigDecimal igv;

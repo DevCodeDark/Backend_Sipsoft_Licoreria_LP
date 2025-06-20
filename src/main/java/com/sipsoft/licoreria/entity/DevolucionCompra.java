@@ -15,8 +15,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 @Entity
 @Table(name = "devolucion_compra")
+@SQLDelete(sql = "UPDATE devolucion_compra SET estadoDevolucionCompra = 'RECHAZADO' WHERE idDevolucionCompra = ?")
+@SQLRestriction("estadoDevolucionCompra != 'RECHAZADO'")
 public class DevolucionCompra implements Serializable {
 
     private static final long serialVersionUID = 1L;

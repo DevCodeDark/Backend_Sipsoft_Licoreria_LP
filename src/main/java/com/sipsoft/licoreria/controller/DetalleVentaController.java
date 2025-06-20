@@ -37,7 +37,13 @@ public class DetalleVentaController {
     public DetalleVentaDTO guardar(@RequestBody DetalleVentaDTO dto) {
         DetalleVenta detalle = new DetalleVenta();
         mapDtoToEntity(dto, detalle);
-        detalle.setEstadoDetalleVenta(1); // Estado activo por defecto
+
+        // Si el estado no se envía en el DTO, se asigna el valor por defecto 1
+        if (dto.getEstadoDetalleVenta() != null) {
+            detalle.setEstadoDetalleVenta(dto.getEstadoDetalleVenta());
+        } else {
+            detalle.setEstadoDetalleVenta(1);
+        }
 
         DetalleVenta savedDetalle = serviceDetalleVenta.guardar(detalle);
         return convertToDto(savedDetalle);
@@ -90,5 +96,10 @@ public class DetalleVentaController {
         entity.setTipoDescuento(dto.getTipoDescuento());
         entity.setIdVenta(dto.getIdVenta());
         entity.setIdLote(dto.getIdLote());
+
+        // Solo establecer el estado si se proporciona en el DTO
+        if (dto.getEstadoDetalleVenta() != null) {
+            entity.setEstadoDetalleVenta(dto.getEstadoDetalleVenta());
+        }
     }
 }

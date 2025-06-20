@@ -2,7 +2,6 @@ package com.sipsoft.licoreria.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,9 +41,29 @@ public class DevolucionCompraController {
 
         // Valores automáticos
         devolucion.setFechaDevolucionCompra(LocalDateTime.now());
-        
-        // Convertir el estado de Integer a String
-        devolucion.setEstadoDevolucionCompra("REGISTRADO");
+
+        // Si el estado no se envía en el DTO, se asigna el valor por defecto
+        if (dto.getEstadoDevolucionCompra() != null) {
+            // Convertir el estado de Integer a String
+            switch (dto.getEstadoDevolucionCompra()) {
+                case 1:
+                    devolucion.setEstadoDevolucionCompra("REGISTRADO");
+                    break;
+                case 2:
+                    devolucion.setEstadoDevolucionCompra("EN_PROCESO");
+                    break;
+                case 3:
+                    devolucion.setEstadoDevolucionCompra("ACEPTADO");
+                    break;
+                case 4:
+                    devolucion.setEstadoDevolucionCompra("RECHAZADO");
+                    break;
+                default:
+                    devolucion.setEstadoDevolucionCompra("REGISTRADO");
+            }
+        } else {
+            devolucion.setEstadoDevolucionCompra("REGISTRADO");
+        }
 
         DevolucionCompra savedDevolucion = serviceDevolucionCompra.guardar(devolucion);
         return convertToDto(savedDevolucion);
@@ -59,9 +78,8 @@ public class DevolucionCompraController {
 
         return serviceDevolucionCompra.buscarId(dto.getIdDevolucionCompra())
                 .map(devolucionExistente -> {
-                    mapDtoToEntity(dto, devolucionExistente);
-
-                    // Opcional: Actualizar el estado si es necesario desde el DTO
+                    mapDtoToEntity(dto, devolucionExistente); // Opcional: Actualizar el estado si es necesario desde el
+                                                              // DTO
                     if (dto.getEstadoDevolucionCompra() != null) {
                         // Convertir de Integer a String
                         switch (dto.getEstadoDevolucionCompra()) {
@@ -69,16 +87,16 @@ public class DevolucionCompraController {
                                 devolucionExistente.setEstadoDevolucionCompra("REGISTRADO");
                                 break;
                             case 2:
-                                devolucionExistente.setEstadoDevolucionCompra("PROCESADO");
+                                devolucionExistente.setEstadoDevolucionCompra("EN_PROCESO");
                                 break;
                             case 3:
-                                devolucionExistente.setEstadoDevolucionCompra("COMPLETADO");
+                                devolucionExistente.setEstadoDevolucionCompra("ACEPTADO");
                                 break;
                             case 4:
                                 devolucionExistente.setEstadoDevolucionCompra("RECHAZADO");
                                 break;
                             default:
-                                devolucionExistente.setEstadoDevolucionCompra("DESCONOCIDO");
+                                devolucionExistente.setEstadoDevolucionCompra("REGISTRADO");
                         }
                     }
 
@@ -103,17 +121,16 @@ public class DevolucionCompraController {
         dto.setFechaDevolucionCompra(entity.getFechaDevolucionCompra());
         dto.setMotivoDevolucionCompra(entity.getMotivoDevolucionCompra());
         dto.setImagenDevolucion(entity.getImagenDevolucion());
-        
         // Convertir el estado de String a Integer
         if (entity.getEstadoDevolucionCompra() != null) {
             switch (entity.getEstadoDevolucionCompra()) {
                 case "REGISTRADO":
                     dto.setEstadoDevolucionCompra(1);
                     break;
-                case "PROCESADO":
+                case "EN_PROCESO":
                     dto.setEstadoDevolucionCompra(2);
                     break;
-                case "COMPLETADO":
+                case "ACEPTADO":
                     dto.setEstadoDevolucionCompra(3);
                     break;
                 case "RECHAZADO":
@@ -123,7 +140,7 @@ public class DevolucionCompraController {
                     dto.setEstadoDevolucionCompra(0); // Estado desconocido
             }
         }
-        
+
         dto.setIdDetalleCompra(entity.getIdDetalleCompra());
         return dto;
     }

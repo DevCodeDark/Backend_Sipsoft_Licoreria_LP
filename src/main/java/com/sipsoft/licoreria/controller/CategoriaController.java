@@ -41,8 +41,9 @@ public class CategoriaController {
         Categoria categoria = new Categoria();
         categoria.setNombreCategoria(dto.getNombreCategoria());
         categoria.setEstadoCategoria(dto.getEstadoCategoria());
+        categoria.setIdEmpresa(dto.getIdEmpresa());
         Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
-        categoria.setIdEmpresa(empresa);
+        categoria.setEmpresa(empresa);
         serviceCategoria.guardar(categoria);
         return categoria;
     }
@@ -54,8 +55,9 @@ public class CategoriaController {
         categoria.setIdCategoria(dto.getIdCategoria());
         categoria.setNombreCategoria(dto.getNombreCategoria());
         categoria.setEstadoCategoria(dto.getEstadoCategoria());
+        categoria.setIdEmpresa(dto.getIdEmpresa());
         Empresa empresa = repoEmpresa.findById(dto.getIdEmpresa()).orElse(null);
-        categoria.setIdEmpresa(empresa);
+        categoria.setEmpresa(empresa);
         serviceCategoria.modificar(categoria);
         return categoria;
     }

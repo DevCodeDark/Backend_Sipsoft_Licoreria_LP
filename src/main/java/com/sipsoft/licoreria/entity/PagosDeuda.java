@@ -2,10 +2,10 @@ package com.sipsoft.licoreria.entity;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,19 +19,18 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "pagos_deuda")
 @SQLDelete(sql = "UPDATE pagos_deuda SET estadoPagosDeuda = 0 WHERE idPagosDeuda = ?")
-@Where(clause = "estadoPagosDeuda = 1")
+@SQLRestriction("estadoPagosDeuda = 1")
 public class PagosDeuda {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idPagosDeuda;
     private LocalDateTime fechaPagoParcialDeuda;
     private Float montoAbonado;
-    private Boolean estadoPagosDeuda = true;
+    private Integer estadoPagosDeuda = 1;
     private String observaciones;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idDeuda")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
     private DeudaProveedor idDeuda;
 
     public Integer getIdPagosDeuda() {
@@ -58,11 +57,11 @@ public class PagosDeuda {
         this.montoAbonado = montoAbonado;
     }
 
-    public Boolean getEstadoPagosDeuda() {
+    public Integer getEstadoPagosDeuda() {
         return estadoPagosDeuda;
     }
 
-    public void setEstadoPagosDeuda(Boolean estadoPagosDeuda) {
+    public void setEstadoPagosDeuda(Integer estadoPagosDeuda) {
         this.estadoPagosDeuda = estadoPagosDeuda;
     }
 
@@ -82,6 +81,11 @@ public class PagosDeuda {
         this.idDeuda = idDeuda;
     }
 
+    // Método helper para obtener ID de la relación
+    public Integer getDeudaId() {
+        return idDeuda != null ? idDeuda.getIdDeuda() : null;
+    }
+
     @Override
     public String toString() {
         return "PagosDeuda [idPagosDeuda=" + idPagosDeuda + ", fechaPagoParcialDeuda=" + fechaPagoParcialDeuda
@@ -89,7 +93,4 @@ public class PagosDeuda {
                 + observaciones + ", idDeuda=" + idDeuda + "]";
     }
 
-    
-
-    
 }
